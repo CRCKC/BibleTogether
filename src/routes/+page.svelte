@@ -4,8 +4,8 @@
 <h1 class="text-3xl font-bold underline">Hello world!</h1>
 
 <style lang="postcss">
-	:global(html) {
+	/* :global(html) {
 		background-color: theme(colors.black);
 		color: theme(colors.white);
-	}
+	} */
 </style>
