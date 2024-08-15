@@ -39,6 +39,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"cssnano": "^7.0.5",
 		"gsap": "^3.12.5"
 	}
 }
