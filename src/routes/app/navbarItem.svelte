@@ -1,24 +1,29 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
 	export let title: string = 'PlaceHolder';
 	export let icon: string;
 	// export let iconInactive: string;
 	export let path: string;
-	export let isActive: boolean = false;
+
+	const targetLocation = `/app/${path}`;
+	$: isActive = $page.route.id == targetLocation;
 </script>
 
-<button class="text-center mb-2 mt-2 text-xs" on:click={() => goto(`/app/${path}`)}>
+<a
+	href={targetLocation}
+	class="text-center mb-2 mt-2 text-xs text-gray-400"
+	class:active={isActive}
+>
 	<div class="flex justify-center items-center">
-		<span class={`material-symbols-outlined${isActive ? ' a' : ''} mb-1`}>
+		<span class={`material-symbols-outlined mb-1`} class:fillIcon={isActive}>
 			{icon}
 		</span>
 	</div>
 	{title}
-</button>
+</a>
 
-<style>
+<style lang="postcss">
 	.material-symbols-outlined {
 		font-variation-settings:
 			'FILL' 0,
@@ -26,7 +31,10 @@
 			'GRAD' 0,
 			'opsz' 24;
 	}
-	.a {
+	.active {
+		@apply text-white;
+	}
+	.fillIcon {
 		font-variation-settings: 'FILL' 1;
 		/* 'wght' 400,
 			'GRAD' 0,
