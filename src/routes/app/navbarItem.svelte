@@ -12,7 +12,7 @@
 
 <a
 	href={targetLocation}
-	class="text-center mb-2 mt-2 text-xs text-gray-400"
+	class="text-center mb-2 mt-2 text-xs text-gray-400 transition-all"
 	class:active={isActive}
 >
 	<div class="flex justify-center items-center">
@@ -35,9 +35,10 @@
 		@apply text-white;
 	}
 	.fillIcon {
-		font-variation-settings: 'FILL' 1;
-		/* 'wght' 400,
+		font-variation-settings:
+			'FILL' 1,
+			'wght' 400,
 			'GRAD' 0,
-			'opsz' 24; */
+			'opsz' 24;
 	}
 </style>
