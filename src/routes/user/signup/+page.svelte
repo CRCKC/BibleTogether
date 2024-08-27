@@ -14,7 +14,7 @@
 		<form class="flex flex-col items-center justify-center text-black">
 			<input
 				type="text"
-				placeholder="Email"
+				placeholder="Username"
 				class="w-80 h-12 border-2 border-gray-200 rounded-md p-2"
 			/>
 			<input
