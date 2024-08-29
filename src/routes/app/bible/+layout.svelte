@@ -5,6 +5,9 @@
 	export let data: LayoutData;
 </script>
 
-<div class="overflow-y-scroll h-screen">
+<div class="overflow-y-scroll h-[calc(100vh-4rem)]">
 	<slot />
 </div>
+
+<style lang="postcss">
+</style>
