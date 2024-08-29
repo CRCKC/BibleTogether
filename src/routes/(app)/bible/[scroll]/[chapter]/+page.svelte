@@ -1,24 +1,13 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import rom from '$lib/ROM_11.txt';
 	export let data: PageData;
 
-	$: bibleContent = '';
+	// $: bibleContent = '';
 
-	async function loadChapter(scroll: string, chapter: number) {
-		try {
-			const response = await fetch(rom);
-			const content = await response.text();
-			bibleContent = content;
-		} catch (error) {
-			console.error('Error reading file:', error);
-		}
-	}
-
-	loadChapter('ROM', 11);
+	$: bibleContent = data.bibleContent;
 </script>
 
-<div class="bible">
+<div class="bible mx-4">
 	{@html bibleContent}
 </div>
 
@@ -55,14 +44,27 @@
 	}
 	.bible :global(b) {
 	}
-	.bible :global(b) {
-	}
-	.bible :global(b) {
+	.bible :global(sup) {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		font-size: 0;
+		text-indent: -9em;
+		display: inline-block;
+		cursor: pointer;
+		width: 20px;
+		height: 20px;
+		background-color: white;
+		/* background: url(o.png?0906) -180px -20px; */
 	}
 	.bible :global(i) {
 		font-style: normal;
 		border-bottom: 1px solid #777;
 	}
+	/* Add a hover effect for <i> */
 	.bible :global(p) {
 		text-indent: 1em;
 		line-height: 1.5;

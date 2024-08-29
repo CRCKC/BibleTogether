@@ -3,11 +3,10 @@
 
 	export let title: string = 'PlaceHolder';
 	export let icon: string;
-	// export let iconInactive: string;
 	export let path: string;
 
-	const targetLocation = `/app/${path}`;
-	$: isActive = $page.route.id == targetLocation;
+	const targetLocation = `/${path}`;
+	$: isActive = $page.url.pathname.startsWith(targetLocation);
 </script>
 
 <a
