@@ -2,8 +2,6 @@
 	import type { PageData } from './$types';
 	export let data: PageData;
 
-	// $: bibleContent = '';
-
 	$: bibleContent = data.bibleContent;
 </script>
 
