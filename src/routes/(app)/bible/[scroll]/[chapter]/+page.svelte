@@ -84,7 +84,7 @@
 		unicode-bidi: isolate;
 		margin: 1em 0 0 0;
 		font-size: 100%;
-		color: #7bc941;
+		color: rgb(0, 179, 255);
 	}
 	.bible :global(h6) {
 		display: block;

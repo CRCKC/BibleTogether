@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { base } from '$app/paths';
 
 	export let title: string = 'PlaceHolder';
 	export let icon: string;
 	export let path: string;
 
-	const targetLocation = `/${path}`;
+	const targetLocation = `${base}/${path}`;
 	$: isActive = $page.url.pathname.startsWith(targetLocation);
 </script>
 
