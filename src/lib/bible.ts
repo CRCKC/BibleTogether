@@ -1,7 +1,7 @@
 import { writable, type Writable } from "svelte/store";
 import bibleJson from '$lib/bibleList.json';
 import { base } from '$app/paths';
-import { browser } from "$app/environment"
+// import { browser } from "$app/environment"
 import { getContext } from "svelte";
 // Convert bibleList to a dictionary
 
@@ -16,15 +16,19 @@ interface Bible {
 
 // export const userId = writable(browser && localStorage.getItem("userId") || "webjeda")
 
-export const bibleStore = writable<Bible>(browser && JSON.parse(localStorage.bible) as Bible
-    || {
+export const bibleStore = writable<Bible>({
     scroll: "GEN",
     chapter: 1,
 });
+// export const bibleStore = writable<Bible>(browser && JSON.parse(localStorage.bible) as Bible
+//     || {
+//     scroll: "GEN",
+//     chapter: 1,
+// });
 
-bibleStore.subscribe((val) => {
-    if (browser) return (localStorage.bible = JSON.stringify(val))
-})
+// bibleStore.subscribe((val) => {
+//     if (browser) return (localStorage.bible = JSON.stringify(val))
+// })
 
 
 
