@@ -13,7 +13,6 @@
 <slot />
 
 <div class={classNames('fixed bottom-0 w-full border-t-2 border-gray-600 bg-black transition-all')}>
-	<!-- Tailwindcss center aligned row div -->
 	<!-- Bible nav bar -->
 	<div
 		class={classNames({

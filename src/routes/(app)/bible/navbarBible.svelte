@@ -1,6 +1,9 @@
 <script>
+	import { getContext } from 'svelte';
+
 	// import { page } from '$app/stores';
-	import { bible } from '$lib/bible';
+	// import { bible } from '$lib/bible';
+	const bible = getContext('bible');
 </script>
 
 <div class="flex justify-center items-center w-full">

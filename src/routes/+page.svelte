@@ -7,7 +7,7 @@
 
 <h1 class="text-3xl font-bold underline">Hello world!</h1>
 
-<button on:click={() => goto('/app/home')} class="bg-gray-800"> Go to home </button>
+<button on:click={() => goto('home')} class="bg-gray-800"> Go to home </button>
 
 <style lang="postcss">
 	:global(html) {
