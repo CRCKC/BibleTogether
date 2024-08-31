@@ -1,6 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { setBible } from '$lib/bible';
 	export let data: PageData;
+
+	if (data.scroll && data.chapter) {
+		setBible(data.scroll, data.chapter);
+	}
 
 	$: bibleContent = data.bibleContent;
 </script>

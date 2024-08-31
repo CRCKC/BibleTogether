@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
-import bibleList from '$lib/bibleList.json';
 import { redirect } from '@sveltejs/kit';
 import { base } from '$app/paths';
+import { isChapterValid } from '$lib/bible';
 
 export const load = (async ({ params, url }) => {
     // Fromat the parameters
@@ -17,6 +17,8 @@ export const load = (async ({ params, url }) => {
     const bibleContent = await loadChapter(scroll, chap);
     return {
         bibleContent,
+        scroll,
+        chapter: chap,
     };
 }) satisfies PageServerLoad;
 
@@ -38,22 +40,4 @@ async function loadChapter(scroll: string, chapter: number) {
     return bibleContent;
 }
 
-function isChapterValid(scroll: string, chapter: number) {
 
-    // Convert bibleList to a dictionary
-    const bible = bibleList as { [scroll: string]: number; }
-
-    // Check if scroll is a key in the bibleList
-    const maxChap: number | undefined = bible[scroll];
-
-    if (maxChap === undefined) {
-        return false;
-    }
-
-    // Check if chapter is in the range of the scroll
-    if (chapter < 0 || chapter > maxChap) {
-        return false;
-    }
-
-    return true;
-}

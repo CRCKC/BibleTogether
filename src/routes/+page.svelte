@@ -10,8 +10,9 @@
 <button on:click={() => goto('/app/home')} class="bg-gray-800"> Go to home </button>
 
 <style lang="postcss">
-	/* :global(html) {
-		background-color: theme(colors.black);
-		color: theme(colors.white);
-	} */
+	:global(html) {
+		/* background-color: theme(colors.black);
+		color: theme(colors.white); */
+		zoom: 150%;
+	}
 </style>

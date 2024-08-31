@@ -6,4 +6,4 @@
 	import '../app.css';
 </script>
 
-<slot />
+<slot class="overflow-hidden" />
