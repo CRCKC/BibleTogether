@@ -1,12 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { bibleList, getBibleUrl, setBible } from '$lib/bible';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
 
 	// define a variable that stores a void function
 	export let onClose: () => void;
 
 	let expandedScroll: string | undefined = undefined;
 	$: expandedScroll;
+
+	const bible = getContext('bible') as Writable<{ scroll: string; chapter: number }>;
 
 	// Create a $ variable that stores the type of "string | undefined"
 </script>
@@ -40,7 +44,7 @@
 							class="bg-gray-800 size-12 rounded-lg flex items-center justify-center"
 							on:click={() => {
 								console.log(`Scroll: ${key}, Chapter: ${i}`);
-								setBible({ scroll: key, chapter: i });
+								bible.set({ scroll: key, chapter: i });
 								goto(getBibleUrl({ scroll: key, chapter: i }));
 								onClose();
 							}}

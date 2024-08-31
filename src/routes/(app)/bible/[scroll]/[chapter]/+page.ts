@@ -1,7 +1,7 @@
 import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { isChapterValid, getBibleUrl } from '$lib/bible';
-import { loadChapter } from '$lib/server';
+import { loadChapter } from '$lib/backend';
 
 export const load = (async ({ params, url }) => {
     // Fromat the parameters
