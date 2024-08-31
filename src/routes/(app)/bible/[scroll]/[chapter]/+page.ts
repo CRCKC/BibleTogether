@@ -1,7 +1,8 @@
-import type { PageServerLoad } from './$types';
+import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { isChapterValid, getBibleUrl } from '$lib/bible';
 import { loadChapter } from '$lib/server';
+
 export const load = (async ({ params, url }) => {
     // Fromat the parameters
     const chapter = Number.parseInt(params.chapter)
@@ -18,7 +19,8 @@ export const load = (async ({ params, url }) => {
         bibleContent,
         bible: { scroll, chapter }
     };
-}) satisfies PageServerLoad;
+
+}) satisfies PageLoad;
 
 
 
