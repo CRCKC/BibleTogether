@@ -8,4 +8,9 @@
 	goto(`${base}/bible/${$bibleStore.scroll}/${$bibleStore.chapter}`);
 </script>
 
-<h1>This is the bible page</h1>
+<!--  Loading indicator -->
+<div
+	class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center"
+>
+	<div class="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+</div>
