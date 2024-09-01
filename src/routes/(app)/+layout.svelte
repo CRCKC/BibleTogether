@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { LayoutData } from './$types';
+	// import type { LayoutData } from './$types';
 	import { base } from '$app/paths';
 	import Item from './navbarItem.svelte';
 	import BibleNavBar from './bible/navbarBible.svelte';

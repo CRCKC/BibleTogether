@@ -14,7 +14,13 @@
 <!-- A full screen div that covers all other elements -->
 <div class="fixed inset-0 bg-black z-50 w-dvw">
 	<div class="flex justify-end p-4">
-		<button on:click={onClose}>
+		<!-- Search bar -->
+		<div class="w-full mr-4 bg-gray-800 text-white p-2 rounded-lg flex-row">
+			<span class="material-symbols-outlined flex">search</span>
+			<input class="w-full bg-gray-800" type="text" placeholder="Search" />
+		</div>
+
+		<button class="mr-4" on:click={onClose}>
 			<span class="material-symbols-outlined">close</span>
 		</button>
 	</div>
