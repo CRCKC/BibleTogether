@@ -5,7 +5,7 @@
 </script>
 
 <!-- Login Screen UI -->
-<div class="flex flex-col items-center justify-center h-screen">
+<div class="flex flex-col items-center justify-center h-dvh">
 	<div class="flex flex-col items-center justify-center">
 		<h1 class="text-4xl font-bold">Login</h1>
 		<p class="text-gray-400">Welcome back! Please login to your account.</p>

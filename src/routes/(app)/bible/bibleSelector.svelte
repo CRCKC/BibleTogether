@@ -16,14 +16,14 @@
 </script>
 
 <!-- A full screen div that covers all other elements -->
-<div class="fixed inset-0 bg-black z-50 w-screen">
+<div class="fixed inset-0 bg-black z-50 w-dvw">
 	<div class="flex justify-end p-4">
 		<button on:click={onClose}>
 			<span class="material-symbols-outlined">close</span>
 		</button>
 	</div>
 	<!-- A div that contains the modal -->
-	<div class="p-4 grid grid-cols-1 gap-2 h-screen overflow-y-scroll">
+	<div class="p-4 grid grid-cols-1 gap-2 h-dvh overflow-y-scroll">
 		<!-- A div that contains the close button -->
 		<!-- For each key in bibleList create a rectangle with the name of it -->
 		{#each Object.keys(bibleList) as key}

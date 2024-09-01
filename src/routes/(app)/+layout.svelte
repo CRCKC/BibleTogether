@@ -12,7 +12,11 @@
 
 <slot />
 
-<div class={classNames('fixed bottom-0 w-full border-t-2 border-gray-600 bg-black transition-all')}>
+<div
+	class={classNames(
+		'z-40 fixed bottom-0 w-full border-t-2 border-gray-600 bg-black transition-all'
+	)}
+>
 	<!-- Bible nav bar -->
 	<div
 		class={classNames({
