@@ -10,24 +10,28 @@
 	$: isBible = $page.url.pathname.startsWith(`${base}/bible`);
 </script>
 
-<slot />
-
-<div
-	class={classNames(
-		'z-40 fixed bottom-0 w-full border-t-2 border-gray-600 bg-black transition-all'
-	)}
->
-	<!-- Bible nav bar -->
-	<div
-		class={classNames({
-			hidden: !isBible
-		})}
-	>
-		<BibleNavBar />
+<div class="flex flex-col">
+	<div class="h-full">
+		<slot />
 	</div>
 
-	<nav class="grid grid-flow-col">
-		<Item title="Home" path="home" icon="home" />
-		<Item title="Bible" path="bible" icon="book_2" />
-	</nav>
+	<div
+		class={classNames(
+			'z-40 fixed bottom-0 w-full border-t-2 border-gray-600 bg-black transition-all'
+		)}
+	>
+		<!-- Bible nav bar -->
+		<div
+			class={classNames({
+				hidden: !isBible
+			})}
+		>
+			<BibleNavBar />
+		</div>
+
+		<nav class="grid grid-flow-col">
+			<Item title="Home" path="home" icon="home" />
+			<Item title="Bible" path="bible" icon="book_2" />
+		</nav>
+	</div>
 </div>

@@ -12,11 +12,11 @@
 </script>
 
 <!-- A full screen div that covers all other elements -->
-<div class="fixed inset-0 bg-black z-50 w-dvw">
+<div class="fixed inset-0 z-50 flex flex-col bg-black w-dvw h-dvh">
 	<div class="flex justify-end p-4">
 		<!-- Search bar -->
-		<div class="w-full mr-4 bg-gray-800 text-white p-2 rounded-lg flex-row">
-			<span class="material-symbols-outlined flex">search</span>
+		<div class="flex flex-row w-full p-2 mr-4 text-white bg-gray-800 rounded-lg">
+			<span class="mr-2 material-symbols-outlined">search</span>
 			<input class="w-full bg-gray-800" type="text" placeholder="Search" />
 		</div>
 
@@ -25,7 +25,7 @@
 		</button>
 	</div>
 	<!-- A div that contains the modal -->
-	<div class="p-4 grid grid-cols-1 gap-2 h-dvh overflow-y-scroll">
+	<div class="grid h-full grid-cols-1 gap-2 p-4 overflow-y-scroll">
 		<!-- A div that contains the close button -->
 		<!-- For each key in bibleList create a rectangle with the name of it -->
 		{#each Object.keys(bibleList) as key}
@@ -33,7 +33,7 @@
 				class="w-full"
 				on:click={() => (expandedScroll = expandedScroll == key ? undefined : key)}
 			>
-				<div class="bg-gray-900 h-12 rounded-full flex items-center justify-center">
+				<div class="flex items-center justify-center h-12 bg-gray-900 rounded-full">
 					{key}
 				</div>
 			</button>
@@ -43,7 +43,7 @@
 					<!-- For each key create bibleList[key] amount of boxes -->
 					{#each Array.from({ length: bibleList[key] + 1 }) as _, i}
 						<button
-							class="bg-gray-800 size-12 rounded-lg flex items-center justify-center"
+							class="flex items-center justify-center bg-gray-800 rounded-lg size-12"
 							on:click={() => {
 								console.log(`Scroll: ${key}, Chapter: ${i}`);
 								setBible({ scroll: key, chapter: i });
