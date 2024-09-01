@@ -13,6 +13,5 @@
 	:global(html) {
 		/* background-color: theme(colors.black);
 		color: theme(colors.white); */
-		zoom: 150%;
 	}
 </style>

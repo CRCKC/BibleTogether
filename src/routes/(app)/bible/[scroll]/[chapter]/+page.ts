@@ -5,14 +5,16 @@ import { loadChapter } from '$lib/backend';
 
 export const load = (async ({ params, url }) => {
     // Fromat the parameters
-    const chapter = Number.parseInt(params.chapter)
+    const chapter = Number.parseInt(params.chapter);
     const scroll = params.scroll.toUpperCase();
+
+    if (!isChapterValid({ scroll, chapter })) throw new Error("Invalid chapter");
 
     // Redirect to pretty path if the path is not pretty
     const prettyPath = getBibleUrl({ scroll, chapter });
     if (!url.pathname.endsWith(prettyPath)) redirect(308, prettyPath);
     // Check if the chapter is valid
-    if (!isChapterValid({ scroll, chapter })) return {};
+    // Return an error page
 
     const bibleContent = await loadChapter(scroll, chapter);
     return {

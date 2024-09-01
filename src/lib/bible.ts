@@ -28,6 +28,8 @@ export function setBible(bible: Bible) {
 }
 
 export function isChapterValid(bible: Bible): boolean {
+    if (isNaN(bible.chapter)) return false;
+
     // Check if scroll is a key in the bibleList
     const maxChap: number | undefined = bibleList[bible.scroll];
 

@@ -4,11 +4,9 @@
 	export let data: PageData;
 
 	if (data.bible) {
-		console.log(`Set data to ${data.bible.scroll} and ${data.bible.chapter}`);
+		// console.log(`Set data to ${data.bible.scroll} and ${data.bible.chapter}`);
 		setBible(data.bible);
 	}
-
-	$: console.log($bibleStore);
 
 	$: bibleContent = data.bibleContent;
 </script>
