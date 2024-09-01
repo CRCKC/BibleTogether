@@ -11,7 +11,7 @@
 </script>
 
 <div class="flex flex-col h-dvh w-dvw">
-	<div class="h-full overflow-y-scroll">
+	<div class="h-full">
 		<slot />
 	</div>
 

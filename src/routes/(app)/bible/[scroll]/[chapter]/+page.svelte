@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { bibleStore, setBible } from '$lib/bible';
-	import { navigating } from '$app/stores';
 	export let data: PageData;
 
 	if (data.bible) {
@@ -14,14 +13,7 @@
 	$: bibleContent = data.bibleContent;
 </script>
 
-<div class="bible mx-4">
-	{#if $navigating}
-		<div
-			class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center z-10"
-		>
-			<div class="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
-		</div>
-	{/if}
+<div class="mx-4 bible">
 	{@html bibleContent}
 </div>
 
