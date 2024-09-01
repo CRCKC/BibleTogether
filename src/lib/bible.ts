@@ -1,10 +1,8 @@
-import { writable, type Writable } from "svelte/store";
+import { persisted } from 'svelte-persisted-store'
 import bibleJson from '$lib/bibleList.json';
 import { base } from '$app/paths';
-// import { browser } from "$app/environment"
-import { getContext } from "svelte";
-// Convert bibleList to a dictionary
 
+// Convert bibleList to a dictionary
 export const bibleList = bibleJson as { [scroll: string]: number; }
 
 interface Bible {
@@ -12,36 +10,21 @@ interface Bible {
     chapter: number
 }
 
-
-
-// export const userId = writable(browser && localStorage.getItem("userId") || "webjeda")
-
-export const bibleStore = writable<Bible>({
+export const bibleStore = persisted<Bible>('bible', {
     scroll: "GEN",
     chapter: 1,
-});
-// export const bibleStore = writable<Bible>(browser && JSON.parse(localStorage.bible) as Bible
-//     || {
-//     scroll: "GEN",
-//     chapter: 1,
-// });
-
-// bibleStore.subscribe((val) => {
-//     if (browser) return (localStorage.bible = JSON.stringify(val))
-// })
-
-
-
-// bibleStore.subscribe((value) => { if (browser) return (localStorage.bible = JSON.stringify(value)) });
-
+},
+    {
+        syncTabs: false,
+    }
+);
 
 export function getBibleUrl(bible: Bible) {
     return `${base}/bible/${bible.scroll.toLowerCase()}/${bible.chapter}`;
 }
 
 export function setBible(bible: Bible) {
-    const b = getContext('bible') as Writable<Bible>
-    b.set(bible);
+    bibleStore.set(bible);
 }
 
 export function isChapterValid(bible: Bible): boolean {

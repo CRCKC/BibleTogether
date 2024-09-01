@@ -1,10 +1,8 @@
 <script>
-	import { getContext } from 'svelte';
 	import BibleSelector from './bibleSelector.svelte';
-
+	import { bibleStore } from '$lib/bible';
 	// import { page } from '$app/stores';
 	// import { bible } from '$lib/bible';
-	const bible = getContext('bible');
 	$: isSelecting = false;
 </script>
 
@@ -17,8 +15,8 @@
 		class="bg-gray-600 max-w-80 w-full h-10 m-2 rounded-full flex items-center justify-center"
 		on:click={() => (isSelecting = true)}
 	>
-		{$bible.scroll}
-		{$bible.chapter}
+		{$bibleStore.scroll}
+		{$bibleStore.chapter}
 	</button>
 	<div class="bg-gray-600 size-10 min-w-10 rounded-full flex items-center justify-center">
 		<span class="material-symbols-outlined text-3xl"> play_arrow </span>
