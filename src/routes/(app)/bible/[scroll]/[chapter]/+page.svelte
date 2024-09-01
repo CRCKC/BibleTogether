@@ -40,14 +40,9 @@
 	:global(b) {
 		font-weight: bold;
 	}
-	.bible :global(b) {
-	}
-	.bible :global(b) {
-	}
-	.bible :global(b) {
-	}
-	.bible :global(b) {
-	}
+
+	/* .bible :global(b) {
+	} */
 	.bible :global(sup) {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
@@ -80,6 +75,31 @@
 		cursor: default;
 		font-size: 85%;
 		vertical-align: text-top;
+	}
+
+	.bible :global(h1) {
+		@apply fixed hidden;
+
+		font-size: 100%;
+		color: #aaa;
+		font-weight: normal;
+		margin: 0 0 0.8em 0;
+		border-bottom: 1px solid #eee;
+		text-align: center;
+		padding-bottom: 5px;
+	}
+
+	.bible :global(h2) {
+		font-size: 123.1%;
+		display: block;
+		margin: 1em 0;
+		font-size: 1.5em;
+		margin-block-start: 0.83em;
+		margin-block-end: 0.83em;
+		margin-inline-start: 0px;
+		margin-inline-end: 0px;
+		font-weight: bold;
+		unicode-bidi: isolate;
 	}
 	.bible :global(h3) {
 		display: block;
