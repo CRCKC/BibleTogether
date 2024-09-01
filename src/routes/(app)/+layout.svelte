@@ -10,16 +10,12 @@
 	$: isBible = $page.url.pathname.startsWith(`${base}/bible`);
 </script>
 
-<div class="flex flex-col">
-	<div class="h-full">
+<div class="flex flex-col h-dvh w-dvw">
+	<div class="h-full overflow-y-scroll">
 		<slot />
 	</div>
 
-	<div
-		class={classNames(
-			'z-40 fixed bottom-0 w-full border-t-2 border-gray-600 bg-black transition-all'
-		)}
-	>
+	<div class={classNames('z-40 w-full border-t-2 border-gray-600 bg-black transition-all')}>
 		<!-- Bible nav bar -->
 		<div
 			class={classNames({
