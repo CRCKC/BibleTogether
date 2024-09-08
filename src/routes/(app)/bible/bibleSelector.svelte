@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { bibleList, getBibleUrl, bibleStore, setBible } from '$lib/bible';
+	import { bibleList, getBibleUrl, setBible, bibleChinese } from '$lib/bible';
 	import classNames from 'classnames';
 
 	// define a variable that stores a void function
@@ -48,7 +48,7 @@
 						on:click={() => (expandedScroll = expandedScroll == key ? undefined : key)}
 					>
 						<div class="flex items-center justify-center h-12 bg-gray-900 rounded-full">
-							{key}
+							{bibleChinese[key] || key}
 						</div>
 					</button>
 					{#if expandedScroll === key}

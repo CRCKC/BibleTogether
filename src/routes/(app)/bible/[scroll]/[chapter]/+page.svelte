@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { bibleStore, setBible } from '$lib/bible';
+	import { bibleStore, setBible, bibleChinese } from '$lib/bible';
 	export let data: PageData;
 
 	if (data.bible) {
@@ -8,12 +8,20 @@
 		setBible(data.bible);
 	}
 
-	$: bibleContent = data.bibleContent;
+	// $: bibleContent = data.bibleContent;
 </script>
 
-<div class="mx-4 bible">
-	{@html bibleContent}
-</div>
+{#await data.bibleContent}
+	<p>Loading...</p>
+{:then bibleContent}
+	<div class="mx-4 bible">
+		<div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
+			{bibleChinese[$bibleStore.scroll]}
+		</div>
+		<div class="inline-block w-full mt-2 text-5xl text-center">{$bibleStore.chapter}</div>
+		{@html bibleContent}
+	</div>
+{/await}
 
 <style lang="postcss">
 	.bible {
@@ -90,8 +98,9 @@
 	}
 
 	.bible :global(h2) {
+		@apply fixed hidden;
+
 		font-size: 123.1%;
-		display: block;
 		margin: 1em 0;
 		font-size: 1.5em;
 		margin-block-start: 0.83em;
@@ -101,6 +110,7 @@
 		font-weight: bold;
 		unicode-bidi: isolate;
 	}
+
 	.bible :global(h3) {
 		display: block;
 		margin-block-start: 1em;
@@ -112,6 +122,7 @@
 		font-size: 100%;
 		color: rgb(0, 179, 255);
 	}
+
 	.bible :global(h6) {
 		display: block;
 		font-size: 0.67em;

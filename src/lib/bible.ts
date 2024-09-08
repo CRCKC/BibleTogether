@@ -1,9 +1,11 @@
 import { persisted } from 'svelte-persisted-store'
 import bibleJson from '$lib/bibleList.json';
+import bibleChineseJson from '$lib/bibleChinese.json';
 import { base } from '$app/paths';
 
 // Convert bibleList to a dictionary
 export const bibleList = bibleJson as { [scroll: string]: number; }
+export const bibleChinese = bibleChineseJson as { [scroll: string]: string };
 
 interface Bible {
     scroll: string
@@ -26,6 +28,7 @@ export function getBibleUrl(bible: Bible) {
 export function setBible(bible: Bible) {
     bibleStore.set(bible);
 }
+
 
 export function isChapterValid(bible: Bible): boolean {
     if (isNaN(bible.chapter)) return false;

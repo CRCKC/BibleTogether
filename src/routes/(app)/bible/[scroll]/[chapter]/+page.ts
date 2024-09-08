@@ -16,7 +16,7 @@ export const load = (async ({ params, url }) => {
     // Check if the chapter is valid
     // Return an error page
 
-    const bibleContent = await loadChapter(scroll, chapter);
+    const bibleContent = loadChapter(scroll, chapter);
     return {
         bibleContent,
         bible: { scroll, chapter }
