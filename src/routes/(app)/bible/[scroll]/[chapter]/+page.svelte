@@ -11,14 +11,19 @@
 	// $: bibleContent = data.bibleContent;
 </script>
 
+<!-- Title Widget -->
+<div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
+	{bibleChinese[$bibleStore.scroll]}
+</div>
+<div class="inline-block w-full mt-2 mb-5 text-5xl text-center">{$bibleStore.chapter}</div>
+
+<!-- Await for bibleContent -->
 {#await data.bibleContent}
+	<!-- Loading Placeholder -->
 	<p>Loading...</p>
 {:then bibleContent}
+	<!-- Actual Content -->
 	<div class="mx-4 bible">
-		<div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
-			{bibleChinese[$bibleStore.scroll]}
-		</div>
-		<div class="inline-block w-full mt-2 text-5xl text-center">{$bibleStore.chapter}</div>
 		{@html bibleContent}
 	</div>
 {/await}
