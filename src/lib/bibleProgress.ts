@@ -26,7 +26,7 @@ export const bibleProgressStore = persisted<BibleProgress>(
 );
 
 export function updateProgress(bible: BibleChapter, isComplete: boolean = true) {
-    console.log('updateProgress', bible, isComplete);
+    // console.log('updateProgress', bible, isComplete);
 
     bibleProgressStore.update((progress) => {
         progress[bible.scroll][bible.chapter] = isComplete;

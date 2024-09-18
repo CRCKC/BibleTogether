@@ -1,7 +1,15 @@
 <script lang="ts">
 	import BibleSelector from './bibleSelector.svelte';
-	import { currentChapterStore, bibleChinese } from '$lib/bible';
+	import { currentChapterStore, bibleChinese, nextChapter, prevChapter } from '$lib/bible';
 	$: isSelecting = false;
+
+	function gotoNextChapter() {
+		nextChapter($currentChapterStore);
+	}
+
+	function gotoPrevChapter() {
+		prevChapter($currentChapterStore);
+	}
 </script>
 
 {#if isSelecting}
@@ -9,13 +17,18 @@
 {/if}
 
 <div class="flex items-center justify-center w-full">
-	<button
-		class="flex items-center justify-center w-full h-10 m-2 bg-gray-600 rounded-full max-w-80"
-		on:click={() => (isSelecting = true)}
-	>
-		{bibleChinese[$currentChapterStore.scroll]}
-		{$currentChapterStore.chapter}
-	</button>
+	<div class="flex flex-row items-center w-full h-10 m-2 bg-gray-600 rounded-full max-w-80">
+		<button class="flex items-center h-10" on:click={gotoPrevChapter}
+			><div class="ml-2 material-symbols-outlined">chevron_left</div>
+		</button>
+		<button class="w-full h-10" on:click={() => (isSelecting = true)}>
+			{bibleChinese[$currentChapterStore.scroll]}
+			{$currentChapterStore.chapter}
+		</button>
+		<button class="flex items-center h-10" on:click={gotoNextChapter}
+			><div class="mr-2 material-symbols-outlined">chevron_right</div>
+		</button>
+	</div>
 	<div class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10">
 		<span class="text-3xl material-symbols-outlined"> play_arrow </span>
 	</div>
