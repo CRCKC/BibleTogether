@@ -12,3 +12,35 @@ export async function loadChapter(scroll: string, chapter: number) {
     }
     return bibleContent;
 }
+
+export async function login(username: string, password: string) {
+    // let loginStatus = '';
+
+    // try {
+    //     const response = await fetch(`${BASEPATH}?action=login&username=${username}&password=${password}`);
+    //     const content = await response.text();
+    //     loginStatus = content;
+    // } catch (error) {
+    //     console.error('Error reading file:', error);
+    // }
+    // return loginStatus;
+}
+
+export async function register(username: string, password: string) {
+    // let registerStatus = '';
+
+    // try {
+    //     const response = await fetch(`${BASEPATH}?action=register&username=${username}&password=${password}`);
+    //     const content = await response.text();
+    //     registerStatus = content;
+    // } catch (error) {
+    //     console.error('Error reading file:', error);
+    // }
+    // return registerStatus;
+}
+
+export async function syncChapterProgress(params: type) {
+
+}
+
+

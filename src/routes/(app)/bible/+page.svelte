@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { bibleStore } from '$lib/bible';
+	import { currentChapterStore } from '$lib/bible';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	export let data: PageData;
 
 	onMount(() => {
-		goto(`bible/${$bibleStore.scroll}/${$bibleStore.chapter}`);
+		goto(`bible/${$currentChapterStore.scroll}/${$currentChapterStore.chapter}`);
 	});
 </script>

@@ -1,31 +1,79 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { bibleStore, setBible, bibleChinese } from '$lib/bible';
+	import { currentChapterStore, setCurrentChapter, bibleChinese } from '$lib/bible';
+	import viewport from '$lib/viewportAction';
+	import { bibleProgressStore, updateProgress } from '$lib/bibleProgress';
+
 	export let data: PageData;
 
-	if (data.bible) {
-		// console.log(`Set data to ${data.bible.scroll} and ${data.bible.chapter}`);
-		setBible(data.bible);
+	// $: bibleContent = data.bibleContent;
+	let chapterCompleted = false;
+	let firstTimeScrolledToBottom = true;
+
+	$: {
+		data.bible;
+		onLoadChapter();
 	}
 
-	// $: bibleContent = data.bibleContent;
+	function onLoadChapter() {
+		firstTimeScrolledToBottom = true;
+		chapterCompleted = $bibleProgressStore[data.bible.scroll][data.bible.chapter];
+	}
+
+	if (data.bible) {
+		setCurrentChapter(data.bible);
+	}
+
+	function checkChapter() {
+		chapterCompleted = true;
+		updateProgress(data.bible);
+	}
+
+	function unCheckChapter() {
+		chapterCompleted = false;
+		updateProgress(data.bible, false);
+	}
+
+	function handleScrollFinish() {
+		if (firstTimeScrolledToBottom) {
+			firstTimeScrolledToBottom = false;
+			// Run finishChapter after 0.5 second
+			setTimeout(() => checkChapter(), 500);
+		}
+	}
 </script>
 
 <!-- Title Widget -->
 <div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
-	{bibleChinese[$bibleStore.scroll]}
+	{bibleChinese[$currentChapterStore.scroll]}
 </div>
-<div class="inline-block w-full mt-2 mb-5 text-5xl text-center">{$bibleStore.chapter}</div>
+<div class="inline-block w-full mt-2 mb-5 text-5xl text-center">{$currentChapterStore.chapter}</div>
 
 <!-- Await for bibleContent -->
 {#await data.bibleContent}
 	<!-- Loading Placeholder -->
-	<p>Loading...</p>
+	<div class="flex items-center justify-center w-full">Loading...</div>
 {:then bibleContent}
 	<!-- Actual Content -->
 	<div class="mx-4 bible">
 		{@html bibleContent}
 	</div>
+	<!-- Bottom Div -->
+	<div class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400">
+		Mark chapter as completed
+		<input
+			type="checkbox"
+			class="w-6 h-6 mt-1 ml-4 transition-all bg-white border-2"
+			bind:checked={chapterCompleted}
+			on:change={chapterCompleted ? checkChapter : unCheckChapter}
+		/>
+	</div>
+	<div
+		class="h-4"
+		use:viewport={{
+			onEnter: handleScrollFinish
+		}}
+	></div>
 {/await}
 
 <style lang="postcss">

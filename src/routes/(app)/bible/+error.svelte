@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { getBibleUrl, bibleStore } from '$lib/bible';
+	import { getBibleUrl, currentChapterStore } from '$lib/bible';
 
-	const url = getBibleUrl($bibleStore);
+	const url = getBibleUrl($currentChapterStore);
 </script>
 
 <!-- <h1>{$page.status}: {$page.error?.message}</h1> -->

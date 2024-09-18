@@ -15,23 +15,23 @@
 			<input
 				type="text"
 				placeholder="Username"
-				class="w-80 h-12 border-2 border-gray-200 rounded-md p-2"
+				class="h-12 p-2 border-2 border-gray-200 rounded-md w-80"
 			/>
 			<input
 				type="password"
 				placeholder="Password"
-				class="w-80 h-12 border-2 border-gray-200 rounded-md p-2 mt-4"
+				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
 			/>
 			<input
 				type="password"
 				placeholder="Confirm Password"
-				class="w-80 h-12 border-2 border-gray-200 rounded-md p-2 mt-4"
+				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
 			/>
-			<button type="submit" class="w-80 h-12 bg-blue-500 text-white rounded-md mt-4">
+			<button type="submit" class="h-12 mt-4 text-white bg-blue-500 rounded-md w-80">
 				Sign Up
 			</button>
 		</form>
-		<a href="/user/login" class="text-blue-500 mt-4">Already have an account? Login</a>
+		<a href="login" class="mt-4 text-blue-500">Already have an account? Login</a>
 	</div>
 </div>
 

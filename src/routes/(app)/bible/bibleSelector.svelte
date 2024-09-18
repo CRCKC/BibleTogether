@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { bibleList, getBibleUrl, setBible, bibleChinese } from '$lib/bible';
+	import {
+		bibleList,
+		getBibleUrl,
+		setCurrentChapter,
+		bibleChinese,
+		currentChapterStore
+	} from '$lib/bible';
+	import { bibleProgressStore } from '$lib/bibleProgress';
 	import classNames from 'classnames';
 
 	// define a variable that stores a void function
@@ -11,11 +18,13 @@
 
 	function isSearch(key: string, q: string): boolean {
 		const query = q.trim().toLowerCase();
-		console.log(`Query: ${query}`);
+		// console.log(`Query: ${query}`);
 		if (query.length === 0) return true;
 		const isEqualKey = key.toLowerCase().startsWith(q);
 		if (isEqualKey) return true;
 		// Check if equal chinese
+		const chinese = bibleChinese[key];
+		if (chinese && chinese.toLowerCase().includes(q)) return true;
 
 		return false;
 	}
@@ -37,7 +46,7 @@
 		</button>
 	</div>
 	<!-- A div that contains the modal -->
-	<div class="grid h-full grid-cols-2 gap-2 p-4 overflow-y-scroll">
+	<div class="grid grid-cols-2 gap-2 p-4 overflow-y-scroll align-top">
 		<!-- A div that contains the close button -->
 		<!-- For each key in bibleList create a rectangle with the name of it -->
 		{#each Object.keys(bibleList) as key}
@@ -47,7 +56,10 @@
 						class="w-full"
 						on:click={() => (expandedScroll = expandedScroll == key ? undefined : key)}
 					>
-						<div class="flex items-center justify-center h-12 bg-gray-900 rounded-full">
+						<div
+							class="flex items-center justify-center h-12 bg-gray-900 rounded-full
+							{$currentChapterStore.scroll === key ? 'outline' : ''}"
+						>
 							{bibleChinese[key] || key}
 						</div>
 					</button>
@@ -57,10 +69,13 @@
 							<!-- For each key create bibleList[key] amount of boxes -->
 							{#each Array.from({ length: bibleList[key] + 1 }) as _, i}
 								<button
-									class="flex items-center justify-center bg-gray-800 rounded-lg size-12"
+									class="flex items-center justify-center rounded-lg bg-gray-800 size-12
+									{$bibleProgressStore[key][i] ? 'bg-green-600' : ''}
+									{$currentChapterStore.scroll === key && $currentChapterStore.chapter === i ? 'outline' : ''}
+									"
 									on:click={() => {
 										console.log(`Scroll: ${key}, Chapter: ${i}`);
-										setBible({ scroll: key, chapter: i });
+										setCurrentChapter({ scroll: key, chapter: i });
 										goto(getBibleUrl({ scroll: key, chapter: i }));
 										onClose();
 									}}

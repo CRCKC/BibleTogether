@@ -1,6 +1,6 @@
 <script lang="ts">
 	import BibleSelector from './bibleSelector.svelte';
-	import { bibleStore, bibleChinese } from '$lib/bible';
+	import { currentChapterStore, bibleChinese } from '$lib/bible';
 	$: isSelecting = false;
 </script>
 
@@ -13,8 +13,8 @@
 		class="flex items-center justify-center w-full h-10 m-2 bg-gray-600 rounded-full max-w-80"
 		on:click={() => (isSelecting = true)}
 	>
-		{bibleChinese[$bibleStore.scroll]}
-		{$bibleStore.chapter}
+		{bibleChinese[$currentChapterStore.scroll]}
+		{$currentChapterStore.chapter}
 	</button>
 	<div class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10">
 		<span class="text-3xl material-symbols-outlined"> play_arrow </span>

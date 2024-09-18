@@ -7,12 +7,12 @@ import { base } from '$app/paths';
 export const bibleList = bibleJson as { [scroll: string]: number; }
 export const bibleChinese = bibleChineseJson as { [scroll: string]: string };
 
-interface Bible {
+export interface BibleChapter {
     scroll: string
     chapter: number
 }
 
-export const bibleStore = persisted<Bible>('bible', {
+export const currentChapterStore = persisted<BibleChapter>('currentChapter', {
     scroll: "GEN",
     chapter: 1,
 },
@@ -21,16 +21,16 @@ export const bibleStore = persisted<Bible>('bible', {
     }
 );
 
-export function getBibleUrl(bible: Bible) {
+export function getBibleUrl(bible: BibleChapter) {
     return `${base}/bible/${bible.scroll.toLowerCase()}/${bible.chapter}`;
 }
 
-export function setBible(bible: Bible) {
-    bibleStore.set(bible);
+export function setCurrentChapter(bible: BibleChapter) {
+    currentChapterStore.set(bible);
 }
 
 
-export function isChapterValid(bible: Bible): boolean {
+export function isChapterValid(bible: BibleChapter): boolean {
     if (isNaN(bible.chapter)) return false;
 
     // Check if scroll is a key in the bibleList
@@ -47,3 +47,4 @@ export function isChapterValid(bible: Bible): boolean {
 
     return true;
 }
+
