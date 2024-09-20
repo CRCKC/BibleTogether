@@ -19,14 +19,14 @@
 <div class="flex items-center justify-center w-full">
 	<div class="flex flex-row items-center w-full h-10 m-2 bg-gray-600 rounded-full max-w-80">
 		<button class="flex items-center h-10" on:click={gotoPrevChapter}
-			><div class="ml-2 material-symbols-outlined">chevron_left</div>
+			><div class="ml-2 mr-1 material-symbols-outlined">chevron_left</div>
 		</button>
 		<button class="w-full h-10" on:click={() => (isSelecting = true)}>
 			{bibleChinese[$currentChapterStore.scroll]}
 			{$currentChapterStore.chapter}
 		</button>
 		<button class="flex items-center h-10" on:click={gotoNextChapter}
-			><div class="mr-2 material-symbols-outlined">chevron_right</div>
+			><div class="ml-1 mr-2 material-symbols-outlined">chevron_right</div>
 		</button>
 	</div>
 	<div class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10">
