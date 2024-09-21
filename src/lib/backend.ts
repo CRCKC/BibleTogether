@@ -1,4 +1,4 @@
-const BASEPATH = "https://script.google.com/macros/s/AKfycby2mo2a4fS_l_OGtg7_8zzsjmTYPzzu8fOr6IgsWIqqHArG155lvk7dEOxL5f-eN4QL/exec";
+const BASEPATH = "https://script.google.com/macros/s/AKfycbygTngNfc5fjdmbuGJ9l5wsBTDAR3oA6s1HSJ9ikRpr7aZj9d_N2OSXSCHCs1Nt7YHJ/exec";
 
 export async function loadChapter(scroll: string, chapter: number) {
     let bibleContent = '';
@@ -14,29 +14,41 @@ export async function loadChapter(scroll: string, chapter: number) {
 }
 
 export async function login(username: string, password: string) {
-    // let loginStatus = '';
 
-    // try {
-    //     const response = await fetch(`${BASEPATH}?action=login&username=${username}&password=${password}`);
-    //     const content = await response.text();
-    //     loginStatus = content;
-    // } catch (error) {
-    //     console.error('Error reading file:', error);
-    // }
-    // return loginStatus;
+    try {
+        const response = await fetch(`${BASEPATH}?action=login`, {
+            method: 'POST',
+            body: JSON.stringify({ username, password }),
+            redirect: 'follow',
+            // mode: 'no-cors',
+        });
+
+        const content = await response.json();
+        console.log(content.token);
+        // loginStatus = content;
+    } catch (error) {
+        console.error('Error reading file:', error);
+        return false;
+    }
+    return true;
 }
 
-export async function register(username: string, password: string) {
-    // let registerStatus = '';
+export async function signup(username: string, password: string) {
+    try {
+        const response = await fetch(`${BASEPATH}?action=signup`, {
+            method: 'POST',
+            body: JSON.stringify({ username, password }),
+            redirect: 'follow',
+            // mode: 'no-cors',
+        });
 
-    // try {
-    //     const response = await fetch(`${BASEPATH}?action=register&username=${username}&password=${password}`);
-    //     const content = await response.text();
-    //     registerStatus = content;
-    // } catch (error) {
-    //     console.error('Error reading file:', error);
-    // }
-    // return registerStatus;
+        const content = await response.json();
+        console.log(content.token);
+    } catch (error) {
+        console.error('Error reading file:', error);
+        return false;
+    }
+    return true;
 }
 
 export async function syncChapterProgress(params: type) {
