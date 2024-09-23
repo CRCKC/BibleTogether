@@ -24,8 +24,11 @@ export async function login(username: string, password: string) {
         });
 
         const content = await response.json();
-        console.log(content.token);
-        // loginStatus = content;
+        navigator.serviceWorker.controller?.postMessage({
+            type: 'SET_TOKEN',
+            token: content.token
+        })
+
     } catch (error) {
         console.error('Error reading file:', error);
         return false;
@@ -43,7 +46,11 @@ export async function signup(username: string, password: string) {
         });
 
         const content = await response.json();
-        console.log(content.token);
+        navigator.serviceWorker.controller?.postMessage({
+            type: 'SET_TOKEN',
+            token: content.token
+        })
+
     } catch (error) {
         console.error('Error reading file:', error);
         return false;
@@ -56,3 +63,8 @@ export async function syncChapterProgress(params: type) {
 }
 
 
+export async function logout() {
+    navigator.serviceWorker.controller?.postMessage({
+        type: 'CLEAR_TOKEN'
+    })
+}
