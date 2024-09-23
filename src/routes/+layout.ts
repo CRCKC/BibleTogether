@@ -1,6 +1,6 @@
 import type { LayoutLoad } from './$types';
 
-export const load = (async ({ route, fetch }) => {
+export const load = (async ({ route }) => {
 
     let requireLogin = false;
 
