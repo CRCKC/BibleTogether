@@ -1,4 +1,4 @@
-const BASEPATH = "https://script.google.com/macros/s/AKfycbygTngNfc5fjdmbuGJ9l5wsBTDAR3oA6s1HSJ9ikRpr7aZj9d_N2OSXSCHCs1Nt7YHJ/exec";
+const BASEPATH = "https://script.google.com/macros/s/AKfycbyHK1TAydIP8IpLlqRk5buaei-KpbUGUl_eG6FZ-7Z3uFUQ2IyvYWHzQDPIiNYYKnyl/exec";
 
 export async function loadChapter(scroll: string, chapter: number) {
     let bibleContent = '';
@@ -16,6 +16,18 @@ export async function loadChapter(scroll: string, chapter: number) {
 export async function login(username: string, password: string) {
 
     try {
+        // const rr = await fetch(`${BASEPATH}?action=echo`, {
+        //     method: 'POST',
+        //     body: JSON.stringify({ username, password }),
+        //     redirect: 'follow',
+        //     // mode: 'no-cors',
+        // });
+
+        // const c = await rr.text();
+        // console.log(c);
+        // return;
+
+
         const response = await fetch(`${BASEPATH}?action=login`, {
             method: 'POST',
             body: JSON.stringify({ username, password }),
@@ -24,6 +36,7 @@ export async function login(username: string, password: string) {
         });
 
         const content = await response.json();
+        console.log(content);
         navigator.serviceWorker.controller?.postMessage({
             type: 'SET_TOKEN',
             token: content.token
