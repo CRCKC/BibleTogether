@@ -10,15 +10,28 @@
 
 	import '../app.css';
 
+	let loading = false;
+
 	if (data.requireLogin && !$loggedIn) {
+		console.log('loading true, renewing token');
+		loading = true;
 		onMount(async () => {
 			const success = await renewToken();
 			$loggedIn = success;
-			console.log('renewToken', success);
 			if (!success) goto(`${base}/login`);
+			loading = false;
 		});
+	} else {
+		loading = false;
 	}
+
 	console.log('Reloaded Page');
 </script>
 
-<slot class="overflow-hidden" />
+{#if loading}
+	<div class="flex items-center justify-center h-dvh">
+		<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
+	</div>
+{:else}
+	<slot class="overflow-hidden" />
+{/if}

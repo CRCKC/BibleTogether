@@ -25,7 +25,6 @@ export async function login(username: string, password: string): Promise<boolean
         console.error('Error reading file:', error);
         return false;
     }
-    return true;
 }
 
 export async function signup(username: string, password: string): Promise<boolean> {
