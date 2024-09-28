@@ -19,7 +19,7 @@ export async function login(username: string, password: string): Promise<boolean
         const response = await doPost('login', { username, password });
 
         const content = await response.json();
-        updateServiceWorkerToken(content.token);
+        return updateServiceWorkerToken(content.token);
 
     } catch (error) {
         console.error('Error reading file:', error);
