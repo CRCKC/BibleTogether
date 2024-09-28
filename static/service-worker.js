@@ -1,5 +1,3 @@
-
-
 // These listeners will make the service worker immediately available for the page
 self.addEventListener('install', function (event) {
     event.waitUntil(self.skipWaiting());
@@ -30,11 +28,14 @@ let token = '';
 self.addEventListener('message', function (event) {
     if (event.data && event.data.type === 'SET_TOKEN') {
         token = event.data.token;
-        // console.log("[SW] token set! ", token);
+        console.log("[SW] token set! ", token);
     }
     if (event.data && event.data.type == 'CLEAR_TOKEN') {
         token = undefined;
-        // console.log('[SW] token cleared!');
+        console.log('[SW] token cleared!');
+    }
+    if (event.data && event.data.type == 'HAS_TOKEN') {
+        console.log('[SW] checking token state!');
     }
 })
 
@@ -42,13 +43,14 @@ self.addEventListener('message', function (event) {
 const addAuthHeader = function (event) {
     const destURL = new URL(event.request.url);
     // if (whitelistedOrigins.includes(destURL.origin) && whitelistedPathRegex.test(destURL.pathname)) {
-    if (whitelistedOrigins.includes(destURL.origin) && destURL.pathname.startsWith(whitelistedPath)) {
-
+    if (whitelistedOrigins.includes(destURL.origin) && destURL.pathname.startsWith(whitelistedPath) && event.request.method === 'POST') {
+        console.log("[SW] Intercepted request to whitelisted origin: ", destURL.url);
         event.respondWith((async () => {
             const body = await event.request.clone().json();
 
             // Check if the request body is a json object
             if (body && body.constructor === Object && token) {
+                console.log("[SW] Added token to request");
                 body.token = token;
             }
             const authReq = new Request(
@@ -57,6 +59,7 @@ const addAuthHeader = function (event) {
                     body: JSON.stringify(body),
                 }
             );
+
             return fetch(authReq);
         }
         )());

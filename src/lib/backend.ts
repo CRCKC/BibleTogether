@@ -13,34 +13,13 @@ export async function loadChapter(scroll: string, chapter: number) {
     return bibleContent;
 }
 
-export async function login(username: string, password: string) {
+export async function login(username: string, password: string): Promise<boolean> {
 
     try {
-        // const rr = await fetch(`${BASEPATH}?action=echo`, {
-        //     method: 'POST',
-        //     body: JSON.stringify({ username, password }),
-        //     redirect: 'follow',
-        //     // mode: 'no-cors',
-        // });
-
-        // const c = await rr.text();
-        // console.log(c);
-        // return;
-
-
-        const response = await fetch(`${BASEPATH}?action=login`, {
-            method: 'POST',
-            body: JSON.stringify({ username, password }),
-            redirect: 'follow',
-            // mode: 'no-cors',
-        });
+        const response = await doPost('login', { username, password });
 
         const content = await response.json();
-        console.log(content);
-        navigator.serviceWorker.controller?.postMessage({
-            type: 'SET_TOKEN',
-            token: content.token
-        })
+        updateServiceWorkerToken(content.token);
 
     } catch (error) {
         console.error('Error reading file:', error);
@@ -49,29 +28,30 @@ export async function login(username: string, password: string) {
     return true;
 }
 
-export async function signup(username: string, password: string) {
+export async function signup(username: string, password: string): Promise<boolean> {
     try {
-        const response = await fetch(`${BASEPATH}?action=signup`, {
-            method: 'POST',
-            body: JSON.stringify({ username, password }),
-            redirect: 'follow',
-            // mode: 'no-cors',
-        });
+        const response = await doPost('signup', { username, password });
 
         const content = await response.json();
-        navigator.serviceWorker.controller?.postMessage({
-            type: 'SET_TOKEN',
-            token: content.token
-        })
+        return updateServiceWorkerToken(content.token);
+
 
     } catch (error) {
         console.error('Error reading file:', error);
         return false;
     }
-    return true;
 }
 
-export async function syncChapterProgress(params: type) {
+export async function renewToken(): Promise<boolean> {
+    console.log('Renewing token');
+    const response = await doPost('renewToken', {});
+    const content = await response.json();
+    console.log(content);
+    return updateServiceWorkerToken(content.token);
+
+}
+
+export async function syncChapterProgress(params: object) {
 
 }
 
@@ -80,4 +60,25 @@ export async function logout() {
     navigator.serviceWorker.controller?.postMessage({
         type: 'CLEAR_TOKEN'
     })
+}
+
+function updateServiceWorkerToken(token: string): boolean {
+    if (token === undefined || token === '') {
+        return false;
+    }
+
+    navigator.serviceWorker.controller?.postMessage({
+        type: 'SET_TOKEN',
+        token: token
+    })
+
+    return true;
+}
+
+async function doPost(action: string, data: object) {
+    return await fetch(`${BASEPATH}?action=${action}`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        redirect: 'follow',
+    });
 }

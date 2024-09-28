@@ -1,32 +1,26 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { login } from '$lib/backend';
+	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 
 	export let data: PageData;
 
 	let username = '';
 	let password = '';
+	$: loggingIn = false;
 
-	function test() {
-		var myHeaders = new Headers();
-		myHeaders.append('Content-Type', 'application/json');
-
-		var raw = JSON.stringify({
-			username: 'Ericsson',
-			password: 'admin'
-		});
-
-		fetch(
-			'https://script.google.com/macros/s/AKfycbygTngNfc5fjdmbuGJ9l5wsBTDAR3oA6s1HSJ9ikRpr7aZj9d_N2OSXSCHCs1Nt7YHJ/exec?action=login',
-			{
-				method: 'POST',
-				body: raw,
-				redirect: 'follow'
+	function submitLogin() {
+		loggingIn = true;
+		login(username, password).then((success) => {
+			if (success) {
+				console.log('Login successful');
+				goto(`${base}/home`);
+			} else {
+				console.log('Login failed');
 			}
-		)
-			.then((response) => response.text())
-			.then((result) => console.log('The result is: ', result))
-			.catch((error) => console.log('error', error));
+			loggingIn = false;
+		});
 	}
 </script>
 
@@ -52,10 +46,14 @@
 			/>
 			<button
 				type="submit"
-				class="h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
-				on:click={() => login(username, password)}
+				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
+				on:click={submitLogin}
 			>
-				Login
+				{#if loggingIn}
+					<div class="w-8 h-8 border-b-2 border-white rounded-full animate-spin"></div>
+				{:else}
+					Login
+				{/if}
 			</button>
 		</div>
 		<a href="signup" class="mt-4 text-blue-500">Don't have an account? Sign up</a>

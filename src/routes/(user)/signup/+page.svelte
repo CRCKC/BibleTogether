@@ -1,7 +1,28 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
+	import { signup } from '$lib/backend';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	let username = '';
+	let password = '';
+	let confirmPassword = '';
+	$: signingUp = false;
+
+	function submitSignup() {
+		signingUp = true;
+		signup(username, password).then((success) => {
+			if (success) {
+				console.log('Signup successful');
+				goto(`${base}/home`);
+			} else {
+				console.log('Signup failed');
+			}
+			signingUp = false;
+		});
+	}
 </script>
 
 <!-- Signup Screen UI -->
@@ -16,19 +37,31 @@
 				type="text"
 				placeholder="Username"
 				class="h-12 p-2 border-2 border-gray-200 rounded-md w-80"
+				bind:value={username}
 			/>
 			<input
 				type="password"
 				placeholder="Password"
 				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
+				bind:value={password}
 			/>
 			<input
 				type="password"
 				placeholder="Confirm Password"
 				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
+				bind:value={confirmPassword}
 			/>
-			<button type="submit" class="h-12 mt-4 text-white bg-blue-500 rounded-md w-80">
-				Sign Up
+			<button
+				type="submit"
+				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
+				disabled={signingUp}
+				on:click={submitSignup}
+			>
+				{#if signingUp}
+					<div class="w-8 h-8 border-b-2 border-white rounded-full animate-spin"></div>
+				{:else}
+					Sign Up
+				{/if}
 			</button>
 		</form>
 		<a href="login" class="mt-4 text-blue-500">Already have an account? Login</a>
