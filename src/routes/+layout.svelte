@@ -13,7 +13,6 @@
 	let loading = false;
 
 	if (data.requireLogin && !$loggedIn) {
-		console.log('loading true, renewing token');
 		loading = true;
 		onMount(async () => {
 			const success = await renewToken();
@@ -24,8 +23,6 @@
 	} else {
 		loading = false;
 	}
-
-	console.log('Reloaded Page');
 </script>
 
 {#if loading}

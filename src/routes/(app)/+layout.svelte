@@ -28,6 +28,7 @@
 		<nav class="grid grid-flow-col">
 			<Item title="Home" path="home" icon="home" />
 			<Item title="Bible" path="bible" icon="book_2" />
+			<Item title="Settings" path="settings" icon="settings" />
 		</nav>
 	</div>
 </div>

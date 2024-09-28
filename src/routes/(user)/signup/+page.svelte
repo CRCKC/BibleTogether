@@ -9,7 +9,7 @@
 	let username = '';
 	let password = '';
 	let confirmPassword = '';
-	$: signingUp = false;
+	let signingUp = false;
 
 	function submitSignup() {
 		signingUp = true;

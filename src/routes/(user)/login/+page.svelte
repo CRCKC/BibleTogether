@@ -8,7 +8,7 @@
 
 	let username = '';
 	let password = '';
-	$: loggingIn = false;
+	let loggingIn = false;
 
 	function submitLogin() {
 		loggingIn = true;
