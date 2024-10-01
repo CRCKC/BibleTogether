@@ -1,6 +1,12 @@
 <script lang="ts">
 	import BibleSelector from './bibleSelector.svelte';
-	import { currentChapterStore, bibleChinese, nextChapter, prevChapter } from '$lib/bible';
+	import {
+		currentChapterStore,
+		bibleChinese,
+		nextChapter,
+		prevChapter,
+		playChapterAudio
+	} from '$lib/bible';
 	$: isSelecting = false;
 
 	function gotoNextChapter() {
@@ -30,7 +36,12 @@
 		</button>
 	</div>
 	<div class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10">
-		<span class="text-3xl material-symbols-outlined"> play_arrow </span>
+		<button
+			class="text-3xl material-symbols-outlined"
+			on:click={() => playChapterAudio($currentChapterStore)}
+		>
+			play_arrow
+		</button>
 	</div>
 </div>
 
