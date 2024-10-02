@@ -4,7 +4,7 @@
 	import { signup } from '$lib/backend';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	// export let data: PageData;
 
 	let username = '';
 	let password = '';
@@ -64,7 +64,7 @@
 				{/if}
 			</button>
 		</form>
-		<a href="login" class="mt-4 text-blue-500">Already have an account? Login</a>
+		<a href="{base}/login" class="mt-4 text-blue-500">Already have an account? Login</a>
 	</div>
 </div>
 

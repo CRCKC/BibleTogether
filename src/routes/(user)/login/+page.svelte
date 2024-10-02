@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 
-	export let data: PageData;
+	// export let data: PageData;
 
 	let username = '';
 	let password = '';
@@ -56,6 +56,6 @@
 				{/if}
 			</button>
 		</div>
-		<a href="signup" class="mt-4 text-blue-500">Don't have an account? Sign up</a>
+		<a href="{base}/signup" class="mt-4 text-blue-500">Don't have an account? Sign up</a>
 	</div>
 </div>
