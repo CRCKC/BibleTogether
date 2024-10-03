@@ -50,8 +50,14 @@ export async function renewToken(): Promise<boolean> {
 
 }
 
-export async function syncChapterProgress(params: object) {
+export async function syncChapterProgress() {
+    try {
+        await doPost('syncChapterProgress', {
 
+        });
+    } catch (error) {
+        console.error('Error reading file:', error);
+    }
 }
 
 
