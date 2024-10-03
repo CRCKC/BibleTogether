@@ -3,6 +3,7 @@
 	import { currentChapterStore, setCurrentChapter, bibleChinese } from '$lib/bible';
 	import viewport from '$lib/viewportAction';
 	import { bibleProgressStore, updateProgress } from '$lib/bibleProgress';
+	import { settingsStore } from '$lib/userSettings';
 
 	export let data: PageData;
 
@@ -37,8 +38,8 @@
 	function handleScrollFinish() {
 		if (firstTimeScrolledToBottom) {
 			firstTimeScrolledToBottom = false;
-			// Run finishChapter after 0.5 second
-			setTimeout(() => checkChapter(), 500);
+			// Run finishChapter after 0.5 second if autoComplete is enabled
+			if ($settingsStore.autoComplete) setTimeout(() => checkChapter(), 500);
 		}
 	}
 </script>
