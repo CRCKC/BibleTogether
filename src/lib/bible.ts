@@ -87,8 +87,8 @@ let audio: HTMLAudioElement | undefined;
 export async function playChapterAudio(bible: BibleChapter) {
     const index = bibleshort.findIndex((v) => v == bible.scroll) + 1;
 
-    const audioLink = await import(`$lib/assets/bible/audio/${index}_${bible.scroll}/${bible.scroll}_${bible.chapter}.mp3`)
-    audio = new Audio(audioLink.default);
+    const link = `https://raw.githubusercontent.com/CRCKC/solid-waddle/refs/heads/main/audio/${index}_${bible.scroll}/${bible.scroll}_${bible.chapter}.mp3`;
+    audio = new Audio(link);
     audio.play();
 }
 
