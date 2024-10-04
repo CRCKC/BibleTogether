@@ -28,7 +28,7 @@ let token = '';
 self.addEventListener('message', function (event) {
     if (event.data && event.data.type === 'SET_TOKEN') {
         token = event.data.token;
-        console.log("[SW] token set! ", token);
+        console.log("[SW] token set! ");
     }
     if (event.data && event.data.type == 'CLEAR_TOKEN') {
         token = undefined;

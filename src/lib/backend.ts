@@ -45,7 +45,6 @@ export async function renewToken(): Promise<boolean> {
     console.log('Renewing token');
     const response = await doPost('renewToken', {});
     const content = await response.json();
-    console.log(content);
     return updateServiceWorkerToken(content.token);
 
 }

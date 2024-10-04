@@ -19,7 +19,7 @@ const config = {
 			base: '/BibleTogether',
 		},
 		serviceWorker: {
-			register: true,
+			register: false,
 		},
 	}
 };
