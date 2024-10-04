@@ -88,6 +88,7 @@ export async function playChapterAudio(bible: BibleChapter) {
     const index = bibleshort.findIndex((v) => v == bible.scroll) + 1;
 
     const link = `https://raw.githubusercontent.com/CRCKC/solid-waddle/refs/heads/main/audio/${index}_${bible.scroll}/${bible.scroll}_${bible.chapter}.mp3`;
+    audio?.pause();
     audio = new Audio(link);
     audio.play();
 }
