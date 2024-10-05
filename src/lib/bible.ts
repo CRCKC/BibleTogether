@@ -84,13 +84,17 @@ export function isChapterValid(bible: BibleChapter): boolean {
 
 export let BIBLE_AUDIO: HTMLAudioElement | undefined;
 
-export async function playChapterAudio(bible: BibleChapter) {
+export async function playChapterAudio(bible: BibleChapter, newSession: boolean = false) {
     const index = bibleshort.findIndex((v) => v == bible.scroll) + 1;
 
-    const link = `https://raw.githubusercontent.com/CRCKC/solid-waddle/refs/heads/main/audio/${index}_${bible.scroll}/${bible.scroll}_${bible.chapter}.mp3`;
-    BIBLE_AUDIO?.pause();
-    BIBLE_AUDIO = new Audio(link);
-    BIBLE_AUDIO.play();
+    if (newSession) {
+        const link = `https://raw.githubusercontent.com/CRCKC/solid-waddle/refs/heads/main/audio/${index}_${bible.scroll}/${bible.scroll}_${bible.chapter}.mp3`;
+        BIBLE_AUDIO?.pause();
+        BIBLE_AUDIO = new Audio(link);
+        BIBLE_AUDIO.play();
+    } else {
+        BIBLE_AUDIO?.play();
+    }
     return true;
 }
 
