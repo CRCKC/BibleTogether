@@ -12,10 +12,21 @@
 
 	$: isSelecting = false;
 	let audioPaused = true;
+	let chapterChnaged = true;
+	let lastBible: BibleChapter;
 
-	function onClickPlay(bible: BibleChapter) {
+	// currentChapterStore.subscribe((value) => {
+	// 	lastBible = value;
+	// });
+
+	function onClickPlay() {
+		const bible = $currentChapterStore;
+
+		chapterChnaged = lastBible !== bible;
+		lastBible = bible;
 		if (audioPaused) {
-			playChapterAudio(bible);
+			playChapterAudio(bible, chapterChnaged);
+			chapterChnaged = false;
 			audioPaused = false;
 		} else {
 			stopChapterAudio();
@@ -23,11 +34,18 @@
 		}
 	}
 
+	function stopPlayback() {
+		audioPaused = true;
+		stopChapterAudio();
+	}
+
 	function gotoNextChapter() {
+		stopPlayback();
 		nextChapter($currentChapterStore);
 	}
 
 	function gotoPrevChapter() {
+		stopPlayback();
 		prevChapter($currentChapterStore);
 	}
 </script>
@@ -41,7 +59,13 @@
 		<button class="flex items-center h-10" on:click={gotoPrevChapter}
 			><div class="ml-2 mr-1 material-symbols-outlined">chevron_left</div>
 		</button>
-		<button class="w-full h-10" on:click={() => (isSelecting = true)}>
+		<button
+			class="w-full h-10"
+			on:click={() => {
+				isSelecting = true;
+				stopPlayback();
+			}}
+		>
 			{bibleChinese[$currentChapterStore.scroll]}
 			{$currentChapterStore.chapter}
 		</button>
@@ -50,9 +74,7 @@
 		</button>
 	</div>
 	<div class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10">
-		<button
-			class="text-3xl material-symbols-outlined"
-			on:click={() => onClickPlay($currentChapterStore)}
+		<button class="text-3xl material-symbols-outlined" on:click={() => onClickPlay()}
 			>{audioPaused ? 'play_arrow' : 'pause'}
 		</button>
 	</div>
