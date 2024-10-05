@@ -5,9 +5,23 @@
 		bibleChinese,
 		nextChapter,
 		prevChapter,
-		playChapterAudio
+		playChapterAudio,
+		stopChapterAudio,
+		type BibleChapter
 	} from '$lib/bible';
+
 	$: isSelecting = false;
+	let audioPaused = true;
+
+	function onClickPlay(bible: BibleChapter) {
+		if (audioPaused) {
+			playChapterAudio(bible);
+			audioPaused = false;
+		} else {
+			stopChapterAudio();
+			audioPaused = true;
+		}
+	}
 
 	function gotoNextChapter() {
 		nextChapter($currentChapterStore);
@@ -38,9 +52,8 @@
 	<div class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10">
 		<button
 			class="text-3xl material-symbols-outlined"
-			on:click={() => playChapterAudio($currentChapterStore)}
-		>
-			play_arrow
+			on:click={() => onClickPlay($currentChapterStore)}
+			>{audioPaused ? 'play_arrow' : 'pause'}
 		</button>
 	</div>
 </div>
