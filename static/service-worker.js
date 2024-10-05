@@ -1,3 +1,5 @@
+// This file is used for dev, but in production somehow this is completely useless nd the other file is used
+
 // These listeners will make the service worker immediately available for the page
 self.addEventListener('install', function (event) {
     event.waitUntil(self.skipWaiting());
