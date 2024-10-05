@@ -1,4 +1,4 @@
-//This file is here to trigger the service worker build
+//This file is here to trigger the service worker build for dev, but in production somehow this is the actual file thats being used
 
 // These listeners will make the service worker immediately available for the page
 self.addEventListener('install', function (event) {
