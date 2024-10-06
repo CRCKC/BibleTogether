@@ -3,12 +3,19 @@
 	import { login } from '$lib/backend';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
+	import { onMount } from 'svelte';
 
 	// export let data: PageData;
 
 	let username = '';
 	let password = '';
+	let usernameField: HTMLInputElement;
+	let passwordField: HTMLInputElement;
 	let loggingIn = false;
+
+	onMount(() => {
+		usernameField.focus();
+	});
 
 	function submitLogin() {
 		loggingIn = true;
@@ -21,6 +28,17 @@
 			}
 			loggingIn = false;
 		});
+	}
+
+	function handleKeydownUsername(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			passwordField.focus();
+		}
+	}
+	function handleKeydownPassword(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			submitLogin();
+		}
 	}
 </script>
 
@@ -36,12 +54,16 @@
 				type="text"
 				placeholder="Username"
 				bind:value={username}
+				bind:this={usernameField}
+				on:keydown={handleKeydownUsername}
 				class="h-12 p-2 border-2 border-gray-200 rounded-md w-80"
 			/>
 			<input
 				type="password"
 				placeholder="Password"
 				bind:value={password}
+				bind:this={passwordField}
+				on:keydown={handleKeydownPassword}
 				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
 			/>
 			<button
