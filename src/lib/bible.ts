@@ -3,6 +3,7 @@ import bibleJson from '$lib/bibleList.json';
 import bibleChineseJson from '$lib/bibleChinese.json';
 import { base } from '$app/paths';
 import { goto } from '$app/navigation';
+import { get, writable } from 'svelte/store';
 
 // Convert bibleList to a dictionary
 export const bibleList = bibleJson as { [scroll: string]: number; }
@@ -82,24 +83,26 @@ export function isChapterValid(bible: BibleChapter): boolean {
     return true;
 }
 
-export let BIBLE_AUDIO: HTMLAudioElement | undefined;
+// export let BIBLE_AUDIO: HTMLAudioElement | undefined;
+
+export const audioStore = writable<HTMLAudioElement | undefined>(undefined);
 
 export async function playChapterAudio(bible: BibleChapter, newSession: boolean = false) {
     const index = bibleshort.findIndex((v) => v == bible.scroll) + 1;
+    const audio = get(audioStore);
 
     if (newSession) {
         const link = `https://raw.githubusercontent.com/CRCKC/solid-waddle/refs/heads/main/audio/${index}_${bible.scroll}/${bible.scroll}_${bible.chapter}.mp3`;
-        BIBLE_AUDIO?.pause();
-        BIBLE_AUDIO = new Audio(link);
-        BIBLE_AUDIO.play();
+        audio?.pause();
+        audioStore.set(new Audio(link));
+        audio?.play();
     } else {
-        BIBLE_AUDIO?.play();
+        audio?.play();
     }
     return true;
 }
 
 export function stopChapterAudio() {
-    BIBLE_AUDIO?.pause();
+    get(audioStore)?.pause();
     return false;
 }
-
