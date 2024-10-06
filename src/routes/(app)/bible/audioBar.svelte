@@ -1,41 +1,20 @@
 <script lang="ts">
-	import { audioStore } from '$lib/bible';
-	import { onMount, onDestroy } from 'svelte';
-	import type { Unsubscriber } from 'svelte/store';
+	export let duration: number;
 
-	let progress = 0;
-
-	let unsubscriber: Unsubscriber;
-
-	function audioStoreSubscriptionEvent(value: HTMLAudioElement) {
-		if (value) {
-			progress = (value.currentTime / value.duration) * 100;
-		}
-	}
-	onMount(() => {
-		unsubscriber = audioStore.subscribe((value) => {
-			console.log(value);
-			value?.removeEventListener('timeupdate', () => audioStoreSubscriptionEvent(value));
-			value?.addEventListener('timeupdate', () => audioStoreSubscriptionEvent(value));
-		});
-	});
-
-	onDestroy(() => {
-		unsubscriber();
-	});
+	export let audioPlayer: HTMLAudioElement;
+	export let currentTime: number;
+	$: sliderValue = (currentTime / duration) * 100;
 </script>
 
-<div class="audio-seek-bar">
-	<input type="range" min="0" max="100" bind:value={progress} class="seek-bar" />
+<div class="w-full">
+	<input
+		type="range"
+		min="0"
+		max="100"
+		bind:value={sliderValue}
+		on:input={(_) => {
+			audioPlayer.currentTime = (sliderValue / 100) * duration;
+		}}
+		class="w-full"
+	/>
 </div>
-
-<style>
-	.audio-seek-bar {
-		width: 100%;
-		display: flex;
-		align-items: center;
-	}
-	.seek-bar {
-		width: 100%;
-	}
-</style>

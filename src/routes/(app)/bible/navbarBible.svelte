@@ -6,19 +6,21 @@
 		bibleChinese,
 		nextChapter,
 		prevChapter,
-		playChapterAudio,
-		stopChapterAudio,
 		type BibleChapter
 	} from '$lib/bible';
+	import { getAudioLink } from '$lib/bibleAudio';
 
 	$: isSelecting = false;
 	let audioPaused = true;
 	let chapterChnaged = true;
 	let lastBible: BibleChapter;
 
-	// currentChapterStore.subscribe((value) => {
-	// 	lastBible = value;
-	// });
+	$: audioSrc = getAudioLink($currentChapterStore);
+
+	$: console.log(audioSrc);
+	let duration: number;
+	let audioPlayer: HTMLAudioElement;
+	let currentTime: number;
 
 	function onClickPlay() {
 		const bible = $currentChapterStore;
@@ -26,18 +28,18 @@
 		chapterChnaged = lastBible !== bible;
 		lastBible = bible;
 		if (audioPaused) {
-			playChapterAudio(bible, chapterChnaged);
+			audioPlayer.play();
 			chapterChnaged = false;
 			audioPaused = false;
 		} else {
-			stopChapterAudio();
+			audioPlayer.pause();
 			audioPaused = true;
 		}
 	}
 
 	function stopPlayback() {
 		audioPaused = true;
-		stopChapterAudio();
+		audioPlayer.pause();
 	}
 
 	function gotoNextChapter() {
@@ -58,7 +60,7 @@
 <div class="flex flex-col items-center justify-center">
 	{#if true}
 		<div class="w-full p-4 max-w-96">
-			<AudioBar />
+			<AudioBar {audioPlayer} {currentTime} {duration} />
 		</div>
 	{/if}
 
@@ -88,6 +90,10 @@
 		</div>
 	</div>
 </div>
+
+<audio class="fixed hidden" bind:this={audioPlayer} bind:duration bind:currentTime>
+	<source src={audioSrc} />
+</audio>
 
 <style lang="postcss">
 	.material-symbols-outlined {
