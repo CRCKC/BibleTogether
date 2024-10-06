@@ -3,12 +3,12 @@ import bibleJson from '$lib/bibleList.json';
 import bibleChineseJson from '$lib/bibleChinese.json';
 import { base } from '$app/paths';
 import { goto } from '$app/navigation';
-import { get, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 
 // Convert bibleList to a dictionary
 export const bibleList = bibleJson as { [scroll: string]: number; }
 export const bibleChinese = bibleChineseJson as { [scroll: string]: string };
-const bibleshort = ["GEN", "EXO", "LEV", "NUM", "DEU", "JOS", "JDG", "RUT", "1SA", "2SA", "1KI", "2KI", "1CH", "2CH", "EZR", "NEH", "EST", "JOB", "PSA", "PRO", "ECC", "SNG", "ISA", "JER", "LAM", "EZK", "DAN", "HOS", "JOL", "AMO", "OBA", "JON", "MIC", "NAM", "HAB", "ZEP", "HAG", "ZEC", "MAL", "MAT", "MRK", "LUK", "JHN", "ACT", "ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL", "1TH", "2TH", "1TI", "2TI", "TIT", "PHM", "HEB", "JAS", "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV"];
+export const bibleshort = ["GEN", "EXO", "LEV", "NUM", "DEU", "JOS", "JDG", "RUT", "1SA", "2SA", "1KI", "2KI", "1CH", "2CH", "EZR", "NEH", "EST", "JOB", "PSA", "PRO", "ECC", "SNG", "ISA", "JER", "LAM", "EZK", "DAN", "HOS", "JOL", "AMO", "OBA", "JON", "MIC", "NAM", "HAB", "ZEP", "HAG", "ZEC", "MAL", "MAT", "MRK", "LUK", "JHN", "ACT", "ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL", "1TH", "2TH", "1TI", "2TI", "TIT", "PHM", "HEB", "JAS", "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV"];
 
 export interface BibleChapter {
     scroll: string
@@ -87,22 +87,4 @@ export function isChapterValid(bible: BibleChapter): boolean {
 
 export const audioStore = writable<HTMLAudioElement | undefined>(undefined);
 
-export async function playChapterAudio(bible: BibleChapter, newSession: boolean = false) {
-    const index = bibleshort.findIndex((v) => v == bible.scroll) + 1;
-    const audio = get(audioStore);
 
-    if (newSession) {
-        const link = `https://raw.githubusercontent.com/CRCKC/solid-waddle/refs/heads/main/audio/${index}_${bible.scroll}/${bible.scroll}_${bible.chapter}.mp3`;
-        audio?.pause();
-        audioStore.set(new Audio(link));
-        audio?.play();
-    } else {
-        audio?.play();
-    }
-    return true;
-}
-
-export function stopChapterAudio() {
-    get(audioStore)?.pause();
-    return false;
-}

@@ -1,6 +1,7 @@
 const BASEPATH = "https://script.google.com/macros/s/AKfycbyHK1TAydIP8IpLlqRk5buaei-KpbUGUl_eG6FZ-7Z3uFUQ2IyvYWHzQDPIiNYYKnyl/exec";
 
-export async function loadChapter(scroll: string, chapter: number) {
+export async function loadChapter(scroll: string, chapter: number, fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
+) {
     let bibleContent = '';
 
     try {
@@ -67,6 +68,7 @@ export async function logout() {
 }
 
 function updateServiceWorkerToken(token: string): boolean {
+    console.log('Updating token', token);
     if (token === undefined || token === '') {
         return false;
     }
