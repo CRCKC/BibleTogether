@@ -13,23 +13,21 @@
 	$: isSelecting = false;
 	let audioPaused = true;
 	let chapterChnaged = true;
-	let lastBible: BibleChapter;
+	let audioSrc: string;
+	$: {
+		chapterChnaged = true;
+		audioSrc = getAudioLink($currentChapterStore);
+		audioPlayer?.load();
+	}
 
-	$: audioSrc = getAudioLink($currentChapterStore);
-
-	$: console.log(audioSrc);
 	let duration: number;
 	let audioPlayer: HTMLAudioElement;
 	let currentTime: number;
 
 	function onClickPlay() {
-		const bible = $currentChapterStore;
-
-		chapterChnaged = lastBible !== bible;
-		lastBible = bible;
+		chapterChnaged = false;
 		if (audioPaused) {
 			audioPlayer.play();
-			chapterChnaged = false;
 			audioPaused = false;
 		} else {
 			audioPlayer.pause();
@@ -58,8 +56,8 @@
 {/if}
 
 <div class="flex flex-col items-center justify-center">
-	{#if true}
-		<div class="w-full p-4 max-w-96">
+	{#if !chapterChnaged}
+		<div class="w-full px-4 pt-3 max-w-96">
 			<AudioBar {audioPlayer} {currentTime} {duration} />
 		</div>
 	{/if}
@@ -91,7 +89,15 @@
 	</div>
 </div>
 
-<audio class="fixed hidden" bind:this={audioPlayer} bind:duration bind:currentTime>
+<audio
+	class="fixed hidden"
+	bind:this={audioPlayer}
+	bind:duration
+	bind:currentTime
+	on:ended={() => {
+		audioPaused = true;
+	}}
+>
 	<source src={audioSrc} />
 </audio>
 
