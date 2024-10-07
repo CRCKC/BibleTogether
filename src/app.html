@@ -6,7 +6,7 @@
 	<meta charset="utf-8" />
 	<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="canonical" href="https://crckc.github.io/BibleTogether/" />
+	<!-- <link rel="canonical" href="https://crckc.github.io/BibleTogether/" /> -->
 	%sveltekit.head%
 </head>
 <link rel="stylesheet"
@@ -19,15 +19,15 @@
 </html>
 
 <script>
-	const base = '/BibleTogether';
-	if ('serviceWorker' in navigator) {
-		window.addEventListener('load', function () {
-			navigator.serviceWorker.register(`${base}/service-worker.js`, { scope: base + '/' }).then(
-				function (registration) {
-					console.log('ServiceWorker registration succesful!')
-				}, function (err) {
-					console.log('ServiceWorker registration failed: ', err);
-				});
-		});
-	}
+	// const base = '/BibleTogether';
+	// if ('serviceWorker' in navigator) {
+	// 	window.addEventListener('load', function () {
+	// 		navigator.serviceWorker.register(`${base}/service-worker.js`, { scope: base + '/' }).then(
+	// 			function (registration) {
+	// 				console.log('ServiceWorker registration succesful!')
+	// 			}, function (err) {
+	// 				console.log('ServiceWorker registration failed: ', err);
+	// 			});
+	// 	});
+	// }
 </script>
