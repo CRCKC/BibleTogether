@@ -7,6 +7,7 @@ const provider = new GoogleAuthProvider();
 // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 provider.setCustomParameters({
   prompt: 'select_account',
+
 });
 
 auth.useDeviceLanguage();
