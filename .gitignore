@@ -22,3 +22,5 @@ vite.config.ts.timestamp-*
 
 copy.css
 tests/bible
+
+certs/*

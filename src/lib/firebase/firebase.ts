@@ -3,9 +3,17 @@ import { getAuth, type Auth } from 'firebase/auth';
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
+    apiKey: "AIzaSyBZVR0Y2AofdON2Tz2J6hEikRTiHmJHShE",
+    // authDomain: "bibletogether.firebaseapp.com",
+    authDomain: "localhost:4000",
+    databaseURL: "https://bibletogether-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "bibletogether",
+    storageBucket: "bibletogether.appspot.com",
+    messagingSenderId: "369676244209",
+    appId: "1:369676244209:web:b81380fa6ed66c49880550",
+    measurementId: "G-XBBV0KDHEL",
 };
 
-console.log("YOoo");
 
 let firebaseApp: FirebaseApp | undefined;
 
