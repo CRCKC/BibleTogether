@@ -1,0 +1,27 @@
+{
+    "users": {
+      "userId1": {
+        "Info": {
+          "Username": "JohnDoe",
+          "Password": "securePassword"
+        },
+        "Preferences": {
+          "FontSize": 16,
+          "Theme": "light"
+        },
+        "Data": {
+          "BibleProgress": {
+            "GEN":{
+                "1":true,
+                "2":false
+            },
+            "EXO":{
+                "1":true,
+                "2":true
+            }
+          }
+        }
+      }
+    }
+  }
+  

@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
+	import { getGoogleRedirectResult, loginWithGoogle } from '$lib/firebase/auth';
 
 	// export let data: PageData;
 
@@ -15,6 +16,7 @@
 
 	onMount(() => {
 		usernameField.focus();
+		getGoogleRedirectResult();
 	});
 
 	function submitLogin() {
@@ -77,6 +79,17 @@
 					Login
 				{/if}
 			</button>
+			<button
+			type="submit"
+			class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
+			on:click={loginWithGoogle}
+		>
+			{#if loggingIn}
+				<div class="w-8 h-8 border-b-2 border-white rounded-full animate-spin"></div>
+			{:else}
+				Google Login
+			{/if}
+		</button>
 		</div>
 		<a href="{base}/signup" class="mt-4 text-blue-500">Don't have an account? Sign up</a>
 	</div>
