@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
+import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from "./firebase";
 
 const auth = firebaseAuth;
@@ -26,6 +26,7 @@ export function getGoogleRedirectResult() {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken;
 
+
       // The signed-in user info.
       const user = result.user;
       console.log(user.displayName);
@@ -43,3 +44,18 @@ export function getGoogleRedirectResult() {
     });
 }
 
+export async function createUserWithEmail(email: string, password: string) {
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in
+      const user = userCredential.user;
+      console.log(userCredential);
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // ..
+      console.log(error);
+    });
+}

@@ -14,14 +14,20 @@ export default defineConfig({
 			cert: process.env.NODE_ENV === 'production' ? undefined : readFileSync('certs/cert.pem'),
 		},
 		proxy: {
-			'/__/auth': {
-				target: 'https://bibletogether.firebaseapp.com',
-				changeOrigin: true,
-			},
-			'/BibleTogether/__/auth': {
-				target: 'https://bibletogether.firebaseapp.com',
-				changeOrigin: true,
-			},
+			// '/__/auth': {
+			// 	target: 'https://bibletogether.firebaseapp.com',
+			// 	changeOrigin: true,
+			// },
+			// '/BibleTogether/__/auth': {
+			// 	target: 'https://bibletogether.firebaseapp.com',
+			// 	changeOrigin: true,
+			// 	rewrite: (path) => {
+			// 		const newPath = path.replace(/^\/BibleTogether/, '')
+			// 		console.log('Rewriting path: ', newPath);
+			// 		return newPath
+			// 	},
+			// 	proxyTimeout: 5000,
+			// },
 		},
 	},
 });
