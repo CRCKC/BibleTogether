@@ -10,8 +10,8 @@ export default defineConfig({
 	},
 	server: {
 		https: {
-			key: readFileSync('certs/key.pem'),
-			cert: readFileSync('certs/cert.pem'),
+			key: process.env.NODE_ENV === 'production' ? undefined : readFileSync('certs/key.pem'),
+			cert: process.env.NODE_ENV === 'production' ? undefined : readFileSync('certs/cert.pem'),
 		},
 		proxy: {
 			'/__/auth': {
