@@ -5,7 +5,8 @@ import { getDatabase } from "firebase/database";
 const firebaseConfig = {
     apiKey: "AIzaSyBZVR0Y2AofdON2Tz2J6hEikRTiHmJHShE",
     // authDomain: "bibletogether.firebaseapp.com",
-    authDomain: "localhost:4000",
+    authDomain: "localhost:4000/BibleTogether",
+    // authDomain: "localhost:4000",
     databaseURL: "https://bibletogether-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "bibletogether",
     storageBucket: "bibletogether.appspot.com",

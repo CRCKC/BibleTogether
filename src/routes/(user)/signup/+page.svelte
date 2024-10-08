@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { signup } from '$lib/backend';
+	import { createUserWithEmail } from '$lib/firebase/auth';
 	import type { PageData } from './$types';
 
 	// export let data: PageData;
@@ -11,17 +12,46 @@
 	let confirmPassword = '';
 	let signingUp = false;
 
-	function submitSignup() {
+	function validateSignup() {
+		if (password !== confirmPassword) {
+			console.log('Passwords do not match');
+			return false;
+		}
+		if (password.length < 6) {
+			console.log('Password must be at least 6 characters long');
+			return false;
+		}
+		// If password does not contain both Upper and Lower case letters
+		if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) {
+			console.log('Password must contain both upper and lower case letters');
+			return false;
+		}
+		// If Username is not a valid email
+		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username)) {
+			console.log('Username must be a valid email');
+			return false;
+		}
+		return true;
+	}
+
+	async function submitSignup() {
 		signingUp = true;
-		signup(username, password).then((success) => {
-			if (success) {
-				console.log('Signup successful');
-				goto(`${base}/home`);
-			} else {
-				console.log('Signup failed');
-			}
+		if (!validateSignup()) {
 			signingUp = false;
-		});
+			return;
+		}
+		console.log('Signing up');
+		// signup(username, password).then((success) => {
+		// 	if (success) {
+		// 		console.log('Signup successful');
+		// 		goto(`${base}/home`);
+		// 	} else {
+		// 		console.log('Signup failed');
+		// 	}
+		// 	signingUp = false;
+		// });
+		await createUserWithEmail(username, password);
+		signingUp = false;
 	}
 </script>
 
