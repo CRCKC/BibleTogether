@@ -14,7 +14,11 @@ export default defineConfig({
 			cert: readFileSync('certs/cert.pem'),
 		},
 		proxy: {
-			'/__/auth/handler': {
+			'/__/auth': {
+				target: 'https://bibletogether.firebaseapp.com',
+				changeOrigin: true,
+			},
+			'/BibleTogether/__/auth': {
 				target: 'https://bibletogether.firebaseapp.com',
 				changeOrigin: true,
 			},
