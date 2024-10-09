@@ -25,4 +25,5 @@ tests/bible
 
 certs/*
 
-static/__/*
+static/__
+src/lib/firebase/helper

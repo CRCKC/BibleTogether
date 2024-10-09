@@ -13,7 +13,9 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"getFirestoreHelpers": "mkdir -p static/__/auth && cd static/__/auth && curl -O 'https://bibletogether.firebaseapp.com/__/auth/{handler,handler.js,iframe,iframe.js,experiments.js}'"
+		"getFirestoreHelpersJS": "mkdir -p static/__/auth && cd static/__/auth && curl -O 'https://bibletogether.firebaseapp.com/__/auth/{handler.js,iframe.js,experiments.js}'",
+		"getFirestoreHelpersHTML": "mkdir -p src/lib/firebase/helper && cd src/lib/firebase/helper && curl -O 'https://bibletogether.firebaseapp.com/__/auth/{handler,iframe}'",
+		"getFirestoreHelpers": "npm run getFirestoreHelpersJS && npm run getFirestoreHelpersHTML"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
