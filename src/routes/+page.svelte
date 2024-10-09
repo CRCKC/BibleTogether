@@ -1,4 +1,4 @@
-<script>
+<script type="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
