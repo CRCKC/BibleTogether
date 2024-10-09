@@ -23,7 +23,7 @@ vite.config.ts.timestamp-*
 copy.css
 tests/bible
 
-certs/*
+certs
 
 static/__
 src/lib/firebase/helper

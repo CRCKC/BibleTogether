@@ -36,3 +36,8 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+## Setup Development Environment
+I use mkcert, create folder certs/ and run mkcert localhost
+Download the static files using npm run getFirestoreHelpers
+Make the .env file
