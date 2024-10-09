@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword, signInWithEmailAndPassword, type UserCredential } from "firebase/auth";
+import { signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword, signInWithEmailAndPassword, type UserCredential } from "firebase/auth";
 import { firebaseAuth } from "./firebase";
 import { GoogleProvider } from "./providers";
 import { session } from "$lib/session";
@@ -16,19 +16,8 @@ export function getGoogleRedirectResult() {
     .then((result) => {
       console.log('Result: ', result);
       if (!result) return;
-      // This gives you a Google Access Token. You can use it to access Google APIs.
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
 
-
-      // The signed-in user info.
-      const user = result.user;
-      console.log(user.displayName);
-      console.log(token);
     }).catch((error) => {
-      // Handle Errors here.
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
       // // The email of the user's account used.
       // const email = error.customData.email;
       // // The AuthCredential type that was used.
@@ -40,10 +29,8 @@ export function getGoogleRedirectResult() {
 
 export async function createUserWithEmail(email: string, password: string) {
   createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      console.log(userCredential);
-      // ...
+    .then(() => {
+
     })
     .catch((error) => {
       console.log("Failed to create account: ", error);
