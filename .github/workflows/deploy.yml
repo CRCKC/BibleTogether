@@ -20,6 +20,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Test
+        run: echo ${{ github.event.repository.name }} && ls && echo hello
+        
+      - name: Add .env
+        env:
+          DOTENV: ${{ vars.DOTENV }}
+        run: |
+          echo $DOTENV >> .env
+
       - name: build
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
