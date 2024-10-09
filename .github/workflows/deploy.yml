@@ -21,15 +21,14 @@ jobs:
         run: npm install
         
       - name: Add .env
-        env:
-          DOTENV: ${{ vars.DOTENV }}
-        run: |
-          echo $DOTENV >> .env && cat .env
+        run: echo $SECRET_DATA | base64 -d > .env
+        env: 
+          SECRET_DATA: ${{ secrets.DOTENV }}
 
       - name: Test
         env:
           PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.PUBLIC_FIREBASE_AUTH_DOMAIN }}
-        run: echo $PUBLIC_FIREBASE_AUTH_DOMAIN >> .a && .a && echo $PUBLIC_FIREBASE_AUTH_DOMAIN && echo ${{ vars.PUBLIC_FIREBASE_AUTH_DOMAIN }}
+        run: echo $PUBLIC_FIREBASE_AUTH_DOMAIN > .a && cat .a && echo $PUBLIC_FIREBASE_AUTH_DOMAIN && echo ${{ vars.PUBLIC_FIREBASE_AUTH_DOMAIN }}
 
       - name: build
         env:
