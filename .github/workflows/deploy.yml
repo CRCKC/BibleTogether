@@ -20,8 +20,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Import environment variables
-        run: echo '${{ vars.DOTENV }}' >> .env
+      # - name: Import environment variables
+      #   run: echo '${{ vars.DOTENV }}' >> .env
 
       - name: build
         env:
