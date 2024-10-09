@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { signup } from '$lib/backend';
-	import { createUserWithEmail } from '$lib/firebase/auth';
+	import { signup } from '$lib/firebase/auth';
 	import type { PageData } from './$types';
 
 	// export let data: PageData;
@@ -13,6 +12,10 @@
 	let signingUp = false;
 
 	function validateSignup() {
+		username = username.trim();
+		password = password.trim();
+		confirmPassword = confirmPassword.trim();
+
 		if (password !== confirmPassword) {
 			console.log('Passwords do not match');
 			return false;
@@ -41,16 +44,8 @@
 			return;
 		}
 		console.log('Signing up');
-		// signup(username, password).then((success) => {
-		// 	if (success) {
-		// 		console.log('Signup successful');
-		// 		goto(`${base}/home`);
-		// 	} else {
-		// 		console.log('Signup failed');
-		// 	}
-		// 	signingUp = false;
-		// });
-		await createUserWithEmail(username, password);
+		signup(username, password).then((success) => {});
+
 		signingUp = false;
 	}
 </script>

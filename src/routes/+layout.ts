@@ -1,22 +1,29 @@
 import type { LayoutLoad } from './$types';
+import { firebaseAuth } from '$lib/firebase/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
-export const load = (async ({ route }) => {
+export const load = (async ({ route, url }) => {
 
     let requireLogin = false;
 
     if (route.id?.startsWith("/(app)")) {
         // Check if loggedin and redirect to /login if not
         requireLogin = true;
-        // if (await renewToken()) {
-        //     requireLogin = false;
-        // } else {
-        //     requireLogin = true;
-        // }
     }
 
-    // requireLogin = false; // Comment this line to enable login
+    // requireLogin = false; // Comment this line to disable login
+
+    function getAuthUser() {
+        return new Promise((resolve) => {
+            onAuthStateChanged(firebaseAuth, (user) => resolve(user ? user : false));
+        });
+    }
 
     return {
-        requireLogin,
+        getAuthUser: getAuthUser,
+        url: url.pathname,
+        requireLogin
     };
+
 }) satisfies LayoutLoad;
+

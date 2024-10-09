@@ -14,42 +14,6 @@ export async function loadChapter(scroll: string, chapter: number, fetch: (input
     return bibleContent;
 }
 
-export async function login(username: string, password: string): Promise<boolean> {
-
-    try {
-        const response = await doPost('login', { username, password });
-
-        const content = await response.json();
-        return updateServiceWorkerToken(content.token);
-
-    } catch (error) {
-        console.error('Error reading file:', error);
-        return false;
-    }
-}
-
-export async function signup(username: string, password: string): Promise<boolean> {
-    try {
-        const response = await doPost('signup', { username, password });
-
-        const content = await response.json();
-        return updateServiceWorkerToken(content.token);
-
-
-    } catch (error) {
-        console.error('Error reading file:', error);
-        return false;
-    }
-}
-
-export async function renewToken(): Promise<boolean> {
-    console.log('Renewing token');
-    const response = await doPost('renewToken', {});
-    const content = await response.json();
-    return updateServiceWorkerToken(content.token);
-
-}
-
 export async function syncChapterProgress() {
     try {
         await doPost('syncChapterProgress', {
@@ -61,25 +25,7 @@ export async function syncChapterProgress() {
 }
 
 
-export async function logout() {
-    navigator.serviceWorker.controller?.postMessage({
-        type: 'CLEAR_TOKEN'
-    })
-}
 
-function updateServiceWorkerToken(token: string): boolean {
-    console.log('Updating token', token);
-    if (token === undefined || token === '') {
-        return false;
-    }
-
-    navigator.serviceWorker.controller?.postMessage({
-        type: 'SET_TOKEN',
-        token: token
-    })
-
-    return true;
-}
 
 async function doPost(action: string, data: object) {
     return await fetch(`${BASEPATH}?action=${action}`, {

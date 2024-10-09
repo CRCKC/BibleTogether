@@ -13,7 +13,8 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"getFirestoreHelpers": "mkdir -p static/__/auth && cd static/__/auth && curl -O 'https://bibletogether.firebaseapp.com/__/auth/{handler.js,iframe.js,experiments.js}' && curl -o '#1.html' 'https://bibletogether.firebaseapp.com/__/auth/{handler,iframe}'"
+		"getFirestoreHelpers": "mkdir -p static/__/auth && cd static/__/auth && curl -O 'https://bibletogether.firebaseapp.com/__/auth/{handler.js,iframe.js,experiments.js}' && curl -o '#1.html' 'https://bibletogether.firebaseapp.com/__/auth/{handler,iframe}'",
+		"emulator": "firebase emulators:start"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",

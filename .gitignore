@@ -27,3 +27,5 @@ certs/*
 
 static/__
 src/lib/firebase/helper
+
+*.log

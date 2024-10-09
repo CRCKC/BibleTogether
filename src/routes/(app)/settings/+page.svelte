@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { logout } from '$lib/backend';
-	import { loggedIn } from '$lib/userSession';
+	import { logout } from '$lib/firebase/auth';
+	import { session } from '$lib/session';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -20,7 +20,7 @@
 				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
 				on:click={() => {
 					logout();
-					$loggedIn = false;
+					$session.loggedIn = false;
 					goto(`${base}/login`);
 				}}
 			>
