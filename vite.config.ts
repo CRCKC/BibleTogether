@@ -11,7 +11,12 @@ export default defineConfig({
 		https: {
 			key: process.env.NODE_ENV === 'production' ? undefined : readFileSync('certs/localhost-key.pem'),
 			cert: process.env.NODE_ENV === 'production' ? undefined : readFileSync('certs/localhost.pem'),
+			// key: readFileSync('certs/localhost-key.pem'),
+			// cert: readFileSync('certs/localhost.pem'),
 		},
 		proxy: {},
+	},
+	preview: {
+		port: 4000,
 	},
 });
