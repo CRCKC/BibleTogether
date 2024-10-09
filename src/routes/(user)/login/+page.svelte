@@ -1,10 +1,9 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { login } from '$lib/backend';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
-	import { getGoogleRedirectResult, loginWithGoogle } from '$lib/firebase/auth';
+	import { getGoogleRedirectResult, login, loginWithGoogle } from '$lib/firebase/auth';
 
 	// export let data: PageData;
 
@@ -21,10 +20,10 @@
 
 	function submitLogin() {
 		loggingIn = true;
-		login(username, password).then((success) => {
+		login(username.trim(), password.trim()).then((success) => {
 			if (success) {
-				console.log('Login successful');
 				goto(`${base}/home`);
+				console.log('Login successful');
 			} else {
 				console.log('Login failed');
 			}

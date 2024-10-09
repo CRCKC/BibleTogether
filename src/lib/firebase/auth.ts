@@ -1,19 +1,13 @@
-import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword, signInWithEmailAndPassword, type UserCredential } from "firebase/auth";
 import { firebaseAuth } from "./firebase";
+import { GoogleProvider } from "./providers";
+import { session } from "$lib/session";
 
 const auth = firebaseAuth;
-
-const provider = new GoogleAuthProvider();
-// provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-provider.setCustomParameters({
-  prompt: 'select_account',
-
-});
-
 auth.useDeviceLanguage();
 
 export async function loginWithGoogle() {
-  signInWithRedirect(auth, provider);
+  signInWithRedirect(auth, GoogleProvider);
 }
 
 export function getGoogleRedirectResult() {
@@ -47,15 +41,48 @@ export function getGoogleRedirectResult() {
 export async function createUserWithEmail(email: string, password: string) {
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      // Signed in
       const user = userCredential.user;
       console.log(userCredential);
       // ...
     })
     .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
-      console.log(error);
+      console.log("Failed to create account: ", error);
     });
+}
+
+export async function login(username: string, password: string): Promise<boolean> {
+  try {
+    const result = await signInWithEmailAndPassword(firebaseAuth, username, password);
+
+    const { user }: UserCredential = result;
+    session.set({
+      loggedIn: true,
+      user: {
+        displayName: user?.displayName,
+        email: user?.email,
+        photoURL: user?.photoURL,
+        uid: user?.uid
+      }
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error signing in:', error);
+    return false;
+  }
+}
+
+export async function signup(username: string, password: string): Promise<boolean> {
+  try {
+    await createUserWithEmail(username, password);
+
+    return true;
+  } catch (error) {
+    console.error('Error signing up:', error);
+    return false;
+  }
+}
+
+export async function logout() {
+  firebaseAuth.signOut();
 }
