@@ -19,15 +19,17 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Test
-        run: echo ${{ github.event.repository.name }} && ls && echo hello
         
       - name: Add .env
         env:
           DOTENV: ${{ vars.DOTENV }}
         run: |
-          echo $DOTENV >> .env
+          echo $DOTENV >> .env && cat .env
+
+      - name: Test
+        env:
+          PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.PUBLIC_FIREBASE_AUTH_DOMAIN }}
+        run: echo $PUBLIC_FIREBASE_AUTH_DOMAIN >> .a && .a && echo $PUBLIC_FIREBASE_AUTH_DOMAIN && echo ${{ vars.PUBLIC_FIREBASE_AUTH_DOMAIN }}
 
       - name: build
         env:
