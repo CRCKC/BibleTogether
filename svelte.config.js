@@ -18,9 +18,9 @@ const config = {
 			// base: process.env.NODE_ENV === 'production' ? '/BibleTogether' : '',
 			base: '/BibleTogether',
 		},
-		serviceWorker: {
-			register: true,
-		},
+		// serviceWorker: {
+		// 	register: true,
+		// },
 
 	}
 
