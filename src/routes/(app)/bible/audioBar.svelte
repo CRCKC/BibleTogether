@@ -3,7 +3,7 @@
 
 	export let audioPlayer: HTMLAudioElement;
 	export let currentTime: number;
-	$: sliderValue = (currentTime / duration) * 100;
+	$: sliderValue = (currentTime / (isNaN(duration) ? 1000 : duration)) * 100;
 
 	function formatTime(time: number) {
 		const minutes = Math.floor(time / 60);

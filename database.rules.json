@@ -1,15 +1,11 @@
 {
   "rules": {
-    ".read": false,
-    ".write": false,
-    // Allow read and write access to authenticated users for their own data
-    // "users": {
-    //   "$uid": {
-    //     ".read": "$uid === auth.uid",
-    //     ".write": "$uid === auth.uid"
-    //   }
-    // }
-
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    }
     // Example: Restrict access to specific data within "Data"
     // "users": {
     //   "$uid": {

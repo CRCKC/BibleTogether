@@ -1,16 +1,10 @@
 <script lang="ts">
 	import BibleSelector from './bibleSelector.svelte';
 	import AudioBar from './audioBar.svelte';
-	import {
-		currentChapterStore,
-		bibleChinese,
-		nextChapter,
-		prevChapter,
-		type BibleChapter
-	} from '$lib/bible';
+	import { currentChapterStore, bibleChinese, nextChapter, prevChapter } from '$lib/bible';
 	import { getAudioLink } from '$lib/bibleAudio';
 
-	$: isSelecting = false;
+	let isSelecting = false;
 	let audioPaused = true;
 	let chapterChnaged = true;
 	let audioSrc: string;

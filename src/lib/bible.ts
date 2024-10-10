@@ -1,6 +1,6 @@
 import { persisted } from 'svelte-persisted-store'
-import bibleJson from '$lib/bibleList.json';
-import bibleChineseJson from '$lib/bibleChinese.json';
+import bibleJson from '$lib/data/bibleList.json';
+import bibleChineseJson from '$lib/data/bibleChinese.json';
 import { base } from '$app/paths';
 import { goto } from '$app/navigation';
 import { writable } from 'svelte/store';
