@@ -15,15 +15,11 @@
 		<slot />
 	</div>
 
-	<div class={classNames('z-40 w-full border-t-2 border-gray-600 bg-black transition-all')}>
+	<div class="z-40 w-full transition-all bg-black border-t-2 border-gray-600">
 		<!-- Bible nav bar -->
-		<div
-			class={classNames({
-				hidden: !isBible
-			})}
-		>
+		{#if isBible}
 			<BibleNavBar />
-		</div>
+		{/if}
 
 		<nav class="grid grid-flow-col">
 			<Item title="Home" path="home" icon="home" />

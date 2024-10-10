@@ -45,7 +45,7 @@
 		});
 		console.log('Session', $session);
 		if (loggedIn) {
-			goto(base + '/home');
+			if (!data.requireLogin) goto(base + '/home');
 		} else {
 			goto(base + '/login');
 		}
