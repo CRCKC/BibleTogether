@@ -23,7 +23,7 @@ jobs:
       - name: Add .env
         run: echo $DOTENV > .env
         env: 
-          DOTENV: ${{ vars.DOTENV }}
+          DOTENV: ${{ secrets.DOTENV }}
 
       - name: build
         env:

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	// import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
-	import { getGoogleRedirectResult, login, loginWithGoogle } from '$lib/firebase/auth';
+	import { login } from '$lib/firebase/auth';
 	import GoogleSigninButton from '../googleSigninButton.svelte';
 	import OrWithSeperator from '../orWithSeperator.svelte';
 

@@ -1,9 +1,8 @@
 import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import { isChapterValid, getBibleUrl } from '$lib/bible';
-import { loadChapter } from '$lib/backend';
 
-export const load = (async ({ params, url, fetch }) => {
+export const load = (async ({ params, url }) => {
     // Fromat the parameters
     const chapter = Number.parseInt(params.chapter);
     const scroll = params.scroll.toUpperCase();
@@ -16,9 +15,7 @@ export const load = (async ({ params, url, fetch }) => {
     // Check if the chapter is valid
     // Return an error page
 
-    const bibleContent = loadChapter(scroll, chapter, fetch);
     return {
-        bibleContent,
         bible: { scroll, chapter }
     };
 

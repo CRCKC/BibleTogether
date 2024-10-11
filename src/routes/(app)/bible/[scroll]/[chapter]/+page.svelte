@@ -4,6 +4,8 @@
 	import viewport from '$lib/viewportAction';
 	import { bibleProgressStore, updateProgress } from '$lib/bibleProgress';
 	import { settingsStore } from '$lib/userSettings';
+	import { loadChapter } from '$lib/backend';
+	import { downloadAndUnzip } from '$lib/data/downloadBible';
 
 	export let data: PageData;
 
@@ -11,9 +13,18 @@
 	let chapterCompleted = false;
 	let firstTimeScrolledToBottom = true;
 
+	let bibleContentPromise: Promise<string>;
+
 	$: {
-		data.bible;
 		onLoadChapter();
+		bibleContentPromise = loadChapter(data.bible.scroll, data.bible.chapter);
+		bibleContentPromise.then(async (content) => {
+			if (content.length < 20) {
+				await downloadAndUnzip();
+				// TODO add error message or tell the user that it's downloading the file
+				console.log('File Error');
+			}
+		});
 	}
 
 	function onLoadChapter() {
@@ -48,12 +59,14 @@
 <div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
 	{bibleChinese[$currentChapterStore.scroll]}
 </div>
-<div class="inline-block w-full mt-2 mb-5 text-5xl text-center">{$currentChapterStore.chapter}</div>
+<div class="inline-block w-full mt-2 mb-5 text-5xl text-center">
+	{$currentChapterStore.chapter == 0 ? '簡介' : $currentChapterStore.chapter}
+</div>
 
 <!-- Await for bibleContent -->
-{#await data.bibleContent}
+{#await bibleContentPromise}
 	<!-- Loading Placeholder -->
-	<div class="flex items-center justify-center w-full">Loading...</div>
+	<!-- <div class="flex items-center justify-center w-full">Loading...</div> -->
 {:then bibleContent}
 	<!-- Actual Content -->
 	<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
