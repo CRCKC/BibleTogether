@@ -5,6 +5,7 @@
 	import { base } from '$app/paths';
 	import { session } from '$lib/session';
 	import '../app.css';
+	import { getGoogleRedirectResult } from '$lib/firebase/auth';
 
 	export let data: LayoutData;
 
@@ -31,6 +32,8 @@
 
 	onMount(async () => {
 		console.log('Checking auth');
+		getGoogleRedirectResult();
+
 		const user: any = await data.getAuthUser?.();
 
 		const loggedIn = !!user && user?.emailVerified;
@@ -43,7 +46,7 @@
 				loading: false
 			};
 		});
-		console.log('Session', $session);
+		// console.log('Session', $session);
 		if (loggedIn) {
 			if (!data.requireLogin) goto(base + '/home');
 		} else {

@@ -14,7 +14,7 @@ export function getGoogleRedirectResult() {
   console.log('Getting redirect result');
   getRedirectResult(auth)
     .then((result) => {
-      console.log('Result: ', result);
+      // console.log('Result: ', result);
       if (!result) return;
 
     }).catch((error) => {
