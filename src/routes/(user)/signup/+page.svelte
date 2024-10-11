@@ -2,6 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { signup } from '$lib/firebase/auth';
+	import GoogleSigninButton from '../googleSigninButton.svelte';
+	import OrWithSeperator from '../orWithSeperator.svelte';
 	import type { PageData } from './$types';
 
 	// export let data: PageData;
@@ -10,6 +12,11 @@
 	let password = '';
 	let confirmPassword = '';
 	let signingUp = false;
+	let usernameField: HTMLInputElement;
+
+	onMount(() => {
+		usernameField.focus();
+	});
 
 	function validateSignup() {
 		username = username.trim();
@@ -48,6 +55,10 @@
 
 		signingUp = false;
 	}
+
+	function onMount(arg0: () => void) {
+		throw new Error('Function not implemented.');
+	}
 </script>
 
 <!-- Signup Screen UI -->
@@ -63,6 +74,7 @@
 				placeholder="Username"
 				class="h-12 p-2 border-2 border-gray-200 rounded-md w-80"
 				bind:value={username}
+				bind:this={usernameField}
 			/>
 			<input
 				type="password"
@@ -88,6 +100,10 @@
 					Sign Up
 				{/if}
 			</button>
+			<OrWithSeperator />
+			<div class="h-12 my-4 w-80">
+				<GoogleSigninButton text={'Sign up with Google'} />
+			</div>
 		</form>
 		<a href="{base}/login" class="mt-4 text-blue-500">Already have an account? Login</a>
 	</div>
