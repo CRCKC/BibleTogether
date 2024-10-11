@@ -2,6 +2,7 @@
 	import { session } from '$lib/session';
 	import type { PageData } from './$types';
 	import bibleSchedule from '$lib/data/bibleSchedule.json';
+	import { downloadAndUnzip } from '$lib/data/downloadBible';
 
 	const schedule = bibleSchedule as {
 		[key: number]: {
@@ -38,7 +39,6 @@
 <!-- Think of a good homepage layout, the layout needs two main thing, a hello message, and the schedule of the current month, like which verse and scroll the user should be reading -->
 <div class="flex flex-col items-center justify-center h-full p-6 text-center text-white">
 	<h1 class="mb-4 text-4xl font-bold">Hello, {name}</h1>
-	<p class="mb-3 text-xl">Welcome to the home page</p>
 	<p class="mb-3 text-xl">Today is {year}/{month}</p>
 	<p class="text-xl">
 		You should be reading <span class="font-bold text-yellow-300"

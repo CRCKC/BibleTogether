@@ -41,3 +41,6 @@ You can preview the production build with `npm run preview`.
 I use mkcert, create folder certs/ and run mkcert localhost
 Download the static files using npm run getFirestoreHelpers
 Make the .env file
+
+# TODO
+- Use tailwind css to set color theme
