@@ -1,13 +1,15 @@
 import { persisted } from "svelte-persisted-store";
 
 interface Settings {
-    autoComplete: boolean
+    autoCheck: boolean,
+    fontZoom: number
 }
 
 export const settingsStore = persisted<Settings>(
     'settings',
     {
-        autoComplete: false,
+        autoCheck: false,
+        fontZoom: 1
     },
     {
         syncTabs: true,

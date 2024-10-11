@@ -39,7 +39,7 @@
 		if (firstTimeScrolledToBottom) {
 			firstTimeScrolledToBottom = false;
 			// Run finishChapter after 0.5 second if autoComplete is enabled
-			if ($settingsStore.autoComplete) setTimeout(() => checkChapter(), 500);
+			if ($settingsStore.autoCheck) setTimeout(() => checkChapter(), 500);
 		}
 	}
 </script>
@@ -56,7 +56,7 @@
 	<div class="flex items-center justify-center w-full">Loading...</div>
 {:then bibleContent}
 	<!-- Actual Content -->
-	<div class="mx-4 bible">
+	<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
 		{@html bibleContent}
 	</div>
 	<!-- Bottom Div -->
@@ -80,7 +80,6 @@
 <style lang="postcss">
 	.bible {
 		display: inline-block;
-		zoom: 1;
 		letter-spacing: normal;
 		word-spacing: normal;
 		vertical-align: top;
