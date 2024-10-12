@@ -1,51 +1,21 @@
-# create-svelte
-
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+# Bible Together
+  
+## Tech Stack
+`Sveltekit` hosted on `Github Pages` + `Firebase` backend
 
 ## Setup Development Environment
 I use mkcert, create folder certs/ and run mkcert localhost
 Download the static files using npm run getFirestoreHelpers
 Make the .env file
 
-# TODO
+## TODO
 - Use tailwind css to set color theme
 
 - Use the following command to base64 encode the .env and put it in github secrets
-```
+```bash
 base64 -i -w 0 .env
 ```
+
+## References
+- [Firebase Auth tutorial](https://gundogmuseray.medium.com/easy-way-to-stop-worry-about-client-side-auth-with-firebase-and-sveltekit-d17cdcccb663)
+- [Index DB tutorial](https://github.com/falcosan/TS_IndexedDB/blob/main/db/index.ts)
