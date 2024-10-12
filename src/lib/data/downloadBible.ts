@@ -1,17 +1,19 @@
 import JSZip from 'jszip';
 import { PUBLIC_BIBLE_DOWNLOAD_URL } from '$env/static/public'
-
+import Completer from '$lib/utils/completer';
 
 const storeName = 'bibleStore';
 const dbName = 'bibleLocalDatabase';
 const storeKeyName = 'name';
 
-export async function downloadAndUnzip() {
+export async function downloadAndUnzip(): Promise<boolean | undefined> {
     if (typeof window === 'undefined' || !('indexedDB' in window)) {
         console.error('IndexedDB is not available in this environment.');
         return undefined;
     }
     try {
+        // Create a completer for the download and unzip process
+        const completer = new Completer();
         // Fetch the ZIP file
         const response = await fetch(PUBLIC_BIBLE_DOWNLOAD_URL);
         const blob = await response.blob();
@@ -41,6 +43,7 @@ export async function downloadAndUnzip() {
 
                 } else {
                     console.log("File not found: ", fileName);
+                    completer.complete(false);
                 }
             });
 
@@ -55,16 +58,19 @@ export async function downloadAndUnzip() {
 
 
             transaction.oncomplete = () => {
-                console.log('All files saved to IndexedDB');
+                completer.complete(true);
             };
         };
 
         dbRequest.onerror = (err) => {
             console.error('Error opening IndexedDB:', dbRequest.error, err);
+            completer.complete(false);
         };
+        return completer.future as Promise<boolean>;
     } catch (error) {
         console.error('Error downloading or unzipping file:', error);
     }
+    return false;
 }
 
 // Function to get file data by file name
@@ -96,3 +102,6 @@ export async function getFileData(fileName: string): Promise<string | undefined>
         };
     });
 }
+
+
+
