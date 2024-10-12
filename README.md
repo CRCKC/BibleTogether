@@ -44,3 +44,8 @@ Make the .env file
 
 # TODO
 - Use tailwind css to set color theme
+
+- Use the following command to base64 encode the .env and put it in github secrets
+```
+base64 -i -w 0 .env
+```

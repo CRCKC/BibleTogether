@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { signup } from '$lib/firebase/auth';
+	import { onMount } from 'svelte';
 	import GoogleSigninButton from '../googleSigninButton.svelte';
 	import OrWithSeperator from '../orWithSeperator.svelte';
-	import type { PageData } from './$types';
+	// import type { PageData } from './$types';
 
 	// export let data: PageData;
 
@@ -54,10 +54,6 @@
 		signup(username, password).then((success) => {});
 
 		signingUp = false;
-	}
-
-	function onMount(arg0: () => void) {
-		throw new Error('Function not implemented.');
 	}
 </script>
 
