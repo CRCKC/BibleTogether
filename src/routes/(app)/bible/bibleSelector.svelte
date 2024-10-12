@@ -74,7 +74,6 @@
 									{$currentChapterStore.scroll === key && $currentChapterStore.chapter === i ? 'outline' : ''}
 									"
 									on:click={() => {
-										console.log(`Scroll: ${key}, Chapter: ${i}`);
 										setCurrentChapter({ scroll: key, chapter: i });
 										goto(getBibleUrl({ scroll: key, chapter: i }));
 										onClose();
