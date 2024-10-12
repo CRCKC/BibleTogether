@@ -21,9 +21,9 @@ jobs:
         run: npm install
         
       - name: Add .env
-        run: echo $DOTENV | base64 > .encrypted && cat .encrypted | base64 -d > .env && cat .env
+        run: echo $DOTENV > .env
         env: 
-          DOTENV: ${{ secrets.DOTENV }}
+          DOTENV: ${{ vars.DOTENV }}
 
       - name: build
         env:
