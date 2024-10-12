@@ -31,7 +31,7 @@
 	});
 
 	onMount(async () => {
-		console.log('Checking auth');
+		console.log('Logging In');
 		getGoogleRedirectResult();
 
 		const user: any = await data.getAuthUser?.();
