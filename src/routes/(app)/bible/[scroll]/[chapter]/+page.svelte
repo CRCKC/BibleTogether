@@ -1,6 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { currentChapterStore, setCurrentChapter, bibleChinese } from '$lib/bible';
+	import {
+		currentChapterStore,
+		setCurrentChapter,
+		bibleChinese,
+		type BibleChapter
+	} from '$lib/bible';
 	import viewport from '$lib/viewportAction';
 	import { bibleProgressStore, updateProgress } from '$lib/bibleProgress';
 	import { settingsStore } from '$lib/userSettings';
@@ -13,18 +18,21 @@
 	let chapterCompleted = false;
 	let firstTimeScrolledToBottom = true;
 
-	let bibleContentPromise: Promise<string>;
-
+	let downloadingBible = false;
 	$: {
 		onLoadChapter();
-		bibleContentPromise = loadChapter(data.bible.scroll, data.bible.chapter);
-		bibleContentPromise.then(async (content) => {
-			if (content.length < 20) {
-				await downloadAndUnzip();
-				// TODO add error message or tell the user that it's downloading the file
-				console.log('File Error');
-			}
-		});
+	}
+
+	async function bibleContentPromise(bible: BibleChapter): Promise<string> {
+		const content = await loadChapter(bible.scroll, bible.chapter);
+		if (content.length < 20) {
+			downloadingBible = true;
+			await downloadAndUnzip();
+			downloadingBible = false;
+			return loadChapter(bible.scroll, bible.chapter);
+			// TODO add error handling
+		}
+		return content;
 	}
 
 	function onLoadChapter() {
@@ -64,9 +72,11 @@
 </div>
 
 <!-- Await for bibleContent -->
-{#await bibleContentPromise}
-	<!-- Loading Placeholder -->
-	<!-- <div class="flex items-center justify-center w-full">Loading...</div> -->
+{#await bibleContentPromise(data.bible)}
+	{#if downloadingBible}
+		<!-- Loading Placeholder -->
+		<div class="flex items-center justify-center w-full">Downloading Content...</div>
+	{/if}
 {:then bibleContent}
 	<!-- Actual Content -->
 	<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
