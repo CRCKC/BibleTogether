@@ -1,18 +1,98 @@
 rules_version = '2';
 
 service cloud.firestore {
-  match /databases/{database}/documents {
-    match /userData/{userId}/{documents=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
 
-    match /bibleQuery/query/{scroll}/{userId}/{documents=**} {
-      allow read: if request.auth != null;
-      
-      allow write: if request.auth != null && request.auth.uid == userId;
-    
-    
+  function isUser(){
+    return request.auth != null && request.auth.uid == userId;
+  }
+
+
+  match /databases/{database}/documents {
+    match /userData/{userId} {
+      match /private/settings {
+        allow read, write: if isUser();
+      }
+
+      match /public/bibleProgress {
+        allow create, update: if isUser() && validateBibleProgress(request.resource.data);
+      }
     }
+    
+    // match /bibleQuery/query/{scroll}/{userId}/{documents=**} {
+    //   allow read: if request.auth != null;
+    //   allow write: if request.auth != null && request.auth.uid == userId;
+    // }
 
   }
+}
+
+function validateBibleProgress(bibleData) {
+  return bibleData.size() == 66 &&
+    bibleData.keys().hasAll(['GEN', 'EXO', 'LEV', 'NUM', 'DEU', 'JOS', 'JDG', 'RUT', '1SA', '2SA', '1KI', '2KI', '1CH', '2CH', 'EZR', 'NEH', 'EST', 'JOB', 'PSA', 'PRO', 'ECC', 'SNG', 'ISA', 'JER', 'LAM', 'EZK', 'DAN', 'HOS', 'JOL', 'AMO', 'OBA', 'JON', 'MIC', 'NAM', 'HAB', 'ZEP', 'HAG', 'ZEC', 'MAL', 'MAT', 'MRK', 'LUK', 'JHN', 'ACT', 'ROM', '1CO', '2CO', 'GAL', 'EPH', 'PHP', 'COL', '1TH', '2TH', '1TI', '2TI', 'TIT', 'PHM', 'HEB', 'JAS', '1PE', '2PE', '1JN', '2JN', '3JN', 'JUD', 'REV']) &&
+    bibleData.GEN.size() == 51 &&
+    bibleData.EXO.size() == 41 &&
+    bibleData.LEV.size() == 28 &&
+    bibleData.NUM.size() == 37 &&
+    bibleData.DEU.size() == 35 &&
+    bibleData.JOS.size() == 25 &&
+    bibleData.JDG.size() == 22 &&
+    bibleData.RUT.size() == 5 &&
+    bibleData['1SA'].size() == 32 &&
+    bibleData['2SA'].size() == 25 &&
+    bibleData['1KI'].size() == 23 &&
+    bibleData['2KI'].size() == 26 &&
+    bibleData['1CH'].size() == 30 &&
+    bibleData['2CH'].size() == 37 &&
+    bibleData.EZR.size() == 11 &&
+    bibleData.NEH.size() == 14 &&
+    bibleData.EST.size() == 11 &&
+    bibleData.JOB.size() == 43 &&
+    bibleData.PSA.size() == 151 &&
+    bibleData.PRO.size() == 32 &&
+    bibleData.ECC.size() == 13 &&
+    bibleData.SNG.size() == 9 &&
+    bibleData.ISA.size() == 67 &&
+    bibleData.JER.size() == 53 &&
+    bibleData.LAM.size() == 6 &&
+    bibleData.EZK.size() == 49 &&
+    bibleData.DAN.size() == 13 &&
+    bibleData.HOS.size() == 15 &&
+    bibleData.JOL.size() == 4 &&
+    bibleData.AMO.size() == 10 &&
+    bibleData.OBA.size() == 2 &&
+    bibleData.JON.size() == 5 &&
+    bibleData.MIC.size() == 8 &&
+    bibleData.NAM.size() == 4 &&
+    bibleData.HAB.size() == 4 &&
+    bibleData.ZEP.size() == 4 &&
+    bibleData.HAG.size() == 3 &&
+    bibleData.ZEC.size() == 15 &&
+    bibleData.MAL.size() == 5 &&
+    bibleData.MAT.size() == 29 &&
+    bibleData.MRK.size() == 17 &&
+    bibleData.LUK.size() == 25 &&
+    bibleData.JHN.size() == 22 &&
+    bibleData.ACT.size() == 29 &&
+    bibleData.ROM.size() == 17 &&
+    bibleData['1CO'].size() == 17 &&
+    bibleData['2CO'].size() == 14 &&
+    bibleData.GAL.size() == 7 &&
+    bibleData.EPH.size() == 7 &&
+    bibleData.PHP.size() == 5 &&
+    bibleData.COL.size() == 5 &&
+    bibleData['1TH'].size() == 6 &&
+    bibleData['2TH'].size() == 4 &&
+    bibleData['1TI'].size() == 7 &&
+    bibleData['2TI'].size() == 5 &&
+    bibleData.TIT.size() == 4 &&
+    bibleData.PHM.size() == 2 &&
+    bibleData.HEB.size() == 14 &&
+    bibleData.JAS.size() == 6 &&
+    bibleData['1PE'].size() == 6 &&
+    bibleData['2PE'].size() == 4 &&
+    bibleData['1JN'].size() == 6 &&
+    bibleData['2JN'].size() == 2 &&
+    bibleData['3JN'].size() == 2 &&
+    bibleData.JUD.size() == 2 &&
+    bibleData.REV.size() == 23;
 }

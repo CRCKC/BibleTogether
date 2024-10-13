@@ -10,6 +10,14 @@ Make the .env file
 
 ## TODO
 - Use tailwind css to set color theme
+- Default Chinese
+- Finish home page
+    - display all
+    - click to go
+
+optional
+- Localization
+
 
 - Use the following command to base64 encode the .env and put it in github secrets
 ```bash
