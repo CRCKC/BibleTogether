@@ -1,18 +1,18 @@
 import { persisted } from "svelte-persisted-store";
-import { bibleList, type BibleChapter } from "./bible";
+import { type BibleChapter } from "./bible";
+import bibleIndexJson from "$lib/data/bibleIndex.json";
 
+const bibleIndex = bibleIndexJson as { [scroll: string]: number; }
 
-const bible = bibleList as { [scroll: string]: number; }
-
-interface BibleProgress {
-    [scroll: string]: Array<boolean>
+const TOTAL_CHAPTERS = 1255; // Including intro chapters
+export interface BibleProgress {
+    [scroll: string]: boolean
 }
 
 function createEmptyProgress(): BibleProgress {
     const progress: BibleProgress = {};
-    for (const scroll in bible) {
-        const maxChap = bible[scroll];
-        progress[scroll] = maxChap === undefined ? [] : new Array(maxChap + 1).fill(false); // +1 because of intro chapter
+    for (let i = 0; i < TOTAL_CHAPTERS; i++) {
+        progress[i] = false;
     }
     return progress;
 }
@@ -25,11 +25,16 @@ export const bibleProgressStore = persisted<BibleProgress>(
     }
 );
 
+// Get function to get _bibleProgressStore
+export function getProgressIndex(scroll: string, chapter: number): number {
+    const index = bibleIndex[scroll] + chapter;
+    return index;
+}
+
 export function updateProgress(bible: BibleChapter, isComplete: boolean = true) {
     // console.log('updateProgress', bible, isComplete);
-
     bibleProgressStore.update((progress) => {
-        progress[bible.scroll][bible.chapter] = isComplete;
+        progress[bibleIndex[bible.scroll] + bible.chapter] = isComplete;
         return progress;
     });
 }

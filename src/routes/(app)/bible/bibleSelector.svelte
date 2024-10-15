@@ -7,7 +7,7 @@
 		bibleChinese,
 		currentChapterStore
 	} from '$lib/bible';
-	import { bibleProgressStore } from '$lib/bibleProgress';
+	import { bibleProgressStore, getProgressIndex } from '$lib/bibleProgress';
 	import classNames from 'classnames';
 
 	// define a variable that stores a void function
@@ -70,7 +70,7 @@
 							{#each Array.from({ length: bibleList[key] + 1 }) as _, i}
 								<button
 									class="flex items-center justify-center rounded-lg bg-gray-800 size-12
-									{$bibleProgressStore[key][i] ? 'bg-green-600' : ''}
+									{$bibleProgressStore[getProgressIndex(key, i)] ? 'bg-green-600' : ''}
 									{$currentChapterStore.scroll === key && $currentChapterStore.chapter === i ? 'outline' : ''}
 									"
 									on:click={() => {
