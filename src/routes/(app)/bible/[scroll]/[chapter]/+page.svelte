@@ -7,7 +7,7 @@
 		type BibleChapter
 	} from '$lib/bible';
 	import viewport from '$lib/viewportAction';
-	import { bibleProgressStore, updateProgress } from '$lib/bibleProgress';
+	import { bibleProgressStore, getProgressIndex, updateProgress } from '$lib/bibleProgress';
 	import { settingsStore } from '$lib/userSettings';
 	import { loadChapter } from '$lib/backend';
 	import { downloadAndUnzip } from '$lib/data/downloadBible';
@@ -20,7 +20,8 @@
 
 	let downloadingBible = false;
 	$: {
-		onLoadChapter();
+		const completed = $bibleProgressStore[getProgressIndex(data.bible.scroll, data.bible.chapter)];
+		onLoadChapter(completed);
 	}
 
 	async function bibleContentPromise(bible: BibleChapter): Promise<string> {
@@ -35,9 +36,9 @@
 		return content;
 	}
 
-	function onLoadChapter() {
+	function onLoadChapter(completed: boolean) {
 		firstTimeScrolledToBottom = true;
-		chapterCompleted = $bibleProgressStore[data.bible.scroll][data.bible.chapter];
+		chapterCompleted = completed;
 	}
 
 	if (data.bible) {
