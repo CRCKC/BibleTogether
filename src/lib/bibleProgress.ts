@@ -1,6 +1,7 @@
 import { persisted } from "svelte-persisted-store";
 import { type BibleChapter } from "./bible";
 import bibleIndexJson from "$lib/data/bibleIndex.json";
+import { uploadBibleProgress } from "./firebase/firestore";
 
 const bibleIndex = bibleIndexJson as { [scroll: string]: number; }
 
@@ -15,6 +16,10 @@ function createEmptyProgress(): BibleProgress {
         progress[i] = false;
     }
     return progress;
+}
+
+export function resetProgress() {
+    bibleProgressStore.set(createEmptyProgress());
 }
 
 export const bibleProgressStore = persisted<BibleProgress>(
@@ -37,5 +42,6 @@ export function updateProgress(bible: BibleChapter, isComplete: boolean = true) 
         progress[bibleIndex[bible.scroll] + bible.chapter] = isComplete;
         return progress;
     });
+    uploadBibleProgress();
 }
 

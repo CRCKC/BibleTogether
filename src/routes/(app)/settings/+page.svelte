@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
+	import { bibleProgressStore, resetProgress } from '$lib/bibleProgress';
 	import { logout } from '$lib/firebase/auth';
 	import { session } from '$lib/session';
 	// import type { PageData } from './$types';
@@ -36,6 +37,14 @@
 				}}
 			>
 				Logout
+			</button>
+			<button
+				class="flex items-center justify-center h-12 mt-4 text-white bg-red-500 rounded-md w-80"
+				on:click={() => {
+					resetProgress();
+				}}
+			>
+				Delete Data
 			</button>
 		</div>
 	</div>

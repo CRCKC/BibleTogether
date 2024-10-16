@@ -4,10 +4,19 @@
 	import { base } from '$app/paths';
 	import Item from './navbarItem.svelte';
 	import BibleNavBar from './bible/navbarBible.svelte';
-	import classNames from 'classnames';
+	import { onMount } from 'svelte';
+	import { subScribeUpdates } from '$lib/firebase/firestore';
+	import type { Unsubscribe } from 'firebase/firestore';
+	import { session } from '$lib/session';
 	// export let data: LayoutData;
 
+	let subscribtion: Unsubscribe;
 	$: isBible = $page.url.pathname.startsWith(`${base}/bible`);
+	onMount(async () => {
+		if (!$session.loggedIn) return;
+		const sub = await subScribeUpdates();
+		if (sub) subscribtion = sub;
+	});
 </script>
 
 <div class="flex flex-col h-dvh w-dvw">
