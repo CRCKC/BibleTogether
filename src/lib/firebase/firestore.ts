@@ -1,13 +1,14 @@
 import { bibleProgressStore } from "$lib/bibleProgress";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 import { firebaseAuth, firebaseFirestore } from "./firebase";
 import { get } from "svelte/store";
 
-const userId = firebaseAuth.currentUser?.uid;
 
-const BibleProgressDocRef = userId ? doc(firebaseFirestore, "bibleProgress", userId) : undefined;
 
 export function uploadBibleProgress() {
+    const userId = firebaseAuth.currentUser?.uid;
+    const BibleProgressDocRef = userId ? doc(firebaseFirestore, "bibleProgress", userId) : undefined;
+
     if (!BibleProgressDocRef) {
         console.error('User not logged in');
         return;
@@ -19,6 +20,9 @@ export function uploadBibleProgress() {
 }
 
 export async function downloadBibleProgress() {
+    const userId = firebaseAuth.currentUser?.uid;
+    const BibleProgressDocRef = userId ? doc(firebaseFirestore, "bibleProgress", userId) : undefined;
+
     if (!BibleProgressDocRef) {
         console.error('User not logged in');
         return;
@@ -31,6 +35,24 @@ export async function downloadBibleProgress() {
             bibleProgressStore.set(progress);
         }
     }
+}
+
+export async function subScribeUpdates() {
+    const userId = firebaseAuth.currentUser?.uid;
+    const BibleProgressDocRef = userId ? doc(firebaseFirestore, "bibleProgress", userId) : undefined;
+
+    console.log('subScribeUpdates');
+    if (BibleProgressDocRef) {
+        return onSnapshot(BibleProgressDocRef, (doc) => {
+            // const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+            // console.log(source, " data: ", doc.data());
+            const progress = doc.data();
+            if (progress) {
+                bibleProgressStore.set(progress);
+            }
+        });
+    }
+    return undefined;
 }
 
 
