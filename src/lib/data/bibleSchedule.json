@@ -2,408 +2,484 @@
   "2024": {
     "1": [
       {
-        "scroll": "馬太福音",
-        "verse": "1-28"
+        "scroll": "MAT",
+        "start": 1,
+        "end": 28
       }
     ],
     "2": [
       {
-        "scroll": "馬可福音",
-        "verse": "1-16"
+        "scroll": "MRK",
+        "start": 1,
+        "end": 16
       }
     ],
     "3": [
       {
-        "scroll": "路加福音",
-        "verse": "1-24"
+        "scroll": "LUK",
+        "start": 1,
+        "end": 24
       }
     ],
     "4": [
       {
-        "scroll": "約翰福音",
-        "verse": "1-21"
+        "scroll": "JHN",
+        "start": 1,
+        "end": 21
       }
     ],
     "5": [
       {
-        "scroll": "約書亞記",
-        "verse": "1-24"
+        "scroll": "JOS",
+        "start": 1,
+        "end": 24
       }
     ],
     "6": [
       {
-        "scroll": "士師記",
-        "verse": "1-21"
+        "scroll": "JDG",
+        "start": 1,
+        "end": 21
       },
       {
-        "scroll": "路得記",
-        "verse": "1-4"
+        "scroll": "RUT",
+        "start": 1,
+        "end": 4
       }
     ],
     "7": [
       {
-        "scroll": "撒母耳記(上)",
-        "verse": "1-31"
+        "scroll": "1SA",
+        "start": 1,
+        "end": 31
       }
     ],
     "8": [
       {
-        "scroll": "撒母耳記(下)",
-        "verse": "1-24"
+        "scroll": "2SA",
+        "start": 1,
+        "end": 24
       }
     ],
     "9": [
       {
-        "scroll": "列王紀(上)",
-        "verse": "1-22"
+        "scroll": "1KI",
+        "start": 1,
+        "end": 22
       }
     ],
     "10": [
       {
-        "scroll": "列王紀(下)",
-        "verse": "1-25"
+        "scroll": "2KI",
+        "start": 1,
+        "end": 25
       }
     ],
     "11": [
       {
-        "scroll": "歷代志(上)",
-        "verse": "1-29"
+        "scroll": "1CH",
+        "start": 1,
+        "end": 29
       }
     ],
     "12": [
       {
-        "scroll": "歷代志(下)",
-        "verse": "1-36"
+        "scroll": "2CH",
+        "start": 1,
+        "end": 36
       }
     ]
   },
   "2025": {
     "1": [
       {
-        "scroll": "使徒行傳",
-        "verse": "1-28"
+        "scroll": "ACT",
+        "start": 1,
+        "end": 28
       }
     ],
     "2": [
       {
-        "scroll": "羅馬書",
-        "verse": "1-16"
+        "scroll": "ROM",
+        "start": 1,
+        "end": 16
       }
     ],
     "3": [
       {
-        "scroll": "哥林多前書",
-        "verse": "1-16"
+        "scroll": "1CO",
+        "start": 1,
+        "end": 16
       }
     ],
     "4": [
       {
-        "scroll": "哥林多後書",
-        "verse": "1-13"
+        "scroll": "2CO",
+        "start": 1,
+        "end": 13
       }
     ],
     "5": [
       {
-        "scroll": "以斯拉記",
-        "verse": "1-10"
+        "scroll": "EZR",
+        "start": 1,
+        "end": 10
       },
       {
-        "scroll": "尼希米記",
-        "verse": "1-13"
+        "scroll": "NEH",
+        "start": 1,
+        "end": 13
       }
     ],
     "6": [
       {
-        "scroll": "以斯帖記",
-        "verse": "1-10"
+        "scroll": "EST",
+        "start": 1,
+        "end": 10
       },
       {
-        "scroll": "約伯記",
-        "verse": "1-15"
+        "scroll": "JOB",
+        "start": 1,
+        "end": 15
       }
     ],
     "7": [
       {
-        "scroll": "約伯記",
-        "verse": "16-42"
+        "scroll": "JOB",
+        "start": 16,
+        "end": 42
       }
     ],
     "8": [
       {
-        "scroll": "詩篇",
-        "verse": "1-30"
+        "scroll": "PSA",
+        "start": 1,
+        "end": 30
       }
     ],
     "9": [
       {
-        "scroll": "詩篇",
-        "verse": "31-60"
+        "scroll": "PSA",
+        "start": 31,
+        "end": 60
       }
     ],
     "10": [
       {
-        "scroll": "詩篇",
-        "verse": "61-90"
+        "scroll": "PSA",
+        "start": 61,
+        "end": 90
       }
     ],
     "11": [
       {
-        "scroll": "詩篇",
-        "verse": "91-120"
+        "scroll": "PSA",
+        "start": 91,
+        "end": 120
       }
     ],
     "12": [
       {
-        "scroll": "詩篇",
-        "verse": "121-150"
+        "scroll": "PSA",
+        "start": 121,
+        "end": 150
       }
     ]
   },
   "2026": {
     "1": [
       {
-        "scroll": "加拉太書",
-        "verse": "1-6"
+        "scroll": "GAL",
+        "start": 1,
+        "end": 6
       },
       {
-        "scroll": "以弗所書",
-        "verse": "1-6"
+        "scroll": "EPH",
+        "start": 1,
+        "end": 6
       },
       {
-        "scroll": "腓立比書",
-        "verse": "1-4"
+        "scroll": "PHP",
+        "start": 1,
+        "end": 4
       },
       {
-        "scroll": "歌羅西書",
-        "verse": "1-4"
+        "scroll": "COL",
+        "start": 1,
+        "end": 4
       }
     ],
     "2": [
       {
-        "scroll": "帖撒羅尼迦前書",
-        "verse": "1-5"
+        "scroll": "1TH",
+        "start": 1,
+        "end": 5
       },
       {
-        "scroll": "帖撒羅尼迦後書",
-        "verse": "1-3"
+        "scroll": "2TH",
+        "start": 1,
+        "end": 3
       },
       {
-        "scroll": "提摩太前書",
-        "verse": "1-6"
+        "scroll": "1TI",
+        "start": 1,
+        "end": 6
       },
       {
-        "scroll": "提摩太後書",
-        "verse": "1-4"
+        "scroll": "2TI",
+        "start": 1,
+        "end": 4
       },
       {
-        "scroll": "提多書",
-        "verse": "1-3"
+        "scroll": "TIT",
+        "start": 1,
+        "end": 3
       },
       {
-        "scroll": "腓利門書",
-        "verse": "1"
+        "scroll": "PHM",
+        "start": 1,
+        "end": 1
       }
     ],
     "3": [
       {
-        "scroll": "箴言",
-        "verse": "1-31"
+        "scroll": "PRO",
+        "start": 1,
+        "end": 31
       }
     ],
     "4": [
       {
-        "scroll": "傳道書",
-        "verse": "1-12"
+        "scroll": "ECC",
+        "start": 1,
+        "end": 12
       },
       {
-        "scroll": "雅歌",
-        "verse": "1-8"
+        "scroll": "SNG",
+        "start": 1,
+        "end": 8
       }
     ],
     "5": [
       {
-        "scroll": "以賽亞書",
-        "verse": "1-33"
+        "scroll": "ISA",
+        "start": 1,
+        "end": 33
       }
     ],
     "6": [
       {
-        "scroll": "以賽亞書",
-        "verse": "34-66"
+        "scroll": "ISA",
+        "start": 34,
+        "end": 66
       }
     ],
     "7": [
       {
-        "scroll": "耶利米書",
-        "verse": "1-30"
+        "scroll": "JER",
+        "start": 1,
+        "end": 30
       }
     ],
     "8": [
       {
-        "scroll": "耶利米書",
-        "verse": "31-52"
+        "scroll": "JER",
+        "start": 31,
+        "end": 52
       },
       {
-        "scroll": "耶利米哀歌",
-        "verse": "1-5"
+        "scroll": "LAM",
+        "start": 1,
+        "end": 5
       }
     ],
     "9": [
       {
-        "scroll": "以西結書",
-        "verse": "1-24"
+        "scroll": "EZK",
+        "start": 1,
+        "end": 24
       }
     ],
     "10": [
       {
-        "scroll": "以西結書",
-        "verse": "25-48"
+        "scroll": "EZK",
+        "start": 25,
+        "end": 48
       }
     ],
     "11": [
       {
-        "scroll": "但以理書",
-        "verse": "1-12"
+        "scroll": "DAN",
+        "start": 1,
+        "end": 12
       }
     ],
     "12": [
       {
-        "scroll": "何西阿書",
-        "verse": "1-14"
+        "scroll": "HOS",
+        "start": 1,
+        "end": 14
       },
       {
-        "scroll": "約珥書",
-        "verse": "1-3"
+        "scroll": "JOL",
+        "start": 1,
+        "end": 3
       },
       {
-        "scroll": "阿摩司書",
-        "verse": "1-9"
+        "scroll": "AMO",
+        "start": 1,
+        "end": 9
       }
     ]
   },
   "2027": {
     "1": [
       {
-        "scroll": "俄巴底亞書",
-        "verse": "1"
+        "scroll": "OBA",
+        "start": 1,
+        "end": 1
       },
       {
-        "scroll": "約拿書",
-        "verse": "1-4"
+        "scroll": "JON",
+        "start": 1,
+        "end": 4
       },
       {
-        "scroll": "彌迦書",
-        "verse": "1-7"
+        "scroll": "MIC",
+        "start": 1,
+        "end": 7
       },
       {
-        "scroll": "那鴻書",
-        "verse": "1-3"
+        "scroll": "NAM",
+        "start": 1,
+        "end": 3
       },
       {
-        "scroll": "哈巴谷書",
-        "verse": "1-3"
+        "scroll": "HAB",
+        "start": 1,
+        "end": 3
       },
       {
-        "scroll": "西番雅書",
-        "verse": "1-3"
+        "scroll": "ZEP",
+        "start": 1,
+        "end": 3
       }
     ],
     "2": [
       {
-        "scroll": "哈該書",
-        "verse": "1-2"
+        "scroll": "HAG",
+        "start": 1,
+        "end": 2
       },
       {
-        "scroll": "撒迦利亞書",
-        "verse": "1-14"
+        "scroll": "ZEC",
+        "start": 1,
+        "end": 14
       },
       {
-        "scroll": "瑪拉基書",
-        "verse": "1-4"
+        "scroll": "MAL",
+        "start": 1,
+        "end": 4
       }
     ],
     "3": [
       {
-        "scroll": "希伯來書",
-        "verse": "1-13"
+        "scroll": "HEB",
+        "start": 1,
+        "end": 13
       },
       {
-        "scroll": "雅各書",
-        "verse": "1-5"
+        "scroll": "JAS",
+        "start": 1,
+        "end": 5
       }
     ],
     "4": [
       {
-        "scroll": "彼得前書",
-        "verse": "1-5"
+        "scroll": "1PE",
+        "start": 1,
+        "end": 5
       },
       {
-        "scroll": "彼得後書",
-        "verse": "1-3"
+        "scroll": "2PE",
+        "start": 1,
+        "end": 3
       },
       {
-        "scroll": "約翰壹書",
-        "verse": "1-5"
+        "scroll": "1JN",
+        "start": 1,
+        "end": 5
       },
       {
-        "scroll": "約翰貳書",
-        "verse": "1"
+        "scroll": "2JN",
+        "start": 1,
+        "end": 1
       },
       {
-        "scroll": "約翰參書",
-        "verse": "1"
+        "scroll": "3JN",
+        "start": 1,
+        "end": 1
       },
       {
-        "scroll": "猶大書",
-        "verse": "1"
+        "scroll": "JUD",
+        "start": 1,
+        "end": 1
       }
     ],
     "5": [
       {
-        "scroll": "啟示錄",
-        "verse": "1-22"
+        "scroll": "REV",
+        "start": 1,
+        "end": 22
       }
     ],
     "6": [
       {
-        "scroll": "創世記",
-        "verse": "1-25"
+        "scroll": "GEN",
+        "start": 1,
+        "end": 25
       }
     ],
     "7": [
       {
-        "scroll": "創世記",
-        "verse": "26-50"
+        "scroll": "GEN",
+        "start": 26,
+        "end": 50
       }
     ],
     "8": [
       {
-        "scroll": "出埃及記",
-        "verse": "1-20"
+        "scroll": "EXO",
+        "start": 1,
+        "end": 20
       }
     ],
     "9": [
       {
-        "scroll": "出埃及記",
-        "verse": "21-40"
+        "scroll": "EXO",
+        "start": 21,
+        "end": 40
       }
     ],
     "10": [
       {
-        "scroll": "利未記",
-        "verse": "1-27"
+        "scroll": "LEV",
+        "start": 1,
+        "end": 27
       }
     ],
     "11": [
       {
-        "scroll": "民數記",
-        "verse": "1-36"
+        "scroll": "NUM",
+        "start": 1,
+        "end": 36
       }
     ],
     "12": [
       {
-        "scroll": "申命記",
-        "verse": "1-34"
+        "scroll": "DEU",
+        "start": 1,
+        "end": 34
       }
     ]
   }
