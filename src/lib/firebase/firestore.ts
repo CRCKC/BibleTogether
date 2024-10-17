@@ -1,11 +1,11 @@
-import { bibleProgressStore, getProgressIndex } from "$lib/bibleProgress";
+import { bibleProgressStore, getProgressIndex, migrateProgress } from "$lib/bibleProgress";
 import { collection, doc, getCountFromServer, getDoc, onSnapshot, query, setDoc, where } from "firebase/firestore";
 import { firebaseAuth, firebaseFirestore } from "./firebase";
 import { get } from "svelte/store";
 
 
 
-export function uploadBibleProgress() {
+export async function uploadBibleProgress() {
     const userId = firebaseAuth.currentUser?.uid;
     const BibleProgressDocRef = userId ? doc(firebaseFirestore, "bibleProgress", userId) : undefined;
 
@@ -16,7 +16,25 @@ export function uploadBibleProgress() {
 
     const data = get(bibleProgressStore);
 
-    return setDoc(BibleProgressDocRef, data);
+    try {
+        await setDoc(BibleProgressDocRef, data);
+        return true;
+    } catch (error) {
+        if (Object.keys(data).length == 1255) {
+            console.log('Error writing document: ', error);
+            return false;
+        } else {
+            const newData = migrateProgress(data);
+            try {
+                await setDoc(BibleProgressDocRef, newData);
+                return true;
+
+            } catch (error) {
+                console.error('Error writing document: ', error);
+                return false;
+            }
+        }
+    }
 }
 
 export async function downloadBibleProgress() {

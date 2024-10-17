@@ -22,7 +22,6 @@
 					});
 				}
 			} else {
-				console.log('Unsub');
 				if (subscribtion) subscribtion();
 			}
 		} catch (error) {
