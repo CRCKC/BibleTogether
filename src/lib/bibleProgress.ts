@@ -22,6 +22,10 @@ export function resetProgress() {
     bibleProgressStore.set(createEmptyProgress());
 }
 
+/**  
+ * It actually doesnt migrate from old data to new data, it just tries to fix the data if it is not in the correct format, 
+ * but data is not guaranteed to persist if it is not in the correct format
+**/
 export function migrateProgress(progress: BibleProgress) {
     const newProgress = createEmptyProgress();
 
@@ -33,6 +37,9 @@ export function migrateProgress(progress: BibleProgress) {
     return newProgress;
 }
 
+/**
+ * This is the store that holds the progress of the user in reading the Bible and it is persisted in the local storage
+ */
 export const bibleProgressStore = persisted<BibleProgress>(
     'bibleProgress',
     createEmptyProgress(),
@@ -41,7 +48,6 @@ export const bibleProgressStore = persisted<BibleProgress>(
     }
 );
 
-// Get function to get _bibleProgressStore
 export function getProgressIndex(scroll: string, chapter: number): number {
     const index = bibleIndex[scroll] + chapter;
     return index;
