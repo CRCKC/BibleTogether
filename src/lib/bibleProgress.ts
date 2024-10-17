@@ -22,6 +22,17 @@ export function resetProgress() {
     bibleProgressStore.set(createEmptyProgress());
 }
 
+export function migrateProgress(progress: BibleProgress) {
+    const newProgress = createEmptyProgress();
+
+    for (const [key, value] of Object.entries(progress)) {
+        if (key in Object.keys(newProgress) && typeof value === typeof true) {
+            newProgress[parseInt(key)] = value;
+        }
+    }
+    return newProgress;
+}
+
 export const bibleProgressStore = persisted<BibleProgress>(
     'bibleProgress',
     createEmptyProgress(),
