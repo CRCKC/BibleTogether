@@ -14,12 +14,15 @@
 	$: isBible = $page.url.pathname.startsWith(`${base}/bible`);
 	$: {
 		try {
-			if (!subscribtion && $session.loggedIn == true) {
-				subScribeUpdates().then((sub) => {
-					console.log('Subscribing to updates');
-					if (sub) subscribtion = sub;
-				});
+			if ($session.loggedIn == true) {
+				if (!subscribtion) {
+					subScribeUpdates().then((sub) => {
+						console.log('Subscribing to updates');
+						if (sub) subscribtion = sub;
+					});
+				}
 			} else {
+				console.log('Unsub');
 				if (subscribtion) subscribtion();
 			}
 		} catch (error) {
