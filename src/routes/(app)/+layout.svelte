@@ -4,18 +4,31 @@
 	import { base } from '$app/paths';
 	import Item from './navbarItem.svelte';
 	import BibleNavBar from './bible/navbarBible.svelte';
-	import { onMount } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { subScribeUpdates } from '$lib/firebase/firestore';
 	import type { Unsubscribe } from 'firebase/firestore';
 	import { session } from '$lib/session';
 	// export let data: LayoutData;
 
-	let subscribtion: Unsubscribe;
+	let subscribtion: Unsubscribe | undefined;
 	$: isBible = $page.url.pathname.startsWith(`${base}/bible`);
-	onMount(async () => {
-		if (!$session.loggedIn) return;
-		const sub = await subScribeUpdates();
-		if (sub) subscribtion = sub;
+	$: {
+		try {
+			if (!subscribtion && $session.loggedIn == true) {
+				subScribeUpdates().then((sub) => {
+					console.log('Subscribing to updates');
+					if (sub) subscribtion = sub;
+				});
+			} else {
+				if (subscribtion) subscribtion();
+			}
+		} catch (error) {
+			console.info("Verifying user's session");
+		}
+	}
+
+	onDestroy(() => {
+		if (subscribtion) subscribtion();
 	});
 </script>
 
