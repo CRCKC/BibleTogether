@@ -1,5 +1,5 @@
-import { bibleProgressStore } from "$lib/bibleProgress";
-import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { bibleProgressStore, getProgressIndex } from "$lib/bibleProgress";
+import { collection, doc, getCountFromServer, getDoc, onSnapshot, query, setDoc, where } from "firebase/firestore";
 import { firebaseAuth, firebaseFirestore } from "./firebase";
 import { get } from "svelte/store";
 
@@ -41,7 +41,6 @@ export async function subScribeUpdates() {
     const userId = firebaseAuth.currentUser?.uid;
     const BibleProgressDocRef = userId ? doc(firebaseFirestore, "bibleProgress", userId) : undefined;
 
-    console.log('subScribeUpdates');
     if (BibleProgressDocRef) {
         return onSnapshot(BibleProgressDocRef, (doc) => {
             // const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
@@ -53,6 +52,22 @@ export async function subScribeUpdates() {
         });
     }
     return undefined;
+}
+
+export async function queryChapterCount(scroll: string, chapter: number) {
+    const userId = firebaseAuth.currentUser?.uid;
+    const BibleProgressDocRef = userId ? doc(firebaseFirestore, "bibleProgress", userId) : undefined;
+
+    if (!BibleProgressDocRef) {
+        console.error('User not logged in');
+        return;
+    }
+    const chapNum = getProgressIndex(scroll, chapter)
+    const coll = collection(firebaseFirestore, "bibleProgress");
+    const q = query(coll, where(chapNum.toString(), "==", "CA"));
+    const snapshot = await getCountFromServer(q);
+
+    return snapshot.data().count;
 }
 
 
