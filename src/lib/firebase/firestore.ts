@@ -64,7 +64,7 @@ export async function queryChapterCount(scroll: string, chapter: number) {
     }
     const chapNum = getProgressIndex(scroll, chapter)
     const coll = collection(firebaseFirestore, "bibleProgress");
-    const q = query(coll, where(chapNum.toString(), "==", "CA"));
+    const q = query(coll, where(chapNum.toString(), "==", true));
     const snapshot = await getCountFromServer(q);
 
     return snapshot.data().count;
