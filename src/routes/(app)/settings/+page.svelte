@@ -39,12 +39,12 @@
 				Logout
 			</button>
 			<button
-				class="flex items-center justify-center h-12 mt-4 text-white bg-red-500 rounded-md w-80"
+				class="flex items-center justify-center h-12 mt-4 text-white bg-red-700 rounded-md w-80"
 				on:click={() => {
 					resetProgress();
 				}}
 			>
-				Delete Data
+				Reset Progress
 			</button>
 		</div>
 	</div>

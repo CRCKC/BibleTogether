@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bible Together</string>
+    <string name="title_activity_main">Bible Together</string>
+    <string name="package_name">com.crckc.bibletogether</string>
+    <string name="custom_url_scheme">com.crckc.bibletogether</string>
+</resources>
