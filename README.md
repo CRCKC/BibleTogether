@@ -14,6 +14,7 @@ Make the .env file
 - Finish home page
     - display all
     - click to go
+- Optimize API calls
 
 optional
 - Localization

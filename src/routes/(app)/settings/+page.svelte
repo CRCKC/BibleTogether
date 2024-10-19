@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { bibleProgressStore, resetProgress } from '$lib/bibleProgress';
+	import { resetProgress } from '$lib/bibleProgress';
 	import { logout } from '$lib/firebase/auth';
 	import { session } from '$lib/session';
 	import { locale } from 'svelte-i18n';

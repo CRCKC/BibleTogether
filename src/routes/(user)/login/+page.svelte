@@ -7,6 +7,7 @@
 	import GoogleSigninButton from '../googleSigninButton.svelte';
 	import OrWithSeperator from '../orWithSeperator.svelte';
 	import { t } from 'svelte-i18n';
+	import { Input } from '$lib/components/ui/input/index.js';
 
 	// export let data: PageData;
 
@@ -53,21 +54,21 @@
 	</div>
 	<div class="flex flex-col items-center justify-center mt-8">
 		<div class="flex flex-col items-center justify-center text-black">
-			<input
-				type="text"
+			<Input
+				type="email"
 				placeholder={$t('username')}
 				bind:value={username}
-				bind:this={usernameField}
+				bind:ref={usernameField}
 				on:keydown={handleKeydownUsername}
-				class="h-12 p-2 border-2 border-gray-200 rounded-md w-80"
+				class="h-12 p-2 w-80"
 			/>
-			<input
+			<Input
 				type="password"
 				placeholder={$t('password')}
 				bind:value={password}
-				bind:this={passwordField}
+				bind:ref={passwordField}
 				on:keydown={handleKeydownPassword}
-				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
+				class="h-12 p-2 mt-4 w-80"
 			/>
 			<button
 				type="submit"
