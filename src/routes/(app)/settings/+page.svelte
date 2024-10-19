@@ -7,6 +7,7 @@
 	import { locale } from 'svelte-i18n';
 	// import type { PageData } from './$types';
 	import ZoomPopup from './zoomPopup.svelte';
+	import DeleteProgress from './deleteProgress.svelte';
 	let popupFontSize = false;
 
 	// export let data: PageData;
@@ -48,14 +49,7 @@
 			>
 				Logout
 			</button>
-			<button
-				class="flex items-center justify-center h-12 mt-4 text-white bg-red-700 rounded-md w-80"
-				on:click={() => {
-					resetProgress();
-				}}
-			>
-				Reset Progress
-			</button>
+			<DeleteProgress />
 		</div>
 	</div>
 </div>
