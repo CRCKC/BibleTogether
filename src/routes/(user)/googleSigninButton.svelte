@@ -10,7 +10,7 @@
 	class="flex items-center bg-white border border-button-border-light rounded-md p-0.5 pr-3 size-full justify-center"
 	on:click={onClick}
 >
-	<div class="flex items-center justify-center bg-white rounded-l size-12">
+	<div class="flex items-center justify-center rounded-l size-12">
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-7">
 			<title>{text}</title>
 			<desc>Google G Logo</desc>

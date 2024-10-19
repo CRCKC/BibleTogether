@@ -4,9 +4,9 @@
 	import { bibleProgressStore, resetProgress } from '$lib/bibleProgress';
 	import { logout } from '$lib/firebase/auth';
 	import { session } from '$lib/session';
+	import { locale } from 'svelte-i18n';
 	// import type { PageData } from './$types';
 	import ZoomPopup from './zoomPopup.svelte';
-
 	let popupFontSize = false;
 
 	// export let data: PageData;
@@ -28,6 +28,16 @@
 			>
 				Adjust Font Size
 			</button>
+			<!-- Change Language -->
+			<button
+				class="flex items-center justify-center h-12 mt-4 text-white bg-gray-600 rounded-md w-80"
+				on:click={() => {
+					locale.set('zh');
+				}}
+			>
+				Change Language
+			</button>
+
 			<button
 				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
 				on:click={() => {
