@@ -5,6 +5,7 @@
 	import GoogleSigninButton from '../googleSigninButton.svelte';
 	import OrWithSeperator from '../orWithSeperator.svelte';
 	// import type { PageData } from './$types';
+	import { Input } from '$lib/components/ui/input/index.js';
 
 	// export let data: PageData;
 
@@ -65,20 +66,20 @@
 	</div>
 	<div class="flex flex-col items-center justify-center mt-8">
 		<form class="flex flex-col items-center justify-center text-black">
-			<input
+			<Input
 				type="text"
 				placeholder="Username"
 				class="h-12 p-2 border-2 border-gray-200 rounded-md w-80"
 				bind:value={username}
-				bind:this={usernameField}
+				bind:ref={usernameField}
 			/>
-			<input
+			<Input
 				type="password"
 				placeholder="Password"
 				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
 				bind:value={password}
 			/>
-			<input
+			<Input
 				type="password"
 				placeholder="Confirm Password"
 				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"

@@ -24,7 +24,6 @@
 		const completed = $bibleProgressStore[getProgressIndex(data.bible.scroll, data.bible.chapter)];
 		queryChapterCount(data.bible.scroll, data.bible.chapter).then((count) => {
 			if (count != undefined) queryCount = count;
-			console.log('Number of people also finished this chapter:', count);
 		});
 
 		onLoadChapter(completed);
