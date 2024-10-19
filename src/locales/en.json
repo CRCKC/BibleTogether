@@ -1,0 +1,20 @@
+{
+    "settings": "Settings",
+    "bible": "Bible",
+    "home": "Home",
+    "login": "Login",
+    "loginWelcome": "Welcome back! Please login to your account",
+    "orWith": "or with",
+    "username": "Username",
+    "password": "Password",
+    "googleLogin": "Login with Google",
+    "loginButton": "Login",
+    "gotoSignup": "Don't have an account? Sign up",
+    "gotoLogin": "Already have an account? Login",
+    "signup": "Signup",
+    "signupWelcome": "Welcome! Please Signup your account",
+    "signupButton": "Signup",
+    "logout": "Logout",
+    "logoutMessage": "You have successfully logged out",
+    "logoutButton": "Logout"
+}

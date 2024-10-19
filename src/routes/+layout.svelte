@@ -6,6 +6,9 @@
 	import { session } from '$lib/session';
 	import '../app.css';
 	import { getGoogleRedirectResult } from '$lib/firebase/auth';
+	import '../i18n';
+	import { ModeWatcher } from 'mode-watcher';
+	import initLocale from '../i18n';
 
 	export let data: LayoutData;
 
@@ -55,10 +58,17 @@
 	});
 </script>
 
-{#if loading}
+<ModeWatcher />
+{#await initLocale()}
 	<div class="flex items-center justify-center h-dvh">
 		<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
 	</div>
-{:else}
-	<slot class="overflow-hidden" />
-{/if}
+{:then _}
+	{#if loading}
+		<div class="flex items-center justify-center h-dvh">
+			<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
+		</div>
+	{:else}
+		<slot class="overflow-hidden" />
+	{/if}
+{/await}

@@ -6,6 +6,7 @@
 	import { login } from '$lib/firebase/auth';
 	import GoogleSigninButton from '../googleSigninButton.svelte';
 	import OrWithSeperator from '../orWithSeperator.svelte';
+	import { t } from 'svelte-i18n';
 
 	// export let data: PageData;
 
@@ -47,14 +48,14 @@
 <!-- Login Screen UI -->
 <div class="flex flex-col items-center justify-center h-dvh">
 	<div class="flex flex-col items-center justify-center">
-		<h1 class="text-4xl font-bold">Login</h1>
-		<p class="text-gray-400">Welcome back! Please login to your account.</p>
+		<h1 class="text-4xl font-bold">{$t('login')}</h1>
+		<p class="text-gray-400">{$t('loginWelcome')}</p>
 	</div>
 	<div class="flex flex-col items-center justify-center mt-8">
 		<div class="flex flex-col items-center justify-center text-black">
 			<input
 				type="text"
-				placeholder="Username"
+				placeholder={$t('username')}
 				bind:value={username}
 				bind:this={usernameField}
 				on:keydown={handleKeydownUsername}
@@ -62,7 +63,7 @@
 			/>
 			<input
 				type="password"
-				placeholder="Password"
+				placeholder={$t('password')}
 				bind:value={password}
 				bind:this={passwordField}
 				on:keydown={handleKeydownPassword}
@@ -76,15 +77,15 @@
 				{#if loggingIn}
 					<div class="w-8 h-8 border-b-2 border-white rounded-full animate-spin"></div>
 				{:else}
-					Login
+					{$t('login')}
 				{/if}
 			</button>
 			<OrWithSeperator />
 
 			<div class="h-12 my-4 w-80">
-				<GoogleSigninButton text={'Login with Google'} />
+				<GoogleSigninButton text={$t('googleLogin')} />
 			</div>
 		</div>
-		<a href="{base}/signup" class="mt-4 text-blue-500">Don't have an account? Sign up</a>
+		<a href="{base}/signup" class="mt-4 text-blue-500">{$t('gotoSignup')}</a>
 	</div>
 </div>

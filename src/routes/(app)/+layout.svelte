@@ -8,6 +8,8 @@
 	import { subScribeUpdates } from '$lib/firebase/firestore';
 	import type { Unsubscribe } from 'firebase/firestore';
 	import { session } from '$lib/session';
+	import { t } from 'svelte-i18n';
+
 	// export let data: LayoutData;
 
 	let subscribtion: Unsubscribe | undefined;
@@ -46,9 +48,9 @@
 		{/if}
 
 		<nav class="grid grid-flow-col">
-			<Item title="Home" path="home" icon="home" />
-			<Item title="Bible" path="bible" icon="book_2" />
-			<Item title="Settings" path="settings" icon="settings" />
+			<Item title={$t('home')} path="home" icon="home" />
+			<Item title={$t('bible')} path="bible" icon="book_2" />
+			<Item title={$t('settings')} path="settings" icon="settings" />
 		</nav>
 	</div>
 </div>
