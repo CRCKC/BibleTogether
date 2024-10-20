@@ -12,6 +12,8 @@
 	import { loadChapter } from '$lib/backend';
 	import { downloadAndUnzip } from '$lib/data/downloadBible';
 	import { queryChapterCount } from '$lib/firebase/firestore';
+	import { onMount } from 'svelte';
+	import { setupTooltip } from './tooltip';
 
 	export let data: PageData;
 
@@ -40,6 +42,7 @@
 			return loadChapter(bible.scroll, bible.chapter);
 			// TODO add error handling
 		}
+		console.log('bibleContentPromise');
 		return content;
 	}
 
@@ -69,6 +72,11 @@
 			if ($settingsStore.autoCheck) setTimeout(() => checkChapter(), 500);
 		}
 	}
+
+	onMount(() => {
+		setupTooltip();
+		console.log('setuptooltip');
+	});
 </script>
 
 <!-- Title Widget -->
