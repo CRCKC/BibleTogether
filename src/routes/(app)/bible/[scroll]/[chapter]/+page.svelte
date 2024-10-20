@@ -73,7 +73,7 @@
 	}
 
 	onMount(() => {
-		setupTooltip();
+		// setupTooltip();
 	});
 </script>
 

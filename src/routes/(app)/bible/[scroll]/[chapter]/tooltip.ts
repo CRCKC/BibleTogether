@@ -1,5 +1,7 @@
+import Tooltip from './tooltip.svelte';
+
 export function setupTooltip() {
-	const supTags = document.querySelectorAll('.bible sup');
+	const supTags = document.querySelectorAll('sup');
 	supTags.forEach((sup) => {
 		sup.addEventListener('mouseenter', showTooltip);
 		sup.addEventListener('mouseleave', hideTooltip);
@@ -31,15 +33,12 @@ function toggleTooltip(event: Event) {
 }
 
 function createTooltip(text: string): HTMLDivElement {
+	console.log('createTooltip');
 	const tooltip = document.createElement('div');
-	tooltip.className = 'tooltip';
-	tooltip.innerText = text;
-	tooltip.style.position = 'absolute';
-	tooltip.style.backgroundColor = '#333';
-	tooltip.style.color = '#fff';
-	tooltip.style.padding = '5px';
-	tooltip.style.borderRadius = '5px';
-	tooltip.style.zIndex = '1000';
+	const tooltipComponent = new Tooltip({
+		target: tooltip,
+		props: { text }
+	});
 	return tooltip;
 }
 
