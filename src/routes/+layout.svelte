@@ -34,7 +34,7 @@
 	});
 
 	onMount(async () => {
-		setMode('dark');
+		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
 		console.log('Logging In');
 		getGoogleRedirectResult();
 

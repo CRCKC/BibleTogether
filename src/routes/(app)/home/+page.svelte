@@ -5,12 +5,16 @@
 	import { downloadAndUnzip } from '$lib/data/downloadBible';
 
 	const schedule = bibleSchedule as {
-		[key: number]: {
-			[key: number]: Array<{ scroll: string; verse: string }>;
+		[year: number]: {
+			[month: number]: Array<{
+				scroll: string;
+				start: number;
+				end: number;
+			}>;
 		};
 	};
 
-	export let data: PageData;
+	// export let data: PageData;
 
 	// Get Today's year and month
 	const today = new Date();
