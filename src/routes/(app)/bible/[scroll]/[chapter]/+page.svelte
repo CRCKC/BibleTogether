@@ -42,7 +42,6 @@
 			return loadChapter(bible.scroll, bible.chapter);
 			// TODO add error handling
 		}
-		console.log('bibleContentPromise');
 		return content;
 	}
 
@@ -75,7 +74,6 @@
 
 	onMount(() => {
 		setupTooltip();
-		console.log('setuptooltip');
 	});
 </script>
 
@@ -97,7 +95,7 @@
 		<div class="flex items-center justify-center w-full">Downloading Content...</div>
 	{/if}
 {:then bibleContent}
-	<!-- Actual Content -->
+	<!-- Actual Bible -->
 	<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
 		{@html bibleContent}
 	</div>
