@@ -12,9 +12,7 @@
 	import { loadChapter } from '$lib/backend';
 	import { downloadAndUnzip } from '$lib/data/downloadBible';
 	import { queryChapterCount } from '$lib/firebase/firestore';
-	import { onMount } from 'svelte';
 	import { setupTooltip } from './tooltip';
-
 	export let data: PageData;
 
 	// $: bibleContent = data.bibleContent;
@@ -42,6 +40,7 @@
 			return loadChapter(bible.scroll, bible.chapter);
 			// TODO add error handling
 		}
+		console.log('bibleContentPromise');
 		return content;
 	}
 
@@ -71,10 +70,6 @@
 			if ($settingsStore.autoCheck) setTimeout(() => checkChapter(), 500);
 		}
 	}
-
-	onMount(() => {
-		// setupTooltip();
-	});
 </script>
 
 <!-- Title Widget -->
@@ -98,6 +93,15 @@
 	<!-- Actual Bible -->
 	<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
 		{@html bibleContent}
+		{#key bibleContent}
+			{(() => {
+				// Run setupTooltip after bibleContent is loaded, here I made a function to return empty string after running setupTooltip,
+				// as setupTooltip will return undefined and it will be displayed on the html,
+				// the setTimeout 0 fixes an issue where it doesnt replace the html element rendered in bibleContent
+				setTimeout(() => setupTooltip(), 0);
+				return '';
+			})()}
+		{/key}
 	</div>
 	<!-- Bottom Div -->
 	<div class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400">
@@ -144,22 +148,7 @@
 
 	/* .bible :global(b) {
 	} */
-	.bible :global(sup) {
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-khtml-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-		font-size: 0;
-		text-indent: -9em;
-		display: inline-block;
-		cursor: pointer;
-		width: 20px;
-		height: 20px;
-		background-color: white;
-		/* background: url(o.png?0906) -180px -20px; */
-	}
+
 	.bible :global(i) {
 		font-style: normal;
 		border-bottom: 1px solid #777;
