@@ -1,50 +1,18 @@
 import Tooltip from './tooltip.svelte';
 
 export function setupTooltip() {
-	const supTags = document.querySelectorAll('sup');
-	supTags.forEach((sup) => {
-		sup.addEventListener('mouseenter', showTooltip);
-		sup.addEventListener('mouseleave', hideTooltip);
-		sup.addEventListener('click', toggleTooltip);
+	document.querySelectorAll('.bible sup').forEach(sup => {
+		const text = sup.getAttribute('title') ?? '';
+
+		const tooltip = document.createElement('span');
+		// tooltip.style.display = 'inline-block';
+		new Tooltip({
+			target: tooltip,
+			props: { text }
+		});
+		// Copy the content from <sup> to <h1>
+		// tooltip.innerHTML = sup.innerHTML;
+
+		sup.replaceWith(tooltip);
 	});
-}
-
-function showTooltip(event: Event) {
-	const target = event.target as HTMLElement;
-	const tooltip = createTooltip(target.innerText);
-	document.body.appendChild(tooltip);
-	positionTooltip(event as MouseEvent, tooltip);
-}
-
-function hideTooltip() {
-	const tooltip = document.querySelector('.tooltip');
-	if (tooltip) {
-		tooltip.remove();
-	}
-}
-
-function toggleTooltip(event: Event) {
-	const tooltip = document.querySelector('.tooltip');
-	if (tooltip) {
-		tooltip.remove();
-	} else {
-		showTooltip(event);
-	}
-}
-
-function createTooltip(text: string): HTMLDivElement {
-	console.log('createTooltip');
-	const tooltip = document.createElement('div');
-	const tooltipComponent = new Tooltip({
-		target: tooltip,
-		props: { text }
-	});
-	return tooltip;
-}
-
-function positionTooltip(event: MouseEvent, tooltip: HTMLDivElement) {
-	const target = event.target as HTMLElement;
-	const rect = target.getBoundingClientRect();
-	tooltip.style.top = `${rect.top + window.scrollY - tooltip.offsetHeight - 5}px`;
-	tooltip.style.left = `${rect.left + window.scrollX + (rect.width - tooltip.offsetWidth) / 2}px`;
 }
