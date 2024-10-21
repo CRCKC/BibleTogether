@@ -13,6 +13,9 @@
 	import { downloadAndUnzip } from '$lib/data/downloadBible';
 	import { queryChapterCount } from '$lib/firebase/firestore';
 	import { setupTooltip } from './tooltip';
+	import { Checkbox } from '$lib/components/ui/checkbox';
+	import { Label } from '$lib/components/ui/label/index.js';
+
 	export let data: PageData;
 
 	// $: bibleContent = data.bibleContent;
@@ -30,6 +33,8 @@
 	}
 
 	$: queryCount = -1;
+
+	$: chapterCompleted ? checkChapter : unCheckChapter;
 
 	async function bibleContentPromise(bible: BibleChapter): Promise<string> {
 		const content = await loadChapter(bible.scroll, bible.chapter);
@@ -105,13 +110,11 @@
 	</div>
 	<!-- Bottom Div -->
 	<div class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400">
+		<!-- <Checkbox />
 		Mark chapter as completed
-		<input
-			type="checkbox"
-			class="w-6 h-6 mt-1 ml-4 transition-all bg-white border-2"
-			bind:checked={chapterCompleted}
-			on:change={chapterCompleted ? checkChapter : unCheckChapter}
-		/>
+		<input type="checkbox"  /> -->
+		<Checkbox class="mr-2 size-6" id="mark" bind:checked={chapterCompleted} />
+		<Label for="mark">Mark chapter as completed</Label>
 	</div>
 	<div
 		class="h-4"
