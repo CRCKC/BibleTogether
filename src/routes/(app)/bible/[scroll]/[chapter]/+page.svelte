@@ -146,8 +146,9 @@
 		font-weight: bold;
 	}
 
-	/* .bible :global(b) {
-	} */
+	.bible :global(span) {
+		@apply align-baseline;
+	}
 
 	.bible :global(i) {
 		font-style: normal;

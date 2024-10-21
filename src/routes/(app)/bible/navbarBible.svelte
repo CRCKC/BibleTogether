@@ -4,6 +4,11 @@
 	import { currentChapterStore, bibleChinese, nextChapter, prevChapter } from '$lib/bible';
 	import { getAudioLink } from '$lib/bibleAudio';
 
+	import ChevronRight from '~icons/material-symbols/chevron-right';
+	import ChevronLeft from '~icons/material-symbols/chevron-left';
+	import PlayArrow from '~icons/material-symbols/play-arrow';
+	import Pause from '~icons/material-symbols/pause';
+
 	let isSelecting = false;
 	let audioPaused = true;
 	let chapterChnaged = true;
@@ -59,7 +64,7 @@
 	<div class="flex items-center justify-center w-full">
 		<div class="flex flex-row items-center w-full h-10 m-2 bg-gray-600 rounded-full max-w-80">
 			<button class="flex items-center h-10" on:click={gotoPrevChapter}
-				><div class="ml-2 mr-1 material-symbols-outlined">chevron_left</div>
+				><ChevronLeft class="ml-2 mr-1 text-xl" />
 			</button>
 			<button
 				class="w-full h-10"
@@ -72,14 +77,15 @@
 				{$currentChapterStore.chapter}
 			</button>
 			<button class="flex items-center h-10" on:click={gotoNextChapter}
-				><div class="ml-1 mr-2 material-symbols-outlined">chevron_right</div>
+				><ChevronRight class="ml-1 mr-2 text-xl" />
 			</button>
 		</div>
-		<div class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10">
-			<button class="text-3xl material-symbols-outlined" on:click={() => onClickPlay()}
-				>{audioPaused ? 'play_arrow' : 'pause'}
-			</button>
-		</div>
+		<button
+			class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10"
+			on:click={() => onClickPlay()}
+		>
+			<svelte:component this={audioPaused ? PlayArrow : Pause} class="text-xl" />
+		</button>
 	</div>
 </div>
 
@@ -94,13 +100,3 @@
 >
 	<source src={audioSrc} />
 </audio>
-
-<style lang="postcss">
-	.material-symbols-outlined {
-		font-variation-settings:
-			'FILL' 1,
-			'wght' 400,
-			'GRAD' 0,
-			'opsz' 24;
-	}
-</style>

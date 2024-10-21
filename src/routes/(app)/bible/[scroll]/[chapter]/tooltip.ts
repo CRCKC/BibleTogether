@@ -4,15 +4,18 @@ export function setupTooltip() {
 	document.querySelectorAll('.bible sup').forEach(sup => {
 		const text = sup.getAttribute('title') ?? '';
 
-		const tooltip = document.createElement('span');
-		// tooltip.style.display = 'inline-block';
+		const tt = document.createElement('svelte:component');
+
+		if (sup.parentElement === null) return;
+
 		new Tooltip({
-			target: tooltip,
+			target: tt,
 			props: { text }
 		});
-		// Copy the content from <sup> to <h1>
-		// tooltip.innerHTML = sup.innerHTML;
 
-		sup.replaceWith(tooltip);
+		// Replace the <sup> element with the tooltip element
+		sup.replaceWith(tt);
+		tt.replaceWith(tt.firstChild ?? '');
+
 	});
 }
