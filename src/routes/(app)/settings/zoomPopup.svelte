@@ -78,15 +78,6 @@
 {/if}
 
 <style>
-	.sampleText {
-		font:
-			15px / 1.231 'Microsoft YaHei',
-			tahoma,
-			arial,
-			'Hiragino Sans GB',
-			\5b8b\4f53,
-			sans-serif;
-	}
 	.sampleText :global(b) {
 		color: #aaa;
 		padding: 0 0.2em;
