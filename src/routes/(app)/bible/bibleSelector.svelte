@@ -10,6 +10,9 @@
 	import { bibleProgressStore, getProgressIndex } from '$lib/bibleProgress';
 	import classNames from 'classnames';
 
+	import SearchIcon from '~icons/material-symbols/search';
+	import CloseIcon from '~icons/material-symbols/close';
+
 	// define a variable that stores a void function
 	export let onClose: () => void;
 
@@ -37,12 +40,12 @@
 	<div class="flex justify-end p-4">
 		<!-- Search bar -->
 		<div class="flex flex-row w-full p-2 mr-4 text-white bg-gray-800 rounded-lg">
-			<span class="mr-2 material-symbols-outlined">search</span>
+			<SearchIcon class="mr-2 text-xl " />
 			<input class="w-full bg-gray-800" type="text" placeholder="Search" bind:value={searchQuery} />
 		</div>
 
 		<button class="mr-4" on:click={onClose}>
-			<span class="material-symbols-outlined">close</span>
+			<CloseIcon class="text-xl" />
 		</button>
 	</div>
 	<!-- A div that contains the modal -->

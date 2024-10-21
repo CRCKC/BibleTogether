@@ -10,12 +10,12 @@
 	import { session } from '$lib/session';
 	import { t } from 'svelte-i18n';
 	// export let data: LayoutData;
-	import SettingsIcon from '~icons/material-symbols/settings?raw';
-	import SettingsOutline from '~icons/material-symbols/settings-outline?raw';
-	import Book2Icon from '~icons/material-symbols/book-2?raw';
-	import Book2Outline from '~icons/material-symbols/book-2-outline?raw';
-	import HomeIcon from '~icons/material-symbols/home?raw';
-	import HomeOutline from '~icons/material-symbols/home-outline?raw';
+	import SettingsIcon from '~icons/material-symbols/settings';
+	import SettingsOutline from '~icons/material-symbols/settings-outline';
+	import Book2Icon from '~icons/material-symbols/book-2';
+	import Book2Outline from '~icons/material-symbols/book-2-outline';
+	import HomeIcon from '~icons/material-symbols/home';
+	import HomeOutline from '~icons/material-symbols/home-outline';
 
 	let subscribtion: Unsubscribe | undefined;
 	$: isBible = $page.url.pathname.startsWith(`${base}/bible`);
@@ -51,12 +51,17 @@
 		{#if isBible}
 			<BibleNavBar />
 		{/if}
-		
+
 		<div class="icon-ms-settings" />
 		<nav class="grid grid-flow-col">
-			<Item title={$t('home')} path="home" icon={HomeOutline} activeIcon={HomeIcon}/>
-			<Item title={$t('bible')} path="bible" icon={Book2Outline} activeIcon = {Book2Icon} />
-			<Item title={$t('settings')} path="settings" icon={SettingsOutline} activeIcon= {SettingsIcon} />
+			<Item title={$t('home')} path="home" icon={HomeOutline} activeIcon={HomeIcon} />
+			<Item title={$t('bible')} path="bible" icon={Book2Outline} activeIcon={Book2Icon} />
+			<Item
+				title={$t('settings')}
+				path="settings"
+				icon={SettingsOutline}
+				activeIcon={SettingsIcon}
+			/>
 		</nav>
 	</div>
 </div>

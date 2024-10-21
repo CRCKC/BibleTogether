@@ -13,11 +13,11 @@
 
 <a
 	href={targetLocation}
-	class="text-center mb-2 mt-2 text-xs text-gray-400 transition-all"
+	class="mt-2 mb-2 text-xs text-center text-gray-400 transition-all"
 	class:active={isActive}
 >
-	<div class="flex justify-center items-center mb-1 text-lg">
-			{@html isActive ? activeIcon : icon}
+	<div class="flex items-center justify-center mb-1 text-2xl">
+		<svelte:component this={isActive ? activeIcon : icon} />
 	</div>
 	{title}
 </a>
