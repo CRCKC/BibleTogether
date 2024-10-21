@@ -130,13 +130,6 @@
 		letter-spacing: normal;
 		word-spacing: normal;
 		vertical-align: top;
-		font:
-			15px / 1.231 'Microsoft YaHei',
-			tahoma,
-			arial,
-			'Hiragino Sans GB',
-			\5b8b\4f53,
-			sans-serif;
 	}
 	.bible :global(h1),
 	:global(h2),
