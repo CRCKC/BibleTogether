@@ -9,8 +9,8 @@ import {
  */
 export default function initLocale() {
 
-    register('en', () => import('./locales/en.json'));
-    register('zh', () => import('./locales/zh.json'));
+    register('en', () => import('$lib/locales/en.json'));
+    register('zh', () => import('$lib/locales/zh.json'));
 
     return init({
         fallbackLocale: 'en',
