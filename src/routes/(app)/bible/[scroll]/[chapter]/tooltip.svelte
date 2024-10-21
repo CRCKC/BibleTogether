@@ -6,6 +6,7 @@
 	export let text: string;
 </script>
 
+<!-- TODO Try to make this button inline with the text -->
 <Popover.Root>
 	<Popover.Trigger class="inline-block">
 		<span class="text-sm"> <Info /> </span>
