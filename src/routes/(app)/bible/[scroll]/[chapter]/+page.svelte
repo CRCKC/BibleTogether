@@ -15,6 +15,7 @@
 	import { setupTooltip } from './tooltip';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import { t } from 'svelte-i18n';
 
 	export let data: PageData;
 
@@ -84,8 +85,8 @@
 <div class="inline-block w-full mt-2 mb-5 text-5xl text-center">
 	{$currentChapterStore.chapter == 0 ? '簡介' : $currentChapterStore.chapter}
 </div>
-<div>
-	Number of people also finished this chapter: {queryCount}
+<div class="text-lg px-8 w-full text-right">
+	{queryCount} {$t('peopleAlreadyRead')}
 </div>
 
 <!-- Await for bibleContent -->

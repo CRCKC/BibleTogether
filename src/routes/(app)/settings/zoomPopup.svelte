@@ -21,7 +21,7 @@
 							class="w-full mt-8"
 							type="range"
 							min="0.5"
-							max="2.1"
+							max="1.7"
 							step="0.1"
 							bind:value={$settingsStore.fontZoom}
 						/>
@@ -45,7 +45,7 @@
 							><b>5</b><span>上帝稱光為「晝」，稱暗為「夜」。有晚上，有早晨，這是第一日。</span>
 						</p>
 					</div>
-					<div class="invisible py-4 sampleText" style="zoom: 2;">
+					<div class="invisible py-4 sampleText" style="zoom: 1.7;">
 						<p>
 							<b>1</b><span
 								>起初，上帝創造天地。 <sup title="本節或譯「起初，上帝創造天地的時候，」"

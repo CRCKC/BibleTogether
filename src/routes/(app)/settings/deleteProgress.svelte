@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { resetProgress } from '$lib/bibleProgress';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import { t } from 'svelte-i18n';
 </script>
 
 <AlertDialog.Root>
 	<AlertDialog.Trigger
 		class="flex items-center justify-center h-12 mt-4 text-white bg-red-700 rounded-md w-80"
-		>Delete Progress</AlertDialog.Trigger
+		>{$t('deleteProgress')}</AlertDialog.Trigger
 	>
 	<AlertDialog.Content>
 		<AlertDialog.Header>

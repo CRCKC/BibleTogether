@@ -1,5 +1,6 @@
 {
     "settings": "Settings",
+    "settingsDesc":"Change your settings here",
     "bible": "Bible",
     "home": "Home",
     "login": "Login",
@@ -17,5 +18,9 @@
     "logout": "Logout",
     "logoutMessage": "You have successfully logged out",
     "logoutButton": "Logout",
-    "todayIs": "Today is "
+    "todayIs": "Today is ",
+    "deleteProgress": "Delete Progress",
+    "adjustFontSize": "Adjust Font Size",
+    "search": "Search",
+    "peopleAlreadyRead": "people already read this"
 }

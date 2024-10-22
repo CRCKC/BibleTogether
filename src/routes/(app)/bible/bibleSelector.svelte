@@ -1,12 +1,9 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import Info from '~icons/material-symbols/info-outline';
 	import {
 		bibleList,
-		getBibleUrl,
-		setCurrentChapter,
 		bibleChinese,
 		currentChapterStore,
-
 		jumpToChapter
 
 	} from '$lib/bible';
@@ -15,6 +12,7 @@
 
 	import SearchIcon from '~icons/material-symbols/search';
 	import CloseIcon from '~icons/material-symbols/close';
+	import { t } from 'svelte-i18n';
 
 	// define a variable that stores a void function
 	export let onClose: () => void;
@@ -44,7 +42,7 @@
 		<!-- Search bar -->
 		<div class="flex flex-row w-full p-2 mr-4 text-white bg-gray-800 rounded-lg">
 			<SearchIcon class="mr-2 text-xl " />
-			<input class="w-full bg-gray-800" type="text" placeholder="Search" bind:value={searchQuery} />
+			<input class="w-full bg-gray-800" type="text" placeholder={$t('search')} bind:value={searchQuery} />
 		</div>
 
 		<button class="mr-4" on:click={onClose}>
@@ -84,7 +82,11 @@
 										onClose();
 									}}
 								>
-									{i}
+								{#if i == 0}
+								<Info class="text-2xl"/>
+								{:else}
+								{i}
+								{/if}
 								</button>
 							{/each}
 						</div>
