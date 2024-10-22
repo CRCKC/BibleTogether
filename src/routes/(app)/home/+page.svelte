@@ -2,7 +2,9 @@
 	import { session } from '$lib/session';
 	// import type { PageData } from './$types';
 	import bibleSchedule from '$lib/data/bibleSchedule.json';
-  
+  import ArrowRight from '~icons/material-symbols/arrow-right';
+	import ArrowLeft from '~icons/material-symbols/arrow-left';
+
 	import { onMount } from 'svelte';
   //   import { BookOpen } from 'lucide-svelte';
   import * as Card from "$lib/components/ui/card/index.js";
@@ -10,7 +12,9 @@
   import Button from '$lib/components/ui/button/button.svelte';
 	import type { CarouselAPI } from '$lib/components/ui/carousel/context';
 	import { cn } from '$lib/utils';
-	import { bibleChinese } from '$lib/bible';
+	import { bibleChinese, jumpToChapter } from '$lib/bible';
+	import { t } from 'svelte-i18n';
+	import { goto } from '$app/navigation';
   // export let data: PageData;
 
   // Get Today's year and month
@@ -91,44 +95,47 @@
 	</p>
 </div> -->
 
-<div class="flex flex-col items-center justify-center h-full p-6">
-  <Card.Root class="w-full max-w-md">
-    <Card.Header>
-      <Card.Title class="text-center">
-        <Button variant="outline" class="text-2xl text-center p-6" on:click={()=>api.scrollTo(todayIndex)}>
-          Today is {year} / {month}
+<div class="flex flex-col items-center justify-center h-full p-6 w-full">
+        <Button variant="outline" class="text-2xl text-center p-6 rounded-full mb-4" on:click={()=>api.scrollTo(todayIndex)}>
+          {$t('todayIs')} {month} / {year}
         </Button>
-      </Card.Title>
-    </Card.Header>
-    <Card.Content>
       <Carousel.Root
         bind:api
-        class="w-full max-w-xs mx-auto"
+        class="w-full max-w-xs"
         orientation="vertical"
+        
         opts={{
           align: 'center',
           loop: false,
           startIndex: todayIndex,
           slidesToScroll: 1,
+          containScroll: 'trimSnaps',
+          dragFree: false,
+          skipSnaps:true,
         }}
       >
-        <Carousel.Content class="-mt-1 h-[400px]"> 
+        <Carousel.Content class="-mt-1 h-[450px]"> 
           <!-- This is a hack to make the first item visible -->
           <Carousel.Item class="py-1 basis-1/3"/>
           {#each carouselData as item, index}
             <Carousel.Item class="py-1 basis-1/3">
-              <div class="p-1">
-                <Card.Root class={cn(
-                  'transition-all duration-300 ease-in-out',
-                  current === index ? 'scale-100 opacity-100 shadow-none' : 'scale-95 opacity-50 shadow-md'
-                )}>
-                  <Card.Content class="flex flex-col items-center justify-center p-6">
-                    {#each schedule[item.year][item.month] as chap}
-                    <span class="text-xl font-semibold">{bibleChinese[chap.scroll]}</span>
-                    <span class="text-center mt-2">{chap.start} - {chap.end}</span>
-                    {/each}
-                  </Card.Content>
-                </Card.Root>
+              <div class={cn(
+                'transition-all duration-300 ease-in-out flex flex-row items-center',
+                current === index ? 'scale-100 opacity-100 shadow-none' : 'scale-95 opacity-50 shadow-md'
+              )}>
+                <div class="w-8 mr-3 text-center">{item.month}</div>
+                <div class="p-1 w-full">
+                  {#each schedule[item.year][item.month] as chap}
+                  <Button class="my-1 w-full h-14" variant="outline" size="lg" on:click={()=>jumpToChapter({scroll:chap.scroll, chapter:chap.start})}>
+                    <div class="flex items-center justify-center">
+                      <span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
+                      <span class="opacity-85 ml-2">{chap.start}-{chap.end}</span>
+                    </div>
+                  </Button>
+
+                  {/each}
+                </div>
+                <div class="w-8 ml-3 text-center">{item.year - 2000}</div>
               </div>
             </Carousel.Item>
           {/each}
@@ -137,31 +144,28 @@
         </Carousel.Content>
         <div class="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background to-transparent pointer-events-none" />
         <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+
       </Carousel.Root>
 
-      <div class="flex justify-between mt-4">
+      <!-- <div class="flex justify-between mt-4">
         <Button
+          class="rounded-full"
           variant="outline"
+          size="icon"
           on:click={handlePrevious}
           disabled={current === 0}
         >
-          Previous
+          <ArrowLeft class='text-xl' />
         </Button>
         <Button
+          class="rounded-full"
           variant="outline"
+          size="icon"
           on:click={handleNext}
           disabled={current === carouselData.length - 1}
         >
-          Next
-        </Button>
-      </div>
-    </Card.Content>
-    <Card.Footer class="flex justify-center">
-      <Button class="w-full max-w-xs" size="lg">
-        <!-- <BookOpen class="mr-2 h-5 w-5" />  -->
-		Read Current Chapter
-      </Button>
-    </Card.Footer>
-  </Card.Root>
+          <ArrowRight class='text-xl'/>
+        </Button> -->
+      <!-- </div> -->
 </div>
 

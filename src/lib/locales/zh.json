@@ -16,5 +16,7 @@
     "signupButton": "註冊",
     "logout": "登出",
     "logoutMessage": "您已成功登出",
-    "logoutButton": "登出"
+    "logoutButton": "登出",
+    "todayIs": "今天是 "
+
 }
