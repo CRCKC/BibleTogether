@@ -21,14 +21,7 @@
 	</div>
 	<div class="flex flex-col items-center justify-center mt-8">
 		<div class="flex flex-col items-center justify-center text-black">
-			<button
-				class="flex items-center justify-center h-12 mt-4 text-white bg-gray-600 rounded-md w-80"
-				on:click={() => {
-					popupFontSize = !popupFontSize;
-				}}
-			>
-				{$t('adjustFontSize')}
-			</button>
+			<ZoomPopup />
 			<!-- Change Language -->
 			<!-- <button
 				class="flex items-center justify-center h-12 mt-4 text-white bg-gray-600 rounded-md w-80"
@@ -53,5 +46,3 @@
 		</div>
 	</div>
 </div>
-
-<ZoomPopup bind:visible={popupFontSize} />

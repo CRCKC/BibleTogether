@@ -68,16 +68,15 @@
 
 <div class="flex flex-col items-center justify-center w-full h-full p-6">
 	<Button
-		variant="outline"
+		variant="secondary"
 		class="p-6 mb-4 text-2xl text-center rounded-full"
 		on:click={() => api.scrollTo(todayIndex)}
 	>
-		{$t('todayIs')}
-		{month} / {year}
+		{$t('currentMonth', { values: { month, year } })}
 	</Button>
 	<Carousel.Root
 		bind:api
-		class="w-full max-w-xs"
+		class="w-full max-w-xs select-none "
 		orientation="vertical"
 		opts={{
 			align: 'center',
