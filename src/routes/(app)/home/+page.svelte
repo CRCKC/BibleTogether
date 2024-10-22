@@ -17,22 +17,19 @@
 	const today = new Date();
 	const year = today.getFullYear();
 	const month = today.getMonth() + 1;
+  const todayIndex = (year - 2024)*12 + month - 1;
 
   let api: CarouselAPI;
 
-  let current = (year - 2024)*12 + month - 1;
+  let current = todayIndex;
 
   $: if (api) {
     current = api.selectedScrollSnap();
-    console.log(api);
  
     api.on("select", () => {
       current = api.selectedScrollSnap();
     });
   }
-
-  $: console.log(current);
-
 
   const handlePrevious = () => {
     api?.scrollPrev();
@@ -97,7 +94,11 @@
 <div class="flex flex-col items-center justify-center h-full p-6">
   <Card.Root class="w-full max-w-md">
     <Card.Header>
-      <Card.Title class="text-2xl text-center">Today is {year} / {month}</Card.Title>
+      <Card.Title class="text-center">
+        <Button variant="outline" class="text-2xl text-center p-6" on:click={()=>api.scrollTo(todayIndex)}>
+          Today is {year} / {month}
+        </Button>
+      </Card.Title>
     </Card.Header>
     <Card.Content>
       <Carousel.Root
@@ -107,7 +108,7 @@
         opts={{
           align: 'center',
           loop: false,
-          startIndex: (year - 2024)*12 + month - 1,
+          startIndex: todayIndex,
           slidesToScroll: 1,
         }}
       >
@@ -134,7 +135,10 @@
           <!-- This is a hack to make the last item visible -->
           <Carousel.Item class="py-1 basis-1/3"/> 
         </Carousel.Content>
+        <div class="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background to-transparent pointer-events-none" />
+        <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent pointer-events-none" />
       </Carousel.Root>
+
       <div class="flex justify-between mt-4">
         <Button
           variant="outline"
