@@ -4,21 +4,23 @@
 	import { t } from 'svelte-i18n';
 </script>
 
-<AlertDialog.Root>
+<AlertDialog.Root closeOnOutsideClick>
 	<AlertDialog.Trigger
 		class="flex items-center justify-center h-12 mt-4 text-white bg-red-700 rounded-md w-80"
 		>{$t('deleteProgress')}</AlertDialog.Trigger
 	>
-	<AlertDialog.Content>
+	<AlertDialog.Content class="border-red-700 bg-red-950">
 		<AlertDialog.Header>
-			<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+			<AlertDialog.Title>{$t('deleteBibleProgressTitle')}</AlertDialog.Title>
 			<AlertDialog.Description>
-				This action cannot be undone. This will permanently delete your bible progress
+				{$t('deleteBibleProgressDesc')}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action on:click={() => resetProgress()}>Continue</AlertDialog.Action>
+			<AlertDialog.Cancel>{$t('cancel')}</AlertDialog.Cancel>
+			<AlertDialog.Action class="text-white bg-red-700" on:click={() => resetProgress()}
+				>{$t('confirm')}</AlertDialog.Action
+			>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

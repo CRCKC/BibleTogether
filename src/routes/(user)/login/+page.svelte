@@ -53,7 +53,7 @@
 		<p class="text-gray-400">{$t('loginWelcome')}</p>
 	</div>
 	<div class="flex flex-col items-center justify-center mt-8">
-		<div class="flex flex-col items-center justify-center text-black">
+		<div class="flex flex-col items-center justify-center">
 			<Input
 				type="email"
 				placeholder={$t('username')}

@@ -16,6 +16,7 @@
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { t } from 'svelte-i18n';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 
@@ -25,17 +26,16 @@
 
 	let downloadingBible = false;
 	$: {
-		const completed = $bibleProgressStore[getProgressIndex(data.bible.scroll, data.bible.chapter)];
-		queryChapterCount(data.bible.scroll, data.bible.chapter).then((count) => {
-			if (count != undefined) queryCount = count;
-		});
-
-		onLoadChapter(completed);
+		onLoadChapter(data.bible); // Run onLoadChapter after the component is updated
 	}
+
+	onMount(() => {
+		onLoadChapter(data.bible); // Run onLoadChapter after the component is mounted
+	});
 
 	$: queryCount = -1;
 
-	$: chapterCompleted ? checkChapter : unCheckChapter;
+	$: chapterCompleted ? checkChapter() : unCheckChapter();
 
 	async function bibleContentPromise(bible: BibleChapter): Promise<string> {
 		const content = await loadChapter(bible.scroll, bible.chapter);
@@ -50,7 +50,11 @@
 		return content;
 	}
 
-	function onLoadChapter(completed: boolean) {
+	function onLoadChapter(bible: BibleChapter) {
+		queryChapterCount(data.bible.scroll, data.bible.chapter).then((count) => {
+			if (count != undefined) queryCount = count;
+		});
+		const completed = $bibleProgressStore[getProgressIndex(bible.scroll, bible.chapter)];
 		firstTimeScrolledToBottom = true;
 		chapterCompleted = completed;
 	}
@@ -62,11 +66,13 @@
 	function checkChapter() {
 		chapterCompleted = true;
 		updateProgress(data.bible);
+		queryCount++; // Increment the query count to update the UI client side
 	}
 
 	function unCheckChapter() {
 		chapterCompleted = false;
 		updateProgress(data.bible, false);
+		queryCount--;
 	}
 
 	function handleScrollFinish() {
@@ -85,8 +91,9 @@
 <div class="inline-block w-full mt-2 mb-5 text-5xl text-center">
 	{$currentChapterStore.chapter == 0 ? '簡介' : $currentChapterStore.chapter}
 </div>
-<div class="text-lg px-8 w-full text-right">
-	{queryCount} {$t('peopleAlreadyRead')}
+<div class="w-full px-8 text-lg text-right">
+	{queryCount}
+	{$t('peopleAlreadyRead')}
 </div>
 
 <!-- Await for bibleContent -->
@@ -115,7 +122,7 @@
 		Mark chapter as completed
 		<input type="checkbox"  /> -->
 		<Checkbox class="mr-2 size-6" id="mark" bind:checked={chapterCompleted} />
-		<Label for="mark">Mark chapter as completed</Label>
+		<Label for="mark">{$t('bibleCheckboxLabel')}</Label>
 	</div>
 	<div
 		class="h-4"
@@ -127,6 +134,7 @@
 
 <style lang="postcss">
 	.bible {
+		@apply text-base;
 		display: inline-block;
 		letter-spacing: normal;
 		word-spacing: normal;

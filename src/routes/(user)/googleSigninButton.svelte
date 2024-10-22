@@ -7,7 +7,7 @@
 
 <button
 	aria-label={text}
-	class="flex items-center bg-white border border-button-border-light rounded-md p-0.5 pr-3 size-full justify-center"
+	class="flex items-center bg-white text-black border border-button-border-light rounded-md p-0.5 pr-3 size-full justify-center"
 	on:click={onClick}
 >
 	<div class="flex items-center justify-center rounded-l size-12">

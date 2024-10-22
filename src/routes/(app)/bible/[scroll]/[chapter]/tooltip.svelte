@@ -9,7 +9,7 @@
 <!-- TODO Try to make this button inline with the text -->
 <Popover.Root>
 	<Popover.Trigger class="inline-block">
-		<span class="text-sm"> <Info /> </span>
+		<span class="text-sm text-blue-300"> <Info /> </span>
 	</Popover.Trigger>
 	<Popover.Content class={`bg-gray-700 w-[20rem*${$settingsStore.fontZoom}] max-w-[80%]`}>
 		<div style="zoom: {$settingsStore.fontZoom};">

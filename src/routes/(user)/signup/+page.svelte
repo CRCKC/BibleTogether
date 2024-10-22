@@ -6,6 +6,7 @@
 	import OrWithSeperator from '../orWithSeperator.svelte';
 	// import type { PageData } from './$types';
 	import { Input } from '$lib/components/ui/input/index.js';
+	import { t } from 'svelte-i18n';
 
 	// export let data: PageData;
 
@@ -61,27 +62,27 @@
 <!-- Signup Screen UI -->
 <div class="flex flex-col items-center justify-center h-dvh">
 	<div class="flex flex-col items-center justify-center">
-		<h1 class="text-4xl font-bold">Sign Up</h1>
-		<p class="text-gray-400">Create an account to get started.</p>
+		<h1 class="text-4xl font-bold">{$t('signup')}</h1>
+		<p class="text-gray-400">{$t('signupWelcome')}</p>
 	</div>
 	<div class="flex flex-col items-center justify-center mt-8">
-		<form class="flex flex-col items-center justify-center text-black">
+		<form class="flex flex-col items-center justify-center">
 			<Input
 				type="text"
-				placeholder="Username"
+				placeholder={$t('username')}
 				class="h-12 p-2 border-2 border-gray-200 rounded-md w-80"
 				bind:value={username}
 				bind:ref={usernameField}
 			/>
 			<Input
 				type="password"
-				placeholder="Password"
+				placeholder={$t('password')}
 				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
 				bind:value={password}
 			/>
 			<Input
 				type="password"
-				placeholder="Confirm Password"
+				placeholder={$t('confirmPassword')}
 				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
 				bind:value={confirmPassword}
 			/>
@@ -94,15 +95,15 @@
 				{#if signingUp}
 					<div class="w-8 h-8 border-b-2 border-white rounded-full animate-spin"></div>
 				{:else}
-					Sign Up
+					{$t('signup')}
 				{/if}
 			</button>
 			<OrWithSeperator />
 			<div class="h-12 my-4 w-80">
-				<GoogleSigninButton text={'Sign up with Google'} />
+				<GoogleSigninButton text={$t('googleSignup')} />
 			</div>
 		</form>
-		<a href="{base}/login" class="mt-4 text-blue-500">Already have an account? Login</a>
+		<a href="{base}/login" class="mt-4 text-blue-500">{$t('gotoLogin')}</a>
 	</div>
 </div>
 
