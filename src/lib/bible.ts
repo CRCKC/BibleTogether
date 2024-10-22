@@ -32,6 +32,11 @@ export function setCurrentChapter(bible: BibleChapter) {
     currentChapterStore.set(bible);
 }
 
+export function jumpToChapter(bible: BibleChapter){
+    setCurrentChapter({ scroll: bible.scroll, chapter: bible.chapter });
+    goto(getBibleUrl({ scroll: bible.scroll, chapter: bible.chapter }));
+}
+
 export function nextChapter(bible: BibleChapter) {
     let newBible: BibleChapter = bible;
     if (bible.chapter < bibleList[bible.scroll]) {
@@ -44,8 +49,7 @@ export function nextChapter(bible: BibleChapter) {
             newBible = { scroll: bibleshort[nextIndex], chapter: 0 };
         }
     }
-    setCurrentChapter(newBible);
-    goto(getBibleUrl(newBible));
+    jumpToChapter(newBible);
 }
 
 export function prevChapter(bible: BibleChapter) {
@@ -60,8 +64,7 @@ export function prevChapter(bible: BibleChapter) {
             newBible = { scroll: scroll, chapter: bibleList[scroll] };
         }
     }
-    setCurrentChapter(newBible);
-    goto(getBibleUrl(newBible));
+    jumpToChapter(newBible);
 }
 
 

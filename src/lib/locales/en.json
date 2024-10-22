@@ -16,5 +16,6 @@
     "signupButton": "Signup",
     "logout": "Logout",
     "logoutMessage": "You have successfully logged out",
-    "logoutButton": "Logout"
+    "logoutButton": "Logout",
+    "todayIs": "Today is "
 }

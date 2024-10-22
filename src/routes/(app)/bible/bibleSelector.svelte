@@ -5,7 +5,10 @@
 		getBibleUrl,
 		setCurrentChapter,
 		bibleChinese,
-		currentChapterStore
+		currentChapterStore,
+
+		jumpToChapter
+
 	} from '$lib/bible';
 	import { bibleProgressStore, getProgressIndex } from '$lib/bibleProgress';
 	import classNames from 'classnames';
@@ -77,8 +80,7 @@
 									{$currentChapterStore.scroll === key && $currentChapterStore.chapter === i ? 'outline' : ''}
 									"
 									on:click={() => {
-										setCurrentChapter({ scroll: key, chapter: i });
-										goto(getBibleUrl({ scroll: key, chapter: i }));
+										jumpToChapter({scroll:key, chapter:i});
 										onClose();
 									}}
 								>
