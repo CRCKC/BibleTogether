@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { PageData } from './$types';
 	import {
 		currentChapterStore,
@@ -18,24 +20,23 @@
 	import { t } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 
 	// $: bibleContent = data.bibleContent;
-	let chapterCompleted = false;
+	let chapterCompleted = $state(false);
 	let firstTimeScrolledToBottom = true;
 
-	let downloadingBible = false;
-	$: {
-		onLoadChapter(data.bible); // Run onLoadChapter after the component is updated
-	}
+	let downloadingBible = $state(false);
 
 	onMount(() => {
 		onLoadChapter(data.bible); // Run onLoadChapter after the component is mounted
 	});
 
-	$: queryCount = -1;
 
-	$: chapterCompleted ? checkChapter() : unCheckChapter();
 
 	async function bibleContentPromise(bible: BibleChapter): Promise<string> {
 		const content = await loadChapter(bible.scroll, bible.chapter);
@@ -82,6 +83,15 @@
 			if ($settingsStore.autoCheck) setTimeout(() => checkChapter(), 500);
 		}
 	}
+	$effect(() => {
+		onLoadChapter(data.bible); // Run onLoadChapter after the component is updated
+	});
+
+	let queryCount = $state(-1);
+	
+	// $effect(() => {
+	// 	chapterCompleted ? checkChapter() : unCheckChapter();
+	// });
 </script>
 
 <!-- Title Widget -->

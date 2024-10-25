@@ -1,19 +1,28 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	// import type { LayoutData } from './$types';
 	import { navigating } from '$app/stores';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	// export let data: LayoutData;
 
-	let showLoading = false;
+	let showLoading = $state(false);
 
 	// This code delays the showing of the loading indicator,
 	// so if it takes less thatn 0.5 seconds to load, it completely hides it instead
-	$: if ($navigating) {
-		showLoading = false;
-		setTimeout(() => (showLoading = $navigating ? true : false), 500);
-	} else {
-		showLoading = false;
-	}
+	run(() => {
+		if ($navigating) {
+			showLoading = false;
+			setTimeout(() => (showLoading = $navigating ? true : false), 500);
+		} else {
+			showLoading = false;
+		}
+	});
 </script>
 
 <div class="relative size-full">
@@ -25,7 +34,7 @@
 		</div>
 	{/if}
 	<div class="absolute overflow-y-scroll size-full">
-		<slot />
+		{@render children?.()}
 	</div>
 </div>
 

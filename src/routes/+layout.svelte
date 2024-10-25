@@ -10,7 +10,12 @@
 	import { ModeWatcher, setMode } from 'mode-watcher';
 	import initLocale from '../i18n';
 
-	export let data: LayoutData;
+	interface Props {
+		data: LayoutData;
+		children?: import('svelte').Snippet<[any]>;
+	}
+
+	let { data, children }: Props = $props();
 
 	// Auto Login Logic
 	// if (data.requireLogin && !$session.loggedIn) {
@@ -24,7 +29,7 @@
 	// 	loading = false;
 	// }
 
-	let loading: boolean = true;
+	let loading: boolean = $state(true);
 	let loggedIn: boolean = false;
 	// $: console.log('loggedin', $session.loggedIn?.toString());
 
@@ -70,6 +75,6 @@
 			<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
 		</div>
 	{:else}
-		<slot class="overflow-hidden" />
+		{@render children?.({ class: "overflow-hidden", })}
 	{/if}
 {/await}

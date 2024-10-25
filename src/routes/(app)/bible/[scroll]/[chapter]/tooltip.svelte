@@ -3,7 +3,11 @@
 	import { settingsStore } from '$lib/userSettings';
 
 	import Info from '~icons/material-symbols/info';
-	export let text: string;
+	interface Props {
+		text: string;
+	}
+
+	let { text }: Props = $props();
 </script>
 
 <!-- TODO Try to make this button inline with the text -->

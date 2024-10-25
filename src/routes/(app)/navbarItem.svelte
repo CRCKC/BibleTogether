@@ -2,13 +2,24 @@
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
 
-	export let title: string = 'PlaceHolder';
-	export let icon: any;
-	export let activeIcon: any;
-	export let path: string;
+	interface Props {
+		title?: string;
+		icon: any;
+		activeIcon: any;
+		path: string;
+	}
+
+	let {
+		title = 'PlaceHolder',
+		icon,
+		activeIcon,
+		path
+	}: Props = $props();
 
 	const targetLocation = `${base}/${path}`;
-	$: isActive = $page.url.pathname.startsWith(targetLocation);
+	let isActive = $derived($page.url.pathname.startsWith(targetLocation));
+
+	const SvelteComponent = $derived(isActive ? activeIcon : icon);
 </script>
 
 <a
@@ -17,7 +28,7 @@
 	class:active={isActive}
 >
 	<div class="flex items-center justify-center mb-1 text-2xl">
-		<svelte:component this={isActive ? activeIcon : icon} />
+		<SvelteComponent />
 	</div>
 	{title}
 </a>

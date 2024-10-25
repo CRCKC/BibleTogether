@@ -3,7 +3,11 @@
 	import { currentChapterStore } from '$lib/bible';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 
 	onMount(() => {
 		goto(`bible/${$currentChapterStore.scroll}/${$currentChapterStore.chapter}`);

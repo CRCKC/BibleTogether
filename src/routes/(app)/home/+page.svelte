@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { session } from '$lib/session';
 	// import type { PageData } from './$types';
 	import bibleSchedule from '$lib/data/bibleSchedule.json';
@@ -14,8 +16,7 @@
 	import { cn } from '$lib/utils';
 	import { bibleChinese, jumpToChapter } from '$lib/bible';
 	import { t } from 'svelte-i18n';
-	import { goto } from '$app/navigation';
-	// export let data: PageData;
+		// export let data: PageData;
 
 	// Get Today's year and month
 	const today = new Date();
@@ -23,17 +24,19 @@
 	const month = today.getMonth() + 1;
 	const todayIndex = (year - 2024) * 12 + month - 1;
 
-	let api: CarouselAPI;
+	let api: CarouselAPI | undefined = $state();
 
-	let current = todayIndex;
+	let current = $state(todayIndex);
 
-	$: if (api) {
-		current = api.selectedScrollSnap();
-
-		api.on('select', () => {
+	$effect(() => {
+		if (api) {
 			current = api.selectedScrollSnap();
-		});
-	}
+
+			api.on('select', () => {
+				current = api?.selectedScrollSnap() ?? todayIndex;
+			});
+		}
+	});
 
 	const handlePrevious = () => {
 		api?.scrollPrev();
@@ -70,7 +73,7 @@
 	<Button
 		variant="secondary"
 		class="p-6 mb-4 text-2xl text-center rounded-full"
-		on:click={() => api.scrollTo(todayIndex)}
+		onclick={() => api?.scrollTo(todayIndex)}
 	>
 		{$t('currentMonth', { values: { month, year } })}
 	</Button>
@@ -113,7 +116,7 @@
 									variant="outline"
 									disabled={current != index}
 									size="lg"
-									on:click={() => jumpToChapter({ scroll: chap.scroll, chapter: chap.start })}
+									onclick={() => jumpToChapter({ scroll: chap.scroll, chapter: chap.start })}
 								>
 									<div class="flex items-center justify-center">
 										<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
@@ -131,10 +134,10 @@
 		</Carousel.Content>
 		<div
 			class="absolute top-0 left-0 right-0 h-20 pointer-events-none bg-gradient-to-b from-background to-transparent"
-		/>
+		></div>
 		<div
 			class="absolute bottom-0 left-0 right-0 h-20 pointer-events-none bg-gradient-to-t from-background to-transparent"
-		/>
+		></div>
 	</Carousel.Root>
 
 	<!-- <div class="flex justify-between mt-4">
@@ -142,7 +145,7 @@
           class="rounded-full"
           variant="outline"
           size="icon"
-          on:click={handlePrevious}
+          onclick={handlePrevious}
           disabled={current === 0}
         >
           <ArrowLeft class='text-xl' />
@@ -151,7 +154,7 @@
           class="rounded-full"
           variant="outline"
           size="icon"
-          on:click={handleNext}
+          onclick={handleNext}
           disabled={current === carouselData.length - 1}
         >
           <ArrowRight class='text-xl'/>

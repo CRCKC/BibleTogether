@@ -14,11 +14,16 @@
 	import CloseIcon from '~icons/material-symbols/close';
 	import { t } from 'svelte-i18n';
 
-	// define a variable that stores a void function
-	export let onClose: () => void;
+	
+	interface Props {
+		// define a variable that stores a void function
+		onClose: () => void;
+	}
 
-	let expandedScroll: string | undefined = undefined;
-	let searchQuery: string = '';
+	let { onClose }: Props = $props();
+
+	let expandedScroll: string | undefined = $state(undefined);
+	let searchQuery: string = $state('');
 
 	function isSearch(key: string, q: string): boolean {
 		const query = q.trim().toLowerCase();
@@ -45,7 +50,7 @@
 			<input class="w-full bg-gray-800" type="text" placeholder={$t('search')} bind:value={searchQuery} />
 		</div>
 
-		<button class="mr-4" on:click={onClose}>
+		<button class="mr-4" onclick={onClose}>
 			<CloseIcon class="text-xl" />
 		</button>
 	</div>
@@ -58,7 +63,7 @@
 				<div class={classNames({ 'col-span-2': expandedScroll === key })}>
 					<button
 						class="w-full"
-						on:click={() => (expandedScroll = expandedScroll == key ? undefined : key)}
+						onclick={() => (expandedScroll = expandedScroll == key ? undefined : key)}
 					>
 						<div
 							class="flex items-center justify-center h-12 bg-gray-900 rounded-full
@@ -77,7 +82,7 @@
 									{$bibleProgressStore[getProgressIndex(key, i)] ? 'bg-green-600' : ''}
 									{$currentChapterStore.scroll === key && $currentChapterStore.chapter === i ? 'outline' : ''}
 									"
-									on:click={() => {
+									onclick={() => {
 										jumpToChapter({scroll:key, chapter:i});
 										onClose();
 									}}

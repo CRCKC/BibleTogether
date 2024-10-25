@@ -10,11 +10,11 @@
 
 	// export let data: PageData;
 
-	let username = '';
-	let password = '';
-	let confirmPassword = '';
-	let signingUp = false;
-	let usernameField: HTMLInputElement;
+	let username = $state('');
+	let password = $state('');
+	let confirmPassword = $state('');
+	let signingUp = $state(false);
+	let usernameField: HTMLInputElement = $state();
 
 	onMount(() => {
 		usernameField.focus();
@@ -90,7 +90,7 @@
 				type="submit"
 				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
 				disabled={signingUp}
-				on:click={submitSignup}
+				onclick={submitSignup}
 			>
 				{#if signingUp}
 					<div class="w-8 h-8 border-b-2 border-white rounded-full animate-spin"></div>

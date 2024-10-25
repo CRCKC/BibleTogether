@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import BibleSelector from './bibleSelector.svelte';
 	import AudioBar from './audioBar.svelte';
 	import { currentChapterStore, bibleChinese, nextChapter, prevChapter } from '$lib/bible';
@@ -9,19 +11,14 @@
 	import PlayArrow from '~icons/material-symbols/play-arrow';
 	import Pause from '~icons/material-symbols/pause';
 
-	let isSelecting = false;
-	let audioPaused = true;
-	let chapterChnaged = true;
-	let audioSrc: string;
-	$: {
-		chapterChnaged = true;
-		audioSrc = getAudioLink($currentChapterStore);
-		audioPlayer?.load();
-	}
+	let isSelecting = $state(false);
+	let audioPaused = $state(true);
+	let chapterChnaged = $state(true);
+	let audioSrc: string = $state();
 
-	let duration: number;
-	let audioPlayer: HTMLAudioElement;
-	let currentTime: number;
+	let duration: number = $state();
+	let audioPlayer: HTMLAudioElement = $state();
+	let currentTime: number = $state();
 
 	function onClickPlay() {
 		chapterChnaged = false;
@@ -48,6 +45,13 @@
 		stopPlayback();
 		prevChapter($currentChapterStore);
 	}
+	run(() => {
+		chapterChnaged = true;
+		audioSrc = getAudioLink($currentChapterStore);
+		audioPlayer?.load();
+	});
+
+	const SvelteComponent = $derived(audioPaused ? PlayArrow : Pause);
 </script>
 
 {#if isSelecting}
@@ -63,12 +67,12 @@
 
 	<div class="flex items-center justify-center w-full">
 		<div class="flex flex-row items-center w-full h-10 m-2 bg-gray-600 rounded-full max-w-80">
-			<button class="flex items-center h-10" on:click={gotoPrevChapter}
+			<button class="flex items-center h-10" onclick={gotoPrevChapter}
 				><ChevronLeft class="ml-2 mr-1 text-xl" />
 			</button>
 			<button
 				class="w-full h-10"
-				on:click={() => {
+				onclick={() => {
 					isSelecting = true;
 					stopPlayback();
 				}}
@@ -76,15 +80,15 @@
 				{bibleChinese[$currentChapterStore.scroll]}
 				{$currentChapterStore.chapter}
 			</button>
-			<button class="flex items-center h-10" on:click={gotoNextChapter}
+			<button class="flex items-center h-10" onclick={gotoNextChapter}
 				><ChevronRight class="ml-1 mr-2 text-xl" />
 			</button>
 		</div>
 		<button
 			class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10"
-			on:click={() => onClickPlay()}
+			onclick={() => onClickPlay()}
 		>
-			<svelte:component this={audioPaused ? PlayArrow : Pause} class="text-xl" />
+			<SvelteComponent class="text-xl" />
 		</button>
 	</div>
 </div>
@@ -94,7 +98,7 @@
 	bind:this={audioPlayer}
 	bind:duration
 	bind:currentTime
-	on:ended={() => {
+	onended={() => {
 		audioPaused = true;
 	}}
 >
