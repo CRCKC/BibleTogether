@@ -18,11 +18,9 @@
 	import Book2Outline from '~icons/material-symbols/book-2-outline';
 	import HomeIcon from '~icons/material-symbols/home';
 	import HomeOutline from '~icons/material-symbols/home-outline';
-	interface Props {
-		children?: import('svelte').Snippet;
-	}
 
-	let { children }: Props = $props();
+
+	let { children } = $props();
 
 	let subscribtion: Unsubscribe | undefined = $state();
 	let isBible = $derived($page.url.pathname.startsWith(`${base}/bible`));

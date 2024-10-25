@@ -4,19 +4,16 @@
 	import { session } from '$lib/session';
 	// import type { PageData } from './$types';
 	import bibleSchedule from '$lib/data/bibleSchedule.json';
-	import ArrowRight from '~icons/material-symbols/arrow-right';
-	import ArrowLeft from '~icons/material-symbols/arrow-left';
 
 	import { onMount } from 'svelte';
 	//   import { BookOpen } from 'lucide-svelte';
-	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Carousel from '$lib/components/ui/carousel/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import type { CarouselAPI } from '$lib/components/ui/carousel/context';
 	import { cn } from '$lib/utils';
 	import { bibleChinese, jumpToChapter } from '$lib/bible';
 	import { t } from 'svelte-i18n';
-		// export let data: PageData;
+	// export let data: PageData;
 
 	// Get Today's year and month
 	const today = new Date();
@@ -78,7 +75,7 @@
 		{$t('currentMonth', { values: { month, year } })}
 	</Button>
 	<Carousel.Root
-		bind:api
+		setApi={(value:CarouselAPI) => api = value}
 		class="w-full max-w-xs select-none "
 		orientation="vertical"
 		opts={{

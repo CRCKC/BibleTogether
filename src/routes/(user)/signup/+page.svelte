@@ -14,10 +14,10 @@
 	let password = $state('');
 	let confirmPassword = $state('');
 	let signingUp = $state(false);
-	let usernameField: HTMLInputElement = $state();
+	let usernameField: HTMLInputElement | null = $state(null);
 
 	onMount(() => {
-		usernameField.focus();
+		usernameField?.focus();
 	});
 
 	function validateSignup() {
@@ -70,20 +70,20 @@
 			<Input
 				type="text"
 				placeholder={$t('username')}
-				class="h-12 p-2 border-2 border-gray-200 rounded-md w-80"
+				class="h-12 p-2 w-80"
 				bind:value={username}
 				bind:ref={usernameField}
 			/>
 			<Input
 				type="password"
 				placeholder={$t('password')}
-				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
+				class="h-12 p-2 mt-4 w-80"
 				bind:value={password}
 			/>
 			<Input
 				type="password"
 				placeholder={$t('confirmPassword')}
-				class="h-12 p-2 mt-4 border-2 border-gray-200 rounded-md w-80"
+				class="h-12 p-2 mt-4 w-80"
 				bind:value={confirmPassword}
 			/>
 			<button

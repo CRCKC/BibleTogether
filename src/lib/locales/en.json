@@ -31,5 +31,6 @@
     "cancel": "Cancel",
     "done": "Done",
     "deleteBibleProgressTitle": "Are you absolutely sure?",
-    "deleteBibleProgressDesc": "This action cannot be undone. This will permanently delete your bible progress"
+    "deleteBibleProgressDesc": "This action cannot be undone. This will permanently delete your bible progress",
+    "intro": "Intro"
 }

@@ -13,12 +13,12 @@
 
 	let username = $state('');
 	let password = $state('');
-	let usernameField: HTMLInputElement = $state();
-	let passwordField: HTMLInputElement = $state();
+	let usernameField: HTMLInputElement | null = $state(null);
+	let passwordField: HTMLInputElement | null = $state(null);
 	let loggingIn = $state(false);
 
 	onMount(() => {
-		usernameField.focus();
+		usernameField?.focus();
 	});
 
 	function submitLogin() {
@@ -36,7 +36,7 @@
 
 	function handleKeydownUsername(event: KeyboardEvent) {
 		if (event.key === 'Enter') {
-			passwordField.focus();
+			passwordField?.focus();
 		}
 	}
 	function handleKeydownPassword(event: KeyboardEvent) {
@@ -59,7 +59,7 @@
 				placeholder={$t('username')}
 				bind:value={username}
 				bind:ref={usernameField}
-				on:keydown={handleKeydownUsername}
+				onkeydown={handleKeydownUsername}
 				class="h-12 p-2 w-80"
 			/>
 			<Input
@@ -67,7 +67,7 @@
 				placeholder={$t('password')}
 				bind:value={password}
 				bind:ref={passwordField}
-				on:keydown={handleKeydownPassword}
+				onkeydown={handleKeydownPassword}
 				class="h-12 p-2 mt-4 w-80"
 			/>
 			<button
