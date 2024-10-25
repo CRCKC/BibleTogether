@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { PageData } from './$types';
 	import {
 		currentChapterStore,
@@ -26,17 +24,23 @@
 
 	let { data }: Props = $props();
 
-	// $: bibleContent = data.bibleContent;
 	let chapterCompleted = $state(false);
 	let firstTimeScrolledToBottom = true;
-
 	let downloadingBible = $state(false);
+	let localUserQueryCount = $state(0);
 
 	onMount(() => {
 		onLoadChapter(data.bible); // Run onLoadChapter after the component is mounted
 	});
 
+	let prevBible = data.bible;
 
+	$effect(() => {
+		if (prevBible != data.bible) {
+			onLoadChapter(data.bible);
+			prevBible = data.bible;
+		}
+	});
 
 	async function bibleContentPromise(bible: BibleChapter): Promise<string> {
 		const content = await loadChapter(bible.scroll, bible.chapter);
@@ -47,11 +51,11 @@
 			return loadChapter(bible.scroll, bible.chapter);
 			// TODO add error handling
 		}
-		console.log('bibleContentPromise');
 		return content;
 	}
 
 	function onLoadChapter(bible: BibleChapter) {
+		console.log('onLoadChapter');
 		queryChapterCount(data.bible.scroll, data.bible.chapter).then((count) => {
 			if (count != undefined) queryCount = count;
 		});
@@ -65,15 +69,13 @@
 	}
 
 	function checkChapter() {
-		chapterCompleted = true;
 		updateProgress(data.bible);
-		queryCount++; // Increment the query count to update the UI client side
+		localUserQueryCount++; // Increment the query count to update the UI client side
 	}
 
 	function unCheckChapter() {
-		chapterCompleted = false;
 		updateProgress(data.bible, false);
-		queryCount--;
+		localUserQueryCount--;
 	}
 
 	function handleScrollFinish() {
@@ -83,15 +85,9 @@
 			if ($settingsStore.autoCheck) setTimeout(() => checkChapter(), 500);
 		}
 	}
-	$effect(() => {
-		onLoadChapter(data.bible); // Run onLoadChapter after the component is updated
-	});
 
-	let queryCount = $state(-1);
+	let queryCount:number|undefined = $state(undefined);
 	
-	// $effect(() => {
-	// 	chapterCompleted ? checkChapter() : unCheckChapter();
-	// });
 </script>
 
 <!-- Title Widget -->
@@ -99,11 +95,10 @@
 	{bibleChinese[$currentChapterStore.scroll]}
 </div>
 <div class="inline-block w-full mt-2 mb-5 text-5xl text-center">
-	{$currentChapterStore.chapter == 0 ? '簡介' : $currentChapterStore.chapter}
+	{$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter}
 </div>
 <div class="w-full px-8 text-lg text-right">
-	{queryCount}
-	{$t('peopleAlreadyRead')}
+	{queryCount == undefined ? '...' : queryCount + localUserQueryCount} {$t('peopleAlreadyRead')}
 </div>
 
 <!-- Await for bibleContent -->
@@ -128,10 +123,7 @@
 	</div>
 	<!-- Bottom Div -->
 	<div class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400">
-		<!-- <Checkbox />
-		Mark chapter as completed
-		<input type="checkbox"  /> -->
-		<Checkbox class="mr-2 size-6" id="mark" bind:checked={chapterCompleted} />
+		<Checkbox class="mr-2 size-6 flex items-center justify-center" id="mark" bind:checked={chapterCompleted} onclick={chapterCompleted ? unCheckChapter : checkChapter} />
 		<Label for="mark">{$t('bibleCheckboxLabel')}</Label>
 	</div>
 	<div

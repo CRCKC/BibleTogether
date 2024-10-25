@@ -1,14 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { resetProgress } from '$lib/bibleProgress';
 	import { logout } from '$lib/firebase/auth';
 	import { session } from '$lib/session';
-	import { locale, t } from 'svelte-i18n';
+	import { t } from 'svelte-i18n';
 	// import type { PageData } from './$types';
 	import ZoomPopup from './zoomPopup.svelte';
 	import DeleteProgress from './deleteProgress.svelte';
-	let popupFontSize = false;
 
 	// export let data: PageData;
 </script>
