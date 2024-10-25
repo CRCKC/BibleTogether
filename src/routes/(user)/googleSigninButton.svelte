@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { loginWithGoogle } from '$lib/firebase/auth';
 
-	export let text;
+	let { text } = $props();
 	const onClick = loginWithGoogle;
 </script>
 
 <button
 	aria-label={text}
 	class="flex items-center bg-white text-black border border-button-border-light rounded-md p-0.5 pr-3 size-full justify-center"
-	on:click={onClick}
+	onclick={onClick}
 >
 	<div class="flex items-center justify-center rounded-l size-12">
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-7">

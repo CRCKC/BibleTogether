@@ -11,11 +11,11 @@
 
 	// export let data: PageData;
 
-	let username = '';
-	let password = '';
-	let usernameField: HTMLInputElement;
-	let passwordField: HTMLInputElement;
-	let loggingIn = false;
+	let username = $state('');
+	let password = $state('');
+	let usernameField: HTMLInputElement = $state();
+	let passwordField: HTMLInputElement = $state();
+	let loggingIn = $state(false);
 
 	onMount(() => {
 		usernameField.focus();
@@ -73,7 +73,7 @@
 			<button
 				type="submit"
 				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
-				on:click={submitLogin}
+				onclick={submitLogin}
 			>
 				{#if loggingIn}
 					<div class="w-8 h-8 border-b-2 border-white rounded-full animate-spin"></div>

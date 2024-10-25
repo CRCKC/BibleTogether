@@ -1,9 +1,18 @@
 <script lang="ts">
-	export let duration: number;
+	import { run } from 'svelte/legacy';
 
-	export let audioPlayer: HTMLAudioElement;
-	export let currentTime: number;
-	$: sliderValue = (currentTime / (isNaN(duration) ? 1000 : duration)) * 100;
+
+	interface Props {
+		duration: number;
+		audioPlayer: HTMLAudioElement;
+		currentTime: number;
+	}
+
+	let { duration, audioPlayer = $bindable(), currentTime }: Props = $props();
+	let sliderValue;
+	run(() => {
+		sliderValue = (currentTime / (isNaN(duration) ? 1000 : duration)) * 100;
+	});
 
 	function formatTime(time: number) {
 		const minutes = Math.floor(time / 60);
@@ -19,7 +28,7 @@
 			min="0"
 			max="100"
 			bind:value={sliderValue}
-			on:input={(_) => {
+			oninput={(_) => {
 				audioPlayer.currentTime = (sliderValue / 100) * duration;
 			}}
 			class="w-full"

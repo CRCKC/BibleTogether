@@ -4,10 +4,10 @@
 	import { settingsStore } from '$lib/userSettings';
 	import { t } from 'svelte-i18n';
 
-	let dialogOpen = false;
+	let dialogOpen = $state(false);
 </script>
 
-<Dialog.Root closeOnOutsideClick bind:open={dialogOpen}>
+<Dialog.Root bind:open={dialogOpen}>
 	<Dialog.Trigger
 		class="flex items-center justify-center h-12 mt-4 text-white bg-gray-600 rounded-md w-80"
 		>{$t('adjustFontSize')}</Dialog.Trigger
@@ -56,7 +56,7 @@
 			<Button
 				class="w-full"
 				type="submit"
-				on:click={() => {
+				onclick={() => {
 					dialogOpen = false;
 				}}
 			>

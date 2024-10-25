@@ -25,7 +25,7 @@
 			<!-- Change Language -->
 			<!-- <button
 				class="flex items-center justify-center h-12 mt-4 text-white bg-gray-600 rounded-md w-80"
-				on:click={() => {
+				onclick={() => {
 					locale.set('zh');
 				}}
 			>
@@ -34,7 +34,7 @@
 
 			<button
 				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
-				on:click={() => {
+				onclick={() => {
 					logout();
 					$session.loggedIn = false;
 					goto(`${base}/login`);

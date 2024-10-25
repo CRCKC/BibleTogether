@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { page } from '$app/stores';
 	// import type { LayoutData } from './$types';
 	import { base } from '$app/paths';
@@ -16,10 +18,15 @@
 	import Book2Outline from '~icons/material-symbols/book-2-outline';
 	import HomeIcon from '~icons/material-symbols/home';
 	import HomeOutline from '~icons/material-symbols/home-outline';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
 
-	let subscribtion: Unsubscribe | undefined;
-	$: isBible = $page.url.pathname.startsWith(`${base}/bible`);
-	$: {
+	let { children }: Props = $props();
+
+	let subscribtion: Unsubscribe | undefined = $state();
+	let isBible = $derived($page.url.pathname.startsWith(`${base}/bible`));
+	run(() => {
 		try {
 			if ($session.loggedIn == true) {
 				if (!subscribtion) {
@@ -34,7 +41,7 @@
 		} catch (error) {
 			console.info("Verifying user's session");
 		}
-	}
+	});
 
 	onDestroy(() => {
 		if (subscribtion) subscribtion();
@@ -43,7 +50,7 @@
 
 <div class="flex flex-col h-dvh w-dvw">
 	<div class="h-full">
-		<slot />
+		{@render children?.()}
 	</div>
 
 	<div class="z-40 w-full transition-all bg-black border-t-2 border-gray-600">
@@ -52,7 +59,7 @@
 			<BibleNavBar />
 		{/if}
 
-		<div class="icon-ms-settings" />
+		<div class="icon-ms-settings"></div>
 		<nav class="grid grid-flow-col">
 			<Item title={$t('home')} path="home" icon={HomeOutline} activeIcon={HomeIcon} />
 			<Item title={$t('bible')} path="bible" icon={Book2Outline} activeIcon={Book2Icon} />
