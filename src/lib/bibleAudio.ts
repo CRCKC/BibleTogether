@@ -1,4 +1,5 @@
-import { bibleshort, type BibleChapter } from "./bible";
+import { type BibleChapter } from "./bible";
+import { bibleshort } from "./bibleConstants";
 
 const GITHUB_DATABASE_BASEURL = "https://raw.githubusercontent.com/CRCKC/BibleTogether/refs/heads/data";
 

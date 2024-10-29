@@ -1,20 +1,14 @@
 <script lang="ts">
 	import Info from '~icons/material-symbols/info-outline';
-	import {
-		bibleList,
-		bibleChinese,
-		currentChapterStore,
-		jumpToChapter
-
-	} from '$lib/bible';
+	import { currentChapterStore, jumpToChapter } from '$lib/bible';
 	import { bibleProgressStore, getProgressIndex } from '$lib/bibleProgress';
 	import classNames from 'classnames';
 
 	import SearchIcon from '~icons/material-symbols/search';
 	import CloseIcon from '~icons/material-symbols/close';
 	import { t } from 'svelte-i18n';
+	import { bibleChinese, bibleList } from '$lib/bibleConstants';
 
-	
 	interface Props {
 		// define a variable that stores a void function
 		onClose: () => void;
@@ -47,7 +41,12 @@
 		<!-- Search bar -->
 		<div class="flex flex-row w-full p-2 mr-4 text-white bg-gray-800 rounded-lg">
 			<SearchIcon class="mr-2 text-xl " />
-			<input class="w-full bg-gray-800" type="text" placeholder={$t('search')} bind:value={searchQuery} />
+			<input
+				class="w-full bg-gray-800"
+				type="text"
+				placeholder={$t('search')}
+				bind:value={searchQuery}
+			/>
 		</div>
 
 		<button class="mr-4" onclick={onClose}>
@@ -83,15 +82,15 @@
 									{$currentChapterStore.scroll === key && $currentChapterStore.chapter === i ? 'outline' : ''}
 									"
 									onclick={() => {
-										jumpToChapter({scroll:key, chapter:i});
+										jumpToChapter({ scroll: key, chapter: i });
 										onClose();
 									}}
 								>
-								{#if i == 0}
-								<Info class="text-2xl"/>
-								{:else}
-								{i}
-								{/if}
+									{#if i == 0}
+										<Info class="text-2xl" />
+									{:else}
+										{i}
+									{/if}
 								</button>
 							{/each}
 						</div>
