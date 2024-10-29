@@ -3,7 +3,8 @@
 
 	import BibleSelector from './bibleSelector.svelte';
 	import AudioBar from './audioBar.svelte';
-	import { currentChapterStore, bibleChinese, nextChapter, prevChapter } from '$lib/bible';
+	import { currentChapterStore, nextChapter, prevChapter } from '$lib/bible';
+	import { bibleChinese } from '$lib/bibleConstants';
 	import { getAudioLink } from '$lib/bibleAudio';
 
 	import ChevronRight from '~icons/material-symbols/chevron-right';

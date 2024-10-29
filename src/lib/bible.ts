@@ -1,14 +1,10 @@
 import { persisted } from 'svelte-persisted-store'
-import bibleJson from '$lib/data/bibleList.json';
-import bibleChineseJson from '$lib/data/bibleChinese.json';
 import { base } from '$app/paths';
 import { goto } from '$app/navigation';
 import { writable } from 'svelte/store';
+import { bibleList, bibleshort } from './bibleConstants';
 
 // Convert bibleList to a dictionary
-export const bibleList = bibleJson as { [scroll: string]: number; }
-export const bibleChinese = bibleChineseJson as { [scroll: string]: string };
-export const bibleshort = ["GEN", "EXO", "LEV", "NUM", "DEU", "JOS", "JDG", "RUT", "1SA", "2SA", "1KI", "2KI", "1CH", "2CH", "EZR", "NEH", "EST", "JOB", "PSA", "PRO", "ECC", "SNG", "ISA", "JER", "LAM", "EZK", "DAN", "HOS", "JOL", "AMO", "OBA", "JON", "MIC", "NAM", "HAB", "ZEP", "HAG", "ZEC", "MAL", "MAT", "MRK", "LUK", "JHN", "ACT", "ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL", "1TH", "2TH", "1TI", "2TI", "TIT", "PHM", "HEB", "JAS", "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV"];
 
 export interface BibleChapter {
     scroll: string
@@ -32,10 +28,11 @@ export function setCurrentChapter(bible: BibleChapter) {
     currentChapterStore.set(bible);
 }
 
-export function jumpToChapter(bible: BibleChapter){
+export function jumpToChapter(bible: BibleChapter) {
     setCurrentChapter({ scroll: bible.scroll, chapter: bible.chapter });
     goto(getBibleUrl({ scroll: bible.scroll, chapter: bible.chapter }));
 }
+
 
 export function nextChapter(bible: BibleChapter) {
     let newBible: BibleChapter = bible;

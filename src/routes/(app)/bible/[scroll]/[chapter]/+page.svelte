@@ -1,11 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import {
-		currentChapterStore,
-		setCurrentChapter,
-		bibleChinese,
-		type BibleChapter
-	} from '$lib/bible';
+	import { currentChapterStore, setCurrentChapter, type BibleChapter } from '$lib/bible';
 	import viewport from '$lib/viewportAction';
 	import { bibleProgressStore, getProgressIndex, updateProgress } from '$lib/bibleProgress';
 	import { settingsStore } from '$lib/userSettings';
@@ -17,6 +12,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { t } from 'svelte-i18n';
 	import { onMount } from 'svelte';
+	import { bibleChinese } from '$lib/bibleConstants';
 
 	interface Props {
 		data: PageData;
@@ -86,8 +82,7 @@
 		}
 	}
 
-	let queryCount:number|undefined = $state(undefined);
-	
+	let queryCount: number | undefined = $state(undefined);
 </script>
 
 <!-- Title Widget -->
@@ -98,7 +93,8 @@
 	{$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter}
 </div>
 <div class="w-full px-8 text-lg text-right">
-	{queryCount == undefined ? '...' : queryCount + localUserQueryCount} {$t('peopleAlreadyRead')}
+	{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
+	{$t('peopleAlreadyRead')}
 </div>
 
 <!-- Await for bibleContent -->
@@ -123,7 +119,12 @@
 	</div>
 	<!-- Bottom Div -->
 	<div class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400">
-		<Checkbox class="mr-2 size-6 flex items-center justify-center" id="mark" bind:checked={chapterCompleted} onclick={chapterCompleted ? unCheckChapter : checkChapter} />
+		<Checkbox
+			class="flex items-center justify-center mr-2 size-6"
+			id="mark"
+			bind:checked={chapterCompleted}
+			onclick={chapterCompleted ? unCheckChapter : checkChapter}
+		/>
 		<Label for="mark">{$t('bibleCheckboxLabel')}</Label>
 	</div>
 	<div

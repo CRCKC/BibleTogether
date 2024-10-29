@@ -1,9 +1,9 @@
 import { persisted } from "svelte-persisted-store";
-import { type BibleChapter } from "./bible";
-import bibleIndexJson from "$lib/data/bibleIndex.json";
+import { jumpToChapter, type BibleChapter } from "./bible";
 import { uploadBibleProgress } from "./firebase/firestore";
+import { bibleIndex, bibleList } from "$lib/bibleConstants";
+import { get } from "svelte/store";
 
-const bibleIndex = bibleIndexJson as { [scroll: string]: number; }
 
 const TOTAL_CHAPTERS = 1255; // Including intro chapters
 export interface BibleProgress {
@@ -62,3 +62,16 @@ export function updateProgress(bible: BibleChapter, isComplete: boolean = true) 
     uploadBibleProgress();
 }
 
+export function jumpToChapterWithProgress(scroll: string) {
+    // get the newest chapter in the specified scroll that has not been read;
+    const startIndex = bibleIndex[scroll];
+    const scrollChapters = bibleList[scroll];
+    const data = get(bibleProgressStore);
+
+    for (let i = startIndex; i < startIndex + scrollChapters; i++) {
+        if (!data[i]) {
+            jumpToChapter({ scroll, chapter: i - startIndex });
+            return;
+        }
+    }
+}

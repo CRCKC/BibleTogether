@@ -1,18 +1,13 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { session } from '$lib/session';
 	// import type { PageData } from './$types';
 	import bibleSchedule from '$lib/data/bibleSchedule.json';
-
-	import { onMount } from 'svelte';
-	//   import { BookOpen } from 'lucide-svelte';
 	import * as Carousel from '$lib/components/ui/carousel/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import type { CarouselAPI } from '$lib/components/ui/carousel/context';
 	import { cn } from '$lib/utils';
-	import { bibleChinese, jumpToChapter } from '$lib/bible';
+	import { bibleChinese } from '$lib/bibleConstants';
 	import { t } from 'svelte-i18n';
+	import { jumpToChapterWithProgress } from '$lib/bibleProgress';
 	// export let data: PageData;
 
 	// Get Today's year and month
@@ -75,7 +70,7 @@
 		{$t('currentMonth', { values: { month, year } })}
 	</Button>
 	<Carousel.Root
-		setApi={(value:CarouselAPI) => api = value}
+		setApi={(value: CarouselAPI) => (api = value)}
 		class="w-full max-w-xs select-none "
 		orientation="vertical"
 		opts={{
@@ -113,7 +108,7 @@
 									variant="outline"
 									disabled={current != index}
 									size="lg"
-									onclick={() => jumpToChapter({ scroll: chap.scroll, chapter: chap.start })}
+									onclick={() => jumpToChapterWithProgress(chap.scroll)}
 								>
 									<div class="flex items-center justify-center">
 										<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
