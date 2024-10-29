@@ -15,7 +15,9 @@
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
 		"getFirestoreHelpers": "mkdir -p static/__/auth && cd static/__/auth && curl -O 'https://bibletogether.firebaseapp.com/__/auth/{handler.js,iframe.js,experiments.js}' && curl -o '#1.html' 'https://bibletogether.firebaseapp.com/__/auth/{handler,iframe}'",
-		"emulator": "firebase emulators:start"
+		"emulator": "firebase emulators:start",
+		"cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'",
+		"certDependencies": "sudo apt install libnss3-tools mkcert"
 	},
 	"devDependencies": {
 		"@iconify-json/material-symbols": "^1.2.5",
@@ -48,6 +50,7 @@
 		"typescript-eslint": "^8.11.0",
 		"unplugin-icons": "^0.19.3",
 		"vite": "^5.4.10",
+		"vite-plugin-mkcert": "^1.17.6",
 		"vitest": "^2.1.3"
 	},
 	"type": "module",
@@ -55,6 +58,7 @@
 		"@capacitor/android": "^6.1.2",
 		"@capacitor/cli": "^6.1.2",
 		"@capacitor/core": "^6.1.2",
+		"@vitejs/plugin-basic-ssl": "^1.1.0",
 		"classnames": "^2.5.1",
 		"cssnano": "^7.0.6",
 		"jszip": "^3.10.1",

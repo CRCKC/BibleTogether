@@ -24,6 +24,7 @@ copy.css
 tests/bible
 
 certs
+.cert
 
 static/__
 src/lib/firebase/helper
