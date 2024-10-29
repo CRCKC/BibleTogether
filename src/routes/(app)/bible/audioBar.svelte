@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-
 	interface Props {
 		duration: number;
 		audioPlayer: HTMLAudioElement;
@@ -9,8 +6,9 @@
 	}
 
 	let { duration, audioPlayer = $bindable(), currentTime }: Props = $props();
-	let sliderValue;
-	run(() => {
+	let sliderValue = $state(0);
+
+	$effect(() => {
 		sliderValue = (currentTime / (isNaN(duration) ? 1000 : duration)) * 100;
 	});
 
