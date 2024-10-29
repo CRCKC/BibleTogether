@@ -15,26 +15,26 @@
 	let isSelecting = $state(false);
 	let audioPaused = $state(true);
 	let chapterChnaged = $state(true);
-	let audioSrc: string = $state();
+	let audioSrc: string = $state('');
 
-	let duration: number = $state();
-	let audioPlayer: HTMLAudioElement = $state();
-	let currentTime: number = $state();
+	let duration: number = $state(10);
+	let audioPlayer: HTMLAudioElement | undefined = $state();
+	let currentTime: number = $state(0);
 
 	function onClickPlay() {
 		chapterChnaged = false;
 		if (audioPaused) {
-			audioPlayer.play();
+			audioPlayer?.play();
 			audioPaused = false;
 		} else {
-			audioPlayer.pause();
+			audioPlayer?.pause();
 			audioPaused = true;
 		}
 	}
 
 	function stopPlayback() {
 		audioPaused = true;
-		audioPlayer.pause();
+		audioPlayer?.pause();
 	}
 
 	function gotoNextChapter() {
@@ -52,7 +52,7 @@
 		audioPlayer?.load();
 	});
 
-	const SvelteComponent = $derived(audioPaused ? PlayArrow : Pause);
+	const PlayPauseIcon = $derived(audioPaused ? PlayArrow : Pause);
 </script>
 
 {#if isSelecting}
@@ -60,7 +60,7 @@
 {/if}
 
 <div class="flex flex-col items-center justify-center">
-	{#if !chapterChnaged}
+	{#if !chapterChnaged && audioPlayer}
 		<div class="w-full px-4 pt-3 max-w-96">
 			<AudioBar {audioPlayer} {currentTime} {duration} />
 		</div>
@@ -89,7 +89,7 @@
 			class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10"
 			onclick={() => onClickPlay()}
 		>
-			<SvelteComponent class="text-xl" />
+			<PlayPauseIcon class="text-xl" />
 		</button>
 	</div>
 </div>
