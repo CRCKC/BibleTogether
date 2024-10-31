@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { loginWithGoogle } from '$lib/firebase/auth';
 
-	let { text } = $props();
+	let { text }: { text: string } = $props();
+
 	const onClick = loginWithGoogle;
 </script>
 
