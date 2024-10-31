@@ -33,6 +33,7 @@
 	let loggedIn: boolean = false;
 	// $: console.log('loggedin', $session.loggedIn?.toString());
 
+	let loadingResult = $state(true);
 	session.subscribe((cur: any) => {
 		loading = cur?.loading;
 		loggedIn = cur?.loggedIn;
@@ -41,7 +42,7 @@
 	onMount(async () => {
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
 		console.log('Logging In');
-		getGoogleRedirectResult();
+		await getGoogleRedirectResult();
 
 		const user: any = await data.getAuthUser?.();
 
@@ -57,10 +58,11 @@
 		});
 		// console.log('Session', $session);
 		if (loggedIn) {
-			if (!data.requireLogin) goto(base + '/home');
+			if (!data.requireLogin) await goto(base + '/home');
 		} else {
-			goto(base + '/login');
+			await goto(base + '/login');
 		}
+		loadingResult = false;
 	});
 </script>
 
@@ -70,11 +72,11 @@
 		<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
 	</div>
 {:then _}
-	{#if loading}
+	{#if loadingResult}
 		<div class="flex items-center justify-center h-dvh">
 			<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
 		</div>
 	{:else}
-		{@render children?.({ class: "overflow-hidden", })}
+		{@render children?.({ class: 'overflow-hidden' })}
 	{/if}
 {/await}

@@ -10,9 +10,9 @@ export async function loginWithGoogle() {
   signInWithRedirect(auth, GoogleProvider);
 }
 
-export function getGoogleRedirectResult() {
+export async function getGoogleRedirectResult() {
   console.log('Getting redirect result');
-  getRedirectResult(auth)
+  return getRedirectResult(auth)
     .then((result) => {
       // console.log('Result: ', result);
       if (!result) return;
