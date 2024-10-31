@@ -54,13 +54,10 @@
 	});
 
 	const PlayPauseIcon = $derived(audioPaused ? PlayArrow : Pause);
-
 	let expandedScroll = $state<string | undefined>(undefined);
 </script>
 
-{#if isSelecting}
-	<BibleSelector onClose={() => (isSelecting = false)} {expandedScroll} />
-{/if}
+<BibleSelector bind:visible={isSelecting} {expandedScroll} />
 
 <div class="flex flex-col items-center justify-center">
 	{#if !chapterChnaged && audioPlayer}
