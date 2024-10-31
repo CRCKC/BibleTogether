@@ -1,4 +1,4 @@
-import { bibleProgressStore, getProgressIndex, migrateProgress } from "$lib/bibleProgress";
+import { bibleProgressStore, getProgressIndex, migrateProgress } from "$lib/bible/progress";
 import { collection, doc, getCountFromServer, getDoc, onSnapshot, query, setDoc, where } from "firebase/firestore";
 import { firebaseAuth, firebaseFirestore } from "./firebase";
 import { get } from "svelte/store";

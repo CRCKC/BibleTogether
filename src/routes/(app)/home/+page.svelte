@@ -1,13 +1,13 @@
 <script lang="ts">
 	// import type { PageData } from './$types';
-	import bibleSchedule from '$lib/data/bibleSchedule.json';
+	import bibleSchedule from '$lib/bible/schedule.json';
 	import * as Carousel from '$lib/components/ui/carousel/index.js';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import type { CarouselAPI } from '$lib/components/ui/carousel/context';
 	import { cn } from '$lib/utils';
-	import { bibleChinese } from '$lib/bibleConstants';
+	import { bibleChinese } from '$lib/bible/constants';
 	import { t } from 'svelte-i18n';
-	import { jumpToChapterWithProgress } from '$lib/bibleProgress';
+	import { jumpToChapterWithProgress } from '$lib/bible/progress';
 	// export let data: PageData;
 
 	// Get Today's year and month

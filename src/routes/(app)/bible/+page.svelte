@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { currentChapterStore } from '$lib/bible';
+	import { currentChapterStore } from '$lib/bible/bible';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	interface Props {

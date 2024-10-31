@@ -1,13 +1,13 @@
 <script lang="ts">
 	import Info from '~icons/material-symbols/info-outline';
-	import { currentChapterStore, jumpToChapter } from '$lib/bible';
-	import { bibleProgressStore, getProgressIndex } from '$lib/bibleProgress';
+	import { currentChapterStore, jumpToChapter } from '$lib/bible/bible';
+	import { bibleProgressStore, getProgressIndex } from '$lib/bible/progress';
 	import { cn } from '$lib/utils';
 
 	import SearchIcon from '~icons/material-symbols/search';
 	import CloseIcon from '~icons/material-symbols/close';
 	import { t } from 'svelte-i18n';
-	import { bibleChinese, bibleList } from '$lib/bibleConstants';
+	import { bibleChinese, bibleList } from '$lib/bible/constants';
 
 	let {
 		visible = $bindable(false),

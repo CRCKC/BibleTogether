@@ -1,6 +1,4 @@
-import { getFileData } from "./data/downloadBible";
-
-// const BASEPATH = "https://script.google.com/macros/s/AKfycbyHK1TAydIP8IpLlqRk5buaei-KpbUGUl_eG6FZ-7Z3uFUQ2IyvYWHzQDPIiNYYKnyl/exec";
+import { getFileData } from "./bible/download";
 
 export async function loadChapter(scroll: string, chapter: number) {
     let bibleContent = '';
@@ -16,12 +14,4 @@ export async function loadChapter(scroll: string, chapter: number) {
         console.error('Error reading file:', error);
     }
     return bibleContent;
-}
-
-export async function syncChapterProgress() {
-    try {
-        // TODO
-    } catch (error) {
-        console.error('Error reading file:', error);
-    }
 }
