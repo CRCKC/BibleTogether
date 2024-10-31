@@ -17,7 +17,6 @@
 		expandedScroll?: string | undefined;
 	} = $props();
 
-	// let expandedScroll: string | undefined = $state(undefined);
 	let searchQuery: string = $state('');
 
 	function isSearch(key: string, q: string): boolean {
@@ -36,8 +35,6 @@
 	function onClose() {
 		visible = false;
 	}
-
-	// Create a $ variable that stores the type of "string | undefined"
 </script>
 
 {#if visible}
