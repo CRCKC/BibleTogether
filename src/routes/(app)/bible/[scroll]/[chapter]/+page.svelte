@@ -1,18 +1,18 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { currentChapterStore, setCurrentChapter, type BibleChapter } from '$lib/bible';
+	import { currentChapterStore, setCurrentChapter, type BibleChapter } from '$lib/bible/bible';
 	import viewport from '$lib/viewportAction';
-	import { bibleProgressStore, getProgressIndex, updateProgress } from '$lib/bibleProgress';
+	import { bibleProgressStore, getProgressIndex, updateProgress } from '$lib/bible/progress';
 	import { settingsStore } from '$lib/userSettings';
 	import { loadChapter } from '$lib/backend';
-	import { downloadAndUnzip } from '$lib/data/downloadBible';
+	import { downloadAndUnzip } from '$lib/bible/download';
 	import { queryChapterCount } from '$lib/firebase/firestore';
 	import { setupTooltip } from './tooltip';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { t } from 'svelte-i18n';
 	import { onMount } from 'svelte';
-	import { bibleChinese } from '$lib/bibleConstants';
+	import { bibleChinese } from '$lib/bible/constants';
 
 	interface Props {
 		data: PageData;

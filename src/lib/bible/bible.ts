@@ -2,7 +2,7 @@ import { persisted } from 'svelte-persisted-store'
 import { base } from '$app/paths';
 import { goto } from '$app/navigation';
 import { writable } from 'svelte/store';
-import { bibleList, bibleshort } from './bibleConstants';
+import { bibleList, bibleshort } from './constants';
 
 // Convert bibleList to a dictionary
 

@@ -1,7 +1,7 @@
 import { persisted } from "svelte-persisted-store";
 import { jumpToChapter, type BibleChapter } from "./bible";
-import { uploadBibleProgress } from "./firebase/firestore";
-import { bibleIndex, bibleList } from "$lib/bibleConstants";
+import { uploadBibleProgress } from "../firebase/firestore";
+import { bibleIndex, bibleList } from "$lib/bible/constants";
 import { get } from "svelte/store";
 
 

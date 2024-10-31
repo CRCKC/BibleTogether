@@ -1,6 +1,6 @@
-import bibleJson from '$lib/data/bibleList.json';
-import bibleChineseJson from '$lib/data/bibleChinese.json';
-import bibleIndexJson from "$lib/data/bibleIndex.json";
+import bibleJson from './bibleList.json';
+import bibleChineseJson from './bibleChinese.json';
+import bibleIndexJson from "./bibleIndex.json";
 
 
 export const bibleList = bibleJson as { [scroll: string]: number; }
