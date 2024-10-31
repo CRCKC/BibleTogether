@@ -46,17 +46,20 @@
 		stopPlayback();
 		prevChapter($currentChapterStore);
 	}
-	run(() => {
+
+	$effect(() => {
 		chapterChnaged = true;
 		audioSrc = getAudioLink($currentChapterStore);
 		audioPlayer?.load();
 	});
 
 	const PlayPauseIcon = $derived(audioPaused ? PlayArrow : Pause);
+
+	let expandedScroll = $state<string | undefined>(undefined);
 </script>
 
 {#if isSelecting}
-	<BibleSelector onClose={() => (isSelecting = false)} />
+	<BibleSelector onClose={() => (isSelecting = false)} {expandedScroll} />
 {/if}
 
 <div class="flex flex-col items-center justify-center">
@@ -74,6 +77,7 @@
 			<button
 				class="w-full h-10"
 				onclick={() => {
+					expandedScroll = $currentChapterStore.scroll;
 					isSelecting = true;
 					stopPlayback();
 				}}
