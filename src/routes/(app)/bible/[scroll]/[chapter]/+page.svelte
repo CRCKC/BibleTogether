@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { currentChapterStore, setCurrentChapter, type BibleChapter } from '$lib/bible/bible';
-	import viewport from '$lib/viewportAction';
+	import viewport from '$lib/utils/viewportAction';
 	import { bibleProgressStore, getProgressIndex, updateProgress } from '$lib/bible/progress';
 	import { settingsStore } from '$lib/userSettings';
 	import { loadChapter } from '$lib/backend';
@@ -52,6 +52,7 @@
 
 	function onLoadChapter(bible: BibleChapter) {
 		console.log('onLoadChapter');
+		localUserQueryCount = 0;
 		queryChapterCount(data.bible.scroll, data.bible.chapter).then((count) => {
 			if (count != undefined) queryCount = count;
 		});
@@ -92,10 +93,6 @@
 <div class="inline-block w-full mt-2 mb-5 text-5xl text-center">
 	{$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter}
 </div>
-<div class="w-full px-8 text-lg text-right">
-	{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
-	{$t('peopleAlreadyRead')}
-</div>
 
 <!-- Await for bibleContent -->
 {#await bibleContentPromise(data.bible)}
@@ -104,6 +101,10 @@
 		<div class="flex items-center justify-center w-full">Downloading Content...</div>
 	{/if}
 {:then bibleContent}
+	<div class="w-full px-8 text-lg text-right">
+		{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
+		{$t('peopleAlreadyRead')}
+	</div>
 	<!-- Actual Bible -->
 	<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
 		{@html bibleContent}

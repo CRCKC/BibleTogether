@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { resetProgress } from '$lib/bibleProgress';
+	import { resetProgress } from '$lib/bible/progress';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { t } from 'svelte-i18n';
 </script>
