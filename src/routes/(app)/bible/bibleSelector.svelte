@@ -9,14 +9,15 @@
 	import { t } from 'svelte-i18n';
 	import { bibleChinese, bibleList } from '$lib/bibleConstants';
 
-	interface Props {
-		// define a variable that stores a void function
+	let {
+		onClose,
+		expandedScroll = $bindable(undefined)
+	}: {
 		onClose: () => void;
-	}
+		expandedScroll?: string | undefined;
+	} = $props();
 
-	let { onClose }: Props = $props();
-
-	let expandedScroll: string | undefined = $state(undefined);
+	// let expandedScroll: string | undefined = $state(undefined);
 	let searchQuery: string = $state('');
 
 	function isSearch(key: string, q: string): boolean {
