@@ -9,7 +9,7 @@
 	import { onDestroy } from 'svelte';
 	import { subScribeUpdates } from '$lib/firebase/firestore';
 	import type { Unsubscribe } from 'firebase/firestore';
-	import { session } from '$lib/session';
+	import { session } from '$lib/session.svelte';
 	import { t } from 'svelte-i18n';
 	// export let data: LayoutData;
 	import SettingsIcon from '~icons/material-symbols/settings';
@@ -26,7 +26,7 @@
 	let isBible = $derived($page.url.pathname.startsWith(`${base}/bible`));
 	run(() => {
 		try {
-			if ($session.loggedIn == true) {
+			if (session.current.loggedIn == true) {
 				if (!subscribtion) {
 					subScribeUpdates().then((sub) => {
 						console.log('Subscribing to updates');

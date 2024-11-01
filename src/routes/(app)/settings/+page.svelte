@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { logout } from '$lib/firebase/auth';
-	import { session } from '$lib/session';
+	import { session } from '$lib/session.svelte';
 	import { t } from 'svelte-i18n';
 	// import type { PageData } from './$types';
 	import ZoomPopup from './zoomPopup.svelte';
@@ -34,7 +34,7 @@
 				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
 				onclick={() => {
 					logout();
-					$session.loggedIn = false;
+					session.current.loggedIn = false;
 					goto(`${base}/login`);
 				}}
 			>
