@@ -58,8 +58,8 @@ importers:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.47)
       bits-ui:
-        specifier: ^1.0.0-next.26
-        version: 1.0.0-next.26(svelte@5.1.2)
+        specifier: 1.0.0-next.35
+        version: 1.0.0-next.35(svelte@5.1.2)
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1203,8 +1203,8 @@ packages:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
 
-  bits-ui@1.0.0-next.26:
-    resolution: {integrity: sha512-5BQdnb/GGNr9Pgv+39/30r0PmzxK7hpAirbraahoneZ+mXmPlZ9x6cjemDSXd23XhsLx946hQbOadnM4jbLrhQ==}
+  bits-ui@1.0.0-next.35:
+    resolution: {integrity: sha512-Bm9hPlswA1hbYwn3xmSUsimEp7UlpNcoT7YddshtG7zd/lcZe5I5vr27flRTjYlBOKkjX6V32b+xwHNBOKSvvA==}
     engines: {node: '>=18', pnpm: '>=8.7.0'}
     peerDependencies:
       svelte: ^5.0.0-next.1
@@ -1551,6 +1551,9 @@ packages:
 
   esm-env@1.0.0:
     resolution: {integrity: sha512-Cf6VksWPsTuW01vU9Mk/3vRue91Zevka5SjyNf3nEpokFRuqt/KjUQoGAwq9qMmhpLTHmXzSIrFRw8zxWzmFBA==}
+
+  esm-env@1.1.4:
+    resolution: {integrity: sha512-oO82nKPHKkzIj/hbtuDYy/JHqBHFlMIW36SDiPCVsj87ntDLcWN+sJ1erdVryd4NxODacFTsdrIE3b7IamqbOg==}
 
   esniff@2.0.1:
     resolution: {integrity: sha512-kTUIGKQ/mDPFoJ0oVfcmyJn4iBDRptjNVIzwIFR7tqWXdVI9xfA2RMwY/gbSpJG3lkdWNEjLap/NqVHZiJsdfg==}
@@ -4108,12 +4111,12 @@ snapshots:
 
   binary-extensions@2.3.0: {}
 
-  bits-ui@1.0.0-next.26(svelte@5.1.2):
+  bits-ui@1.0.0-next.35(svelte@5.1.2):
     dependencies:
       '@floating-ui/core': 1.6.8
       '@floating-ui/dom': 1.6.11
       '@internationalized/date': 3.5.6
-      esm-env: 1.0.0
+      esm-env: 1.1.4
       runed: 0.15.3(svelte@5.1.2)
       svelte: 5.1.2
       svelte-toolbelt: 0.4.4(svelte@5.1.2)
@@ -4556,6 +4559,8 @@ snapshots:
       - supports-color
 
   esm-env@1.0.0: {}
+
+  esm-env@1.1.4: {}
 
   esniff@2.0.1:
     dependencies:
@@ -5470,7 +5475,7 @@ snapshots:
 
   runed@0.15.3(svelte@5.1.2):
     dependencies:
-      esm-env: 1.0.0
+      esm-env: 1.1.4
       svelte: 5.1.2
 
   sade@1.8.1:

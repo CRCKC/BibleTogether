@@ -11,16 +11,20 @@
 </script>
 
 <!-- TODO Try to make this button inline with the text -->
-<Popover.Root>
-	<Popover.Trigger class="inline-block">
-		<span class="text-sm text-blue-300"> <Info /> </span>
-	</Popover.Trigger>
-	<Popover.Content class={`bg-gray-700 w-[20rem*${$settingsStore.fontZoom}] max-w-[80%]`}>
-		<div style="zoom: {$settingsStore.fontZoom};">
-			{text}
-		</div>
-		<Popover.Arrow />
-	</Popover.Content>
-</Popover.Root>
+<!-- update: it now kinda looks like its inline using relative and top-0.5 -->
+<span class='bible-tooltip'>
+	<Popover.Root>
+			<Popover.Trigger class="relative top-0.5">
+				<span class="text-blue-300 text-sm"> <Info class="text-justify"/> </span>
+			</Popover.Trigger>
+		<Popover.Content class={`bg-gray-700 w-[20rem*${$settingsStore.fontZoom}] max-w-[80%] z-10`}>
+			<!-- TODO Arrow is currently kinda bugged in svelte 5, maybe update it later
+			<Popover.Arrow class='text-gray-700'/>  -->
+			<div style="zoom: {$settingsStore.fontZoom};">
+				{text}
+			</div>
+		</Popover.Content>
+	</Popover.Root>
+</span>
 
 <!-- display: inline; margin: 0 0.125em; padding: 0; vertical-align: baseline; -->

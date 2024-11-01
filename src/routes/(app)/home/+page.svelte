@@ -16,7 +16,7 @@
 	const month = today.getMonth() + 1;
 	const todayIndex = (year - 2024) * 12 + month - 1;
 
-	let api: CarouselAPI | undefined = $state();
+	let api = $state<CarouselAPI>();
 
 	let current = $state(todayIndex);
 
@@ -70,7 +70,7 @@
 		{$t('currentMonth', { values: { month, year } })}
 	</Button>
 	<Carousel.Root
-		setApi={(value: CarouselAPI) => (api = value)}
+		setApi={(emblaApi) => (api = emblaApi)}
 		class="w-full max-w-xs select-none "
 		orientation="vertical"
 		opts={{
