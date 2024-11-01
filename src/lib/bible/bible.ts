@@ -1,10 +1,7 @@
 import { persisted } from 'svelte-persisted-store'
 import { base } from '$app/paths';
 import { goto } from '$app/navigation';
-import { writable } from 'svelte/store';
 import { bibleList, bibleshort } from './constants';
-
-// Convert bibleList to a dictionary
 
 export interface BibleChapter {
     scroll: string
@@ -82,9 +79,5 @@ export function isChapterValid(bible: BibleChapter): boolean {
 
     return true;
 }
-
-// export let BIBLE_AUDIO: HTMLAudioElement | undefined;
-
-export const audioStore = writable<HTMLAudioElement | undefined>(undefined);
 
 

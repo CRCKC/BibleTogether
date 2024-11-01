@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
-	import { session } from '$lib/session';
+	import { session } from '$lib/session.svelte';
 	import '../app.css';
 	import { getGoogleRedirectResult } from '$lib/firebase/auth';
 	import '../i18n';
@@ -34,10 +34,10 @@
 	// $: console.log('loggedin', $session.loggedIn?.toString());
 
 	let loadingResult = $state(true);
-	session.subscribe((cur: any) => {
-		loading = cur?.loading;
-		loggedIn = cur?.loggedIn;
-	});
+	// session.subscribe((cur: any) => {
+	// 	loading = cur?.loading;
+	// 	loggedIn = cur?.loggedIn;
+	// });
 
 	onMount(async () => {
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
@@ -48,7 +48,6 @@
 
 		const loggedIn = !!user && user?.emailVerified;
 		session.update((cur: any) => {
-			loading = false;
 			return {
 				...cur,
 				user,

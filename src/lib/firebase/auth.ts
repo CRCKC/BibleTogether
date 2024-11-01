@@ -1,7 +1,7 @@
 import { signInWithRedirect, getRedirectResult, createUserWithEmailAndPassword, signInWithEmailAndPassword, type UserCredential } from "firebase/auth";
 import { firebaseAuth } from "./firebase";
 import { GoogleProvider } from "./providers";
-import { session } from "$lib/session";
+import { session } from "$lib/session.svelte";
 
 const auth = firebaseAuth;
 auth.useDeviceLanguage();
