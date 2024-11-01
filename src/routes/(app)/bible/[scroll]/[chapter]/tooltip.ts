@@ -5,7 +5,7 @@ export function setupTooltip() {
 	document.querySelectorAll('.bible sup').forEach(sup => {
 		const text = sup.getAttribute('title') ?? '';
 
-		const tt = document.createElement('svelte:component');
+		const tt = document.createElement('div');
 
 		if (sup.parentElement === null) return;
 
