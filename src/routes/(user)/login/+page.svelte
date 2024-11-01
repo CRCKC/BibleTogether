@@ -8,7 +8,6 @@
 	import OrWithSeperator from '../orWithSeperator.svelte';
 	import { t } from 'svelte-i18n';
 	import { Input } from '$lib/components/ui/input/index.js';
-
 	// export let data: PageData;
 
 	let username = $state('');
