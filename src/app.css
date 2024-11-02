@@ -79,6 +79,10 @@
 
 html {    
   color: white;
+  background-image: url("icon.svg");
+  background-size: cover; /* Adjust as needed */
+  background-repeat: no-repeat; /* Adjust as needed */
+  background-position: center; /* Adjust as needed */
 }
 
 /* width */

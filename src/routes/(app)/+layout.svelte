@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { page } from '$app/stores';
 	// import type { LayoutData } from './$types';
 	import { base } from '$app/paths';
@@ -46,7 +44,7 @@
 </script>
 
 <div class="flex flex-col h-dvh w-dvw">
-	<div class="h-full">
+	<div class="relative h-full">
 		{@render children?.()}
 	</div>
 

@@ -60,16 +60,30 @@
 </script>
 
 <ModeWatcher defaultMode={'dark'} track={false} />
-{#await initLocale()}
-	<div class="flex items-center justify-center h-dvh">
-		<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
-	</div>
-{:then _}
-	{#if loadingResult}
+
+<div class="background">
+	{#await initLocale()}
 		<div class="flex items-center justify-center h-dvh">
 			<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
 		</div>
-	{:else}
-		{@render children?.({ class: 'overflow-hidden' })}
-	{/if}
-{/await}
+	{:then _}
+		{#if loadingResult}
+			<div class="flex items-center justify-center h-dvh">
+				<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
+			</div>
+		{:else}
+			{@render children?.({ class: 'overflow-hidden' })}
+		{/if}
+	{/await}
+</div>
+
+<style lang="less">
+	.background {
+		background-image: url('icon.svg');
+		background-repeat: no-repeat;
+		background-position: center;
+		background-blend-mode: darken;
+		background-size: 50% 50%;
+		background-color: rgba(0, 0, 0, 0.7); /* Adjust the alpha value to control the darkness */
+	}
+</style>

@@ -33,9 +33,13 @@
 </script>
 
 <div class="inline bibleCheckbox">
-	<Checkbox class="flex items-center justify-center mr-2 size-6" id="bibleCheckbox" bind:checked />
+	<Checkbox
+		class="flex items-center justify-center mr-2  size-6 data-[state=checked]:bg-green-600 data-[state=checked]:text-white "
+		id="bibleCheckbox"
+		bind:checked
+	/>
 </div>
-<Label for="bibleCheckbox">{$t('bibleCheckboxLabel')}</Label>
+<Label for="bibleCheckbox"><div class="font-semibold">{$t('bibleCheckboxLabel')}</div></Label>
 
 <style>
 	@keyframes shake {
