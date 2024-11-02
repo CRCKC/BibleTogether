@@ -81,7 +81,6 @@
 	}
 
 	function onLoadChapter(bible: BibleChapter) {
-		console.log('onLoadChapter');
 		localUserQueryCount = 0;
 		queryChapterCount(bible.scroll, bible.chapter).then((count) => {
 			if (count != undefined) queryCount = count;
@@ -104,7 +103,7 @@
 	let queryCount: number | undefined = $state(undefined);
 </script>
 
-<ScrollArea class="size-full">
+<ScrollArea class="size-full" style="zoom: {$settingsStore.fontZoom};">
 	<!-- Title Widget -->
 	<div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
 		{bibleChinese[$currentChapterStore.scroll]}
@@ -125,7 +124,7 @@
 			{$t('peopleAlreadyRead')}
 		</div>
 		<!-- Actual Bible -->
-		<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
+		<div class="mx-4 bible">
 			{@html bibleContent}
 			{#key bibleContent}
 				{(() => {
