@@ -9,13 +9,13 @@
 	const observer = new IntersectionObserver((entries) => {
 		entries.forEach((entry) => {
 			if (entry.isIntersecting) {
-				console.log('In view');
+				// console.log('In view');
 				if (!checked && !entry.target.classList.contains('in-view')) {
 					entry.target.classList.add('animated');
 				}
 				entry.target.classList.add('in-view');
 			} else {
-				console.log('Out of view');
+				// console.log('Out of view');
 				// entry.target.classList.remove('in-view');
 			}
 		});
@@ -32,25 +32,35 @@
 	});
 </script>
 
-<span class="bibleCheckbox">
+<div class="inline bibleCheckbox">
 	<Checkbox class="flex items-center justify-center mr-2 size-6" id="bibleCheckbox" bind:checked />
-</span>
+</div>
 <Label for="bibleCheckbox">{$t('bibleCheckboxLabel')}</Label>
 
 <style>
-	@keyframes scaleUpDown {
+	@keyframes shake {
 		0% {
-			transform: scale(1);
+			transform: translate(0, 0) rotate(0deg);
+		}
+		25% {
+			transform: translate(15%, -15%) rotate(10deg);
 		}
 		50% {
-			transform: scale(1.3);
+			transform: translate(0, 0) rotate(0deg) scale(1.2);
+		}
+		75% {
+			transform: translate(-15%, -15%) rotate(-10deg);
 		}
 		100% {
-			transform: scale(1);
+			transform: translate(0, 0) rotate(0deg);
 		}
 	}
 
 	.bibleCheckbox:global(.animated) {
-		animation: scaleUpDown 0.5s ease-in-out;
+		transform-origin: 50% 50%;
+		animation-delay: 0.2s;
+		animation-name: shake;
+		animation-duration: 0.25s;
+		animation-iteration-count: 2;
 	}
 </style>
