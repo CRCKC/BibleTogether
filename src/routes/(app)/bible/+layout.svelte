@@ -33,7 +33,7 @@
 			<div class="w-32 h-32 border-b-2 border-white rounded-full animate-spin"></div>
 		</div>
 	{/if}
-	<div class="absolute overflow-y-scroll size-full">
+	<div class="absolute size-full">
 		{@render children?.()}
 	</div>
 </div>

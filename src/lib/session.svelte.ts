@@ -13,17 +13,17 @@ export type SessionState = {
 
 
 export function createSession() {
-	let current:SessionState = $state({user: null});
+    let value: SessionState = $state({ user: null });
 
-	return {
-		get current() { return current },
-        set (state: SessionState) {
-            current = state;
+    return {
+        get v() { return value },
+        set(state: SessionState) {
+            value = state;
         },
-        update (fn: (state: SessionState) => SessionState) {
-            current = fn(current);
+        update(fn: (state: SessionState) => SessionState) {
+            value = fn(value);
         }
-	};
+    };
 }
 
 export const session = createSession();

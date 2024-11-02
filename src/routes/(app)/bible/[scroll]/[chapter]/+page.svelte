@@ -13,6 +13,7 @@
 	import { t } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import { bibleChinese } from '$lib/bible/constants';
+	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 
 	interface Props {
 		data: PageData;
@@ -20,7 +21,7 @@
 
 	let { data }: Props = $props();
 
-	let chapterCompleted = $state(false);
+	let chapterCompleted = $state<boolean>();
 	let firstTimeScrolledToBottom = true;
 	let downloadingBible = $state(false);
 	let localUserQueryCount = $state(0);
@@ -29,8 +30,37 @@
 		onLoadChapter(data.bible); // Run onLoadChapter after the component is mounted
 	});
 
-	let prevBible = data.bible;
+	// Chapter completed state controls
+	let chapComDerived = $derived(
+		$bibleProgressStore[getProgressIndex(data.bible.scroll, data.bible.chapter)]
+	);
 
+	$effect(() => {
+		chapterCompleted = chapComDerived;
+	});
+
+	let prevchapterCompleted: boolean | undefined;
+	$effect(() => {
+		if (chapterCompleted != undefined) {
+			if (prevchapterCompleted != undefined && prevchapterCompleted != chapterCompleted) {
+				chapterCompleted ? checkChapter() : unCheckChapter();
+			}
+			prevchapterCompleted = chapterCompleted;
+		}
+	});
+
+	function checkChapter() {
+		updateProgress(data.bible);
+		localUserQueryCount++; // Increment the query count to update the UI client side
+	}
+
+	function unCheckChapter() {
+		updateProgress(data.bible, false);
+		localUserQueryCount--;
+	}
+
+	// Bible load controls
+	let prevBible = data.bible;
 	$effect(() => {
 		if (prevBible != data.bible) {
 			onLoadChapter(data.bible);
@@ -53,26 +83,14 @@
 	function onLoadChapter(bible: BibleChapter) {
 		console.log('onLoadChapter');
 		localUserQueryCount = 0;
-		queryChapterCount(data.bible.scroll, data.bible.chapter).then((count) => {
+		queryChapterCount(bible.scroll, bible.chapter).then((count) => {
 			if (count != undefined) queryCount = count;
 		});
-		const completed = $bibleProgressStore[getProgressIndex(bible.scroll, bible.chapter)];
 		firstTimeScrolledToBottom = true;
-		chapterCompleted = completed;
 	}
 
 	if (data.bible) {
 		setCurrentChapter(data.bible);
-	}
-
-	function checkChapter() {
-		updateProgress(data.bible);
-		localUserQueryCount++; // Increment the query count to update the UI client side
-	}
-
-	function unCheckChapter() {
-		updateProgress(data.bible, false);
-		localUserQueryCount--;
 	}
 
 	function handleScrollFinish() {
@@ -86,55 +104,58 @@
 	let queryCount: number | undefined = $state(undefined);
 </script>
 
-<!-- Title Widget -->
-<div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
-	{bibleChinese[$currentChapterStore.scroll]}
-</div>
-<div class="inline-block w-full mt-2 mb-5 text-5xl text-center">
-	{$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter}
-</div>
+<ScrollArea class="size-full">
+	<!-- Title Widget -->
+	<div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
+		{bibleChinese[$currentChapterStore.scroll]}
+	</div>
+	<div class="inline-block w-full mt-2 mb-5 text-5xl text-center">
+		{$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter}
+	</div>
 
-<!-- Await for bibleContent -->
-{#await bibleContentPromise(data.bible)}
-	{#if downloadingBible}
-		<!-- Loading Placeholder -->
-		<div class="flex items-center justify-center w-full">Downloading Content...</div>
-	{/if}
-{:then bibleContent}
-	<div class="w-full px-8 text-lg text-right">
-		{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
-		{$t('peopleAlreadyRead')}
-	</div>
-	<!-- Actual Bible -->
-	<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
-		{@html bibleContent}
-		{#key bibleContent}
-			{(() => {
-				// Run setupTooltip after bibleContent is loaded, here I made a function to return empty string after running setupTooltip,
-				// as setupTooltip will return undefined and it will be displayed on the html,
-				// the setTimeout 0 fixes an issue where it doesnt replace the html element rendered in bibleContent
-				setTimeout(() => setupTooltip(), 0);
-				return '';
-			})()}
-		{/key}
-	</div>
-	<!-- Bottom Div -->
-	<div class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400">
-		<Checkbox
-			class="flex items-center justify-center mr-2 size-6"
-			id="mark"
-			bind:checked={chapterCompleted}
-			onclick={chapterCompleted ? unCheckChapter : checkChapter}
-		/>
-		<Label for="mark">{$t('bibleCheckboxLabel')}</Label>
-	</div>
-	<div
-		class="h-4"
-		use:viewport={{
-			onEnter: handleScrollFinish
-		}}
-	></div>
-{/await}
+	<!-- Await for bibleContent -->
+	{#await bibleContentPromise(data.bible)}
+		{#if downloadingBible}
+			<!-- Loading Placeholder -->
+			<div class="flex items-center justify-center w-full">Downloading Content...</div>
+		{/if}
+	{:then bibleContent}
+		<div class="w-full px-8 text-lg text-right">
+			{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
+			{$t('peopleAlreadyRead')}
+		</div>
+		<!-- Actual Bible -->
+		<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
+			{@html bibleContent}
+			{#key bibleContent}
+				{(() => {
+					// Run setupTooltip after bibleContent is loaded, here I made a function to return empty string after running setupTooltip,
+					// as setupTooltip will return undefined and it will be displayed on the html,
+					// the setTimeout 0 fixes an issue where it doesnt replace the html element rendered in bibleContent
+					setTimeout(() => setupTooltip(), 0);
+					return '';
+				})()}
+			{/key}
+		</div>
+		<!-- Bottom Div -->
+		<div
+			class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400"
+		>
+			<Checkbox
+				class="flex items-center justify-center mr-2 size-6"
+				id="bibleCheckbox"
+				bind:checked={chapterCompleted}
+			/>
+			<Label for="bibleCheckbox">{$t('bibleCheckboxLabel')}</Label>
+		</div>
+		<div
+			class="h-4"
+			use:viewport={{
+				onEnter: handleScrollFinish
+			}}
+		></div>
+	{/await}
+</ScrollArea>
 
 <style lang="postcss">
 	.bible {
