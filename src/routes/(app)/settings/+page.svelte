@@ -40,7 +40,7 @@
 			>
 				{$t('logout')}
 			</button>
-			<DeleteProgress />
+			<!-- <DeleteProgress /> -->
 		</div>
 	</div>
 </div>
