@@ -19,14 +19,13 @@
 	import HomeIcon from '~icons/material-symbols/home';
 	import HomeOutline from '~icons/material-symbols/home-outline';
 
-
 	let { children } = $props();
 
 	let subscribtion: Unsubscribe | undefined = $state();
 	let isBible = $derived($page.url.pathname.startsWith(`${base}/bible`));
 	run(() => {
 		try {
-			if (session.current.loggedIn == true) {
+			if (session.v.loggedIn == true) {
 				if (!subscribtion) {
 					subScribeUpdates().then((sub) => {
 						console.log('Subscribing to updates');

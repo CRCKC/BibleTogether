@@ -11,6 +11,7 @@
 	import ChevronLeft from '~icons/material-symbols/chevron-left';
 	import PlayArrow from '~icons/material-symbols/play-arrow';
 	import Pause from '~icons/material-symbols/pause';
+	import { updateProgress } from '$lib/bible/progress';
 
 	let isSelecting = $state(false);
 	let audioPaused = $state(true);
@@ -55,6 +56,24 @@
 
 	const PlayPauseIcon = $derived(audioPaused ? PlayArrow : Pause);
 	let expandedScroll = $state<string | undefined>(undefined);
+
+	function scrollAndCheck() {
+		const element = document.querySelector('#bibleCheckbox');
+		if (element) {
+			// create an observer instance to ensure that the function is triggered after the scroll is completed
+			const intersectionObserver = new IntersectionObserver((entries) => {
+				let [entry] = entries;
+				if (entry.isIntersecting) {
+					setTimeout(() => {
+						updateProgress($currentChapterStore, true);
+					}, 100);
+				}
+			});
+			// start observing
+			intersectionObserver.observe(element);
+			element?.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
 </script>
 
 <BibleSelector bind:visible={isSelecting} {expandedScroll} />
@@ -102,6 +121,7 @@
 	bind:currentTime
 	onended={() => {
 		audioPaused = true;
+		scrollAndCheck();
 	}}
 >
 	<source src={audioSrc} />
