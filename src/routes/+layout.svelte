@@ -9,6 +9,7 @@
 	import '../i18n';
 	import { ModeWatcher, setMode } from 'mode-watcher';
 	import initLocale from '../i18n';
+	import { firstVisitStore } from '$lib/utils/firstVisit.svelte';
 
 	interface Props {
 		data: LayoutData;
@@ -17,31 +18,25 @@
 
 	let { data, children }: Props = $props();
 
-	// Auto Login Logic
-	// if (data.requireLogin && !$session.loggedIn) {
-	// 	loading = true;
-	// 	onMount(async () => {
-	// 		$session.loggedIn = success;
-	// 		if (!success) goto(`${base}/login`);
-	// 		loading = false;
-	// 	});
-	// } else {
-	// 	loading = false;
-	// }
-
-	let loading: boolean = $state(true);
-	let loggedIn: boolean = false;
-	// $: console.log('loggedin', $session.loggedIn?.toString());
-
 	let loadingResult = $state(true);
-	// session.subscribe((cur: any) => {
-	// 	loading = cur?.loading;
-	// 	loggedIn = cur?.loggedIn;
-	// });
 
+	let firstVisit = firstVisitStore();
 	onMount(async () => {
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
-		console.log('Logging In');
+
+		if (firstVisit.value == true) {
+			firstVisit.value = false;
+			console.log('First Visit');
+			await goto(base + '/signup');
+		} else {
+			console.log('Logging In');
+			await autoLogin();
+		}
+
+		loadingResult = false;
+	});
+
+	async function autoLogin() {
 		await getGoogleRedirectResult();
 
 		const user: any = await data.getAuthUser?.();
@@ -61,8 +56,7 @@
 		} else {
 			await goto(base + '/login');
 		}
-		loadingResult = false;
-	});
+	}
 </script>
 
 <ModeWatcher defaultMode={'dark'} track={false} />
