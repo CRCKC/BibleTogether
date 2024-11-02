@@ -79,7 +79,7 @@
 
 <style lang="less">
 	.background {
-		background-image: url('icon.svg');
+		background-image: url('$lib/assets/icons/icon.svg');
 		background-repeat: no-repeat;
 		background-position: center;
 		background-blend-mode: darken;
