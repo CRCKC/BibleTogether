@@ -8,6 +8,11 @@
 	import { bibleChinese } from '$lib/bible/constants';
 	import { t } from 'svelte-i18n';
 	import { jumpToChapterWithProgress } from '$lib/bible/progress';
+	// import ArrowLeft from '~icons/material-symbols/arrow-left';
+	// import ArrowRight from '~icons/material-symbols/arrow-right';
+	import ArrowRight from 'lucide-svelte/icons/chevron-down';
+	import ArrowLeft from 'lucide-svelte/icons/chevron-up';
+
 	// export let data: PageData;
 
 	// Get Today's year and month
@@ -71,7 +76,7 @@
 	</Button>
 	<Carousel.Root
 		setApi={(emblaApi) => (api = emblaApi)}
-		class="w-full max-w-xs select-none "
+		class="w-full max-w-sm select-none "
 		orientation="vertical"
 		opts={{
 			align: 'center',
@@ -88,23 +93,21 @@
 			<Carousel.Item class="py-1 basis-1/3" />
 			{#each carouselData as item, index}
 				<Carousel.Item
-					class={cn('py-1 basis-1/3', {
+					class={cn('py-1 basis-[25%]', {
 						'font-bold text-yellow-300': index === todayIndex
 					})}
 				>
 					<div
 						class={cn(
 							'transition-all duration-300 ease-in-out flex flex-row items-center',
-							current === index
-								? 'scale-100 opacity-100 shadow-none'
-								: 'scale-95 opacity-50 shadow-md'
+							current === index ? 'scale-100' : 'scale-90 brightness-[0.4]'
 						)}
 					>
-						<div class="w-8 mr-3 text-center">{item.month}</div>
+						<div class="w-8 mr-3 text-sm text-center text-nowrap">{item.month} {'月'}</div>
 						<div class="w-full p-1">
 							{#each schedule[item.year][item.month] as chap}
 								<Button
-									class="w-full my-1 h-14"
+									class="w-full my-1 bg-black h-14 disabled:opacity-100 disabled:bg-gray-900"
 									variant="outline"
 									disabled={current != index}
 									size="lg"
@@ -117,39 +120,40 @@
 								</Button>
 							{/each}
 						</div>
-						<div class="w-8 ml-3 text-center">{item.year - 2000}</div>
+						<div class="w-10 ml-3 text-sm text-center text-nowrap">{item.year - 2000} {'年'}</div>
 					</div>
 				</Carousel.Item>
 			{/each}
 			<!-- This is a hack to make the last item visible -->
 			<Carousel.Item class="py-1 basis-1/3" />
 		</Carousel.Content>
-		<div
-			class="absolute top-0 left-0 right-0 h-20 pointer-events-none bg-gradient-to-b from-background to-transparent"
-		></div>
-		<div
-			class="absolute bottom-0 left-0 right-0 h-20 pointer-events-none bg-gradient-to-t from-background to-transparent"
-		></div>
 	</Carousel.Root>
-
-	<!-- <div class="flex justify-between mt-4">
-        <Button
-          class="rounded-full"
-          variant="outline"
-          size="icon"
-          onclick={handlePrevious}
-          disabled={current === 0}
-        >
-          <ArrowLeft class='text-xl' />
-        </Button>
-        <Button
-          class="rounded-full"
-          variant="outline"
-          size="icon"
-          onclick={handleNext}
-          disabled={current === carouselData.length - 1}
-        >
-          <ArrowRight class='text-xl'/>
-        </Button> -->
-	<!-- </div> -->
+	<div class="relative flex justify-between w-full h-10 max-w-sm">
+		<Button
+			class="rounded-full aspect-square"
+			variant="outline"
+			size="icon"
+			onclick={handlePrevious}
+			disabled={current === 0}
+		>
+			<ArrowLeft class="text-xl" />
+		</Button>
+		<Button
+			class="w-full mx-4 text-lg font-medium rounded-full hover:bg-secondary hover:brightness-150"
+			variant="secondary"
+			size="icon"
+			onclick={() => api?.scrollTo(todayIndex)}
+		>
+			{$t('chapterToday')}
+		</Button>
+		<Button
+			class="rounded-full aspect-square"
+			variant="outline"
+			size="icon"
+			onclick={handleNext}
+			disabled={current === carouselData.length - 1}
+		>
+			<ArrowRight class="text-xl" />
+		</Button>
+	</div>
 </div>
