@@ -23,7 +23,7 @@
 
 	let subscribtion: Unsubscribe | undefined = $state();
 	let isBible = $derived($page.url.pathname.startsWith(`${base}/bible`));
-	run(() => {
+	$effect.pre(() => {
 		try {
 			if (session.v.loggedIn == true) {
 				if (!subscribtion) {
