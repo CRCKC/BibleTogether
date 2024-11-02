@@ -12,6 +12,7 @@
 	import PlayArrow from '~icons/material-symbols/play-arrow';
 	import Pause from '~icons/material-symbols/pause';
 	import { updateProgress } from '$lib/bible/progress';
+	import { t } from 'svelte-i18n';
 
 	let isSelecting = $state(false);
 	let audioPaused = $state(true);
@@ -99,15 +100,16 @@
 				}}
 			>
 				{bibleChinese[$currentChapterStore.scroll]}
-				{$currentChapterStore.chapter}
+				{$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter}
 			</button>
 			<button class="flex items-center h-10" onclick={gotoNextChapter}
 				><ChevronRight class="ml-1 mr-2 text-xl" />
 			</button>
 		</div>
 		<button
-			class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10"
+			class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10 disabled:opacity-60 disabled:cursor-not-allowed"
 			onclick={() => onClickPlay()}
+			disabled={$currentChapterStore.chapter == 0}
 		>
 			<PlayPauseIcon class="text-xl" />
 		</button>
