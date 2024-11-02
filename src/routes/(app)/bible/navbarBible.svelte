@@ -13,6 +13,7 @@
 	import Pause from '~icons/material-symbols/pause';
 	import { updateProgress } from '$lib/bible/progress';
 	import { t } from 'svelte-i18n';
+	import { settingsStore } from '$lib/userSettings';
 
 	let isSelecting = $state(false);
 	let audioPaused = $state(true);
@@ -66,7 +67,7 @@
 				let [entry] = entries;
 				if (entry.isIntersecting) {
 					setTimeout(() => {
-						updateProgress($currentChapterStore, true);
+						if ($settingsStore.autoCheck) updateProgress($currentChapterStore, true);
 					}, 100);
 				}
 			});

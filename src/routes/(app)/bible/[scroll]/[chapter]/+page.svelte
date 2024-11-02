@@ -8,8 +8,7 @@
 	import { downloadAndUnzip } from '$lib/bible/download';
 	import { queryChapterCount } from '$lib/firebase/firestore';
 	import { setupTooltip } from './tooltip';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { Label } from '$lib/components/ui/label/index.js';
+	import BibleCheckbox from './bibleCheckbox.svelte';
 	import { t } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import { bibleChinese } from '$lib/bible/constants';
@@ -21,7 +20,7 @@
 
 	let { data }: Props = $props();
 
-	let chapterCompleted = $state<boolean>();
+	let chapterCompleted = $state<boolean>(false);
 	let firstTimeScrolledToBottom = true;
 	let downloadingBible = $state(false);
 	let localUserQueryCount = $state(0);
@@ -140,12 +139,7 @@
 		<div
 			class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400"
 		>
-			<Checkbox
-				class="flex items-center justify-center mr-2 size-6"
-				id="bibleCheckbox"
-				bind:checked={chapterCompleted}
-			/>
-			<Label for="bibleCheckbox">{$t('bibleCheckboxLabel')}</Label>
+			<BibleCheckbox bind:checked={chapterCompleted} />
 		</div>
 		<div
 			class="h-4"
