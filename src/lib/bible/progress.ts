@@ -55,11 +55,15 @@ export function getProgressIndex(scroll: string, chapter: number): number {
 
 export function updateProgress(bible: BibleChapter, isComplete: boolean = true) {
     // console.log('updateProgress', bible, isComplete);
-    bibleProgressStore.update((progress) => {
-        progress[bibleIndex[bible.scroll] + bible.chapter] = isComplete;
-        return progress;
-    });
-    uploadBibleProgress();
+    const store = get(bibleProgressStore);
+
+    if (store[bibleIndex[bible.scroll] + bible.chapter] != isComplete) {
+        bibleProgressStore.update((progress) => {
+            progress[bibleIndex[bible.scroll] + bible.chapter] = isComplete;
+            return progress;
+        });
+        uploadBibleProgress();
+    }
 }
 
 export function jumpToChapterWithProgress(scroll: string) {
