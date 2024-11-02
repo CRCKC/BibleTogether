@@ -14,7 +14,7 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"getFirestoreHelpers": "mkdir -p static/__/auth && cd static/__/auth && curl -O 'https://bibletogether.firebaseapp.com/__/auth/{handler.js,iframe.js,experiments.js}' && curl -o '#1.html' 'https://bibletogether.firebaseapp.com/__/auth/{handler,iframe}'",
+		"getFirestoreHelpers": "mkdir -p static/__/auth && mkdir -p static/__/firebase && curl -o 'static/__/auth/#1' 'https://bibletogether.firebaseapp.com/__/auth/{handler.js,iframe.js,experiments.js}' && curl -o 'static/__/auth/#1.html' 'https://bibletogether.firebaseapp.com/__/auth/{handler,iframe}' && curl -o 'static/__/firebase/init.json' 'https://bibletogether.firebaseapp.com/__/firebase/init.json'",
 		"emulator": "firebase emulators:start",
 		"cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'",
 		"certDependencies": "sudo apt install libnss3-tools mkcert"
