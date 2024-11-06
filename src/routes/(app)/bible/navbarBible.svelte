@@ -16,7 +16,7 @@
 	import { settingsStore } from '$lib/userSettings';
 
 	let isSelecting = $state(false);
-	let audioPaused = $state(true);
+	let paused = $state(true);
 	let chapterChnaged = $state(true);
 	let audioSrc: string = $state('');
 
@@ -25,18 +25,18 @@
 	let currentTime: number = $state(0);
 
 	function onClickPlay() {
-		chapterChnaged = false;
-		if (audioPaused) {
+		if (chapterChnaged) {
+			chapterChnaged = false;
+			audioPlayer?.load(); // Such that the audio doesn't load on page load but only when the user clicks play
+		}
+		if (paused) {
 			audioPlayer?.play();
-			audioPaused = false;
 		} else {
 			audioPlayer?.pause();
-			audioPaused = true;
 		}
 	}
 
 	function stopPlayback() {
-		audioPaused = true;
 		audioPlayer?.pause();
 	}
 
@@ -53,10 +53,9 @@
 	$effect(() => {
 		chapterChnaged = true;
 		audioSrc = getAudioLink($currentChapterStore);
-		audioPlayer?.load();
 	});
 
-	const PlayPauseIcon = $derived(audioPaused ? PlayArrow : Pause);
+	const PlayPauseIcon = $derived(paused ? PlayArrow : Pause);
 	let expandedScroll = $state<string | undefined>(undefined);
 
 	function scrollAndCheck() {
@@ -83,6 +82,7 @@
 <div class="flex flex-col items-center justify-center">
 	{#if !chapterChnaged && audioPlayer}
 		<div class="w-full px-4 pt-3 max-w-96">
+			<!-- Audio control bar -->
 			<AudioBar {audioPlayer} {currentTime} {duration} />
 		</div>
 	{/if}
@@ -117,13 +117,14 @@
 	</div>
 </div>
 
+<!-- The actual audio element -->
 <audio
 	class="fixed hidden"
 	bind:this={audioPlayer}
 	bind:duration
 	bind:currentTime
+	bind:paused
 	onended={() => {
-		audioPaused = true;
 		scrollAndCheck();
 	}}
 >

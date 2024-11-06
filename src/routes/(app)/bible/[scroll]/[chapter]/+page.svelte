@@ -81,9 +81,12 @@
 
 	function onLoadChapter(bible: BibleChapter) {
 		localUserQueryCount = 0;
-		queryChapterCount(bible.scroll, bible.chapter).then((count) => {
-			if (count != undefined) queryCount = count;
-		});
+		// Don't query if it's the intro
+		if (bible.chapter != 0) {
+			queryChapterCount(bible.scroll, bible.chapter).then((count) => {
+				if (count != undefined) queryCount = count;
+			});
+		}
 		firstTimeScrolledToBottom = true;
 	}
 
@@ -105,10 +108,10 @@
 <ScrollArea class="size-full" style="zoom: {$settingsStore.fontZoom};">
 	<!-- Title Widget -->
 	<div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
-		{bibleChinese[$currentChapterStore.scroll]}
+		{bibleChinese[data.bible.scroll]}
 	</div>
 	<div class="inline-block w-full mt-2 mb-5 text-5xl text-center">
-		{$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter}
+		{data.bible.chapter == 0 ? $t('intro') : data.bible.chapter}
 	</div>
 
 	<!-- Await for bibleContent -->
@@ -117,11 +120,13 @@
 			<!-- Loading Placeholder -->
 			<div class="flex items-center justify-center w-full">Downloading Content...</div>
 		{/if}
-	{:then bibleContent}
-		<div class="w-full px-8 text-lg text-right">
-			{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
-			{$t('peopleAlreadyRead')}
-		</div>
+	{:then bibleContent}condition
+		{#if data.bible.chapter != 0}
+			<div class="w-full px-8 text-lg text-right">
+				{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
+				{$t('peopleAlreadyRead')}
+			</div>
+		{/if}
 		<!-- Actual Bible -->
 		<div class="mx-4 bible">
 			{@html bibleContent}
@@ -139,7 +144,9 @@
 		<div
 			class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400"
 		>
-			<BibleCheckbox bind:checked={chapterCompleted} />
+			{#if data.bible.chapter != 0}
+				<BibleCheckbox bind:checked={chapterCompleted} />
+			{/if}
 		</div>
 		<div
 			class="h-4"
