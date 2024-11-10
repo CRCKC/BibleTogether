@@ -10,20 +10,30 @@
 	import { ModeWatcher, setMode } from 'mode-watcher';
 	import initLocale from '../i18n';
 	import { firstVisitStore } from '$lib/utils/firstVisit.svelte';
-	import { pwaInstallHandler } from 'pwa-install-handler';
+	import type { PWAInstallElement } from '@khmyznikov/pwa-install';
+	import '@khmyznikov/pwa-install';
+
 	interface Props {
 		data: LayoutData;
 		children?: import('svelte').Snippet<[any]>;
 	}
+
+	let pwaInstallRef: PWAInstallElement;
 
 	let { data, children }: Props = $props();
 
 	let loadingResult = $state(true);
 
 	let firstVisit = firstVisitStore();
+	import { dev } from '$app/environment';
+
 	onMount(async () => {
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
-
+		if (pwaInstallRef) {
+			if (!pwaInstallRef.isUnderStandaloneMode) {
+				pwaInstallRef.showDialog(true);
+			}
+		}
 		if (firstVisit.value == true) {
 			firstVisit.value = false;
 			console.log('First Visit');
@@ -57,11 +67,22 @@
 			await goto(base + '/login');
 		}
 	}
-	if (pwaInstallHandler.canInstall()) pwaInstallHandler.install();
 </script>
 
 <ModeWatcher defaultMode={'dark'} track={false} />
-
+<button
+	class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
+	onclick={() => {
+		if (pwaInstallRef) {
+			console.log(pwaInstallRef?.isInstallAvailable);
+			console.log(pwaInstallRef?.isUnderStandaloneMode);
+			pwaInstallRef.showDialog(true);
+			// pwaInstallRef.install();
+		}
+	}}
+>
+	Install bro
+</button>
 <div class="background">
 	{#await initLocale()}
 		<div class="flex items-center justify-center h-dvh">
@@ -77,6 +98,8 @@
 		{/if}
 	{/await}
 </div>
+
+<pwa-install bind:this={pwaInstallRef} manifest-url="/favicon/site.webmanifest"></pwa-install>
 
 <style lang="less">
 	.background {
