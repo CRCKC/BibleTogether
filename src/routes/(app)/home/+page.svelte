@@ -75,7 +75,7 @@
 		{$t('currentMonth', { values: { month, year } })}
 	</Button>
 	<Carousel.Root
-		setApi={(emblaApi: CarouselAPI) => (api = emblaApi)}
+		setApi={(emblaApi) => (api = emblaApi as CarouselAPI)}
 		class="w-full max-w-sm select-none "
 		orientation="vertical"
 		opts={{
