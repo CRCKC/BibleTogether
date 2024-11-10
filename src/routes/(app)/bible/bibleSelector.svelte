@@ -81,7 +81,11 @@
 								{#each Array.from({ length: bibleList[key] + 1 }) as _, i}
 									<button
 										class="flex items-center justify-center rounded-lg bg-gray-800 size-12
-									{$bibleProgressStore[getProgressIndex(key, i)] ? 'bg-green-600' : ''}
+									{$bibleProgressStore[getProgressIndex(key, i)]
+											? 'bg-green-600'
+											: i == 0 && $bibleProgressStore[getProgressIndex(key, 1)]
+												? 'bg-green-600'
+												: ''}
 									{$currentChapterStore.scroll === key && $currentChapterStore.chapter === i ? 'outline' : ''}
 									"
 										onclick={() => {
