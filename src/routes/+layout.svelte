@@ -21,7 +21,14 @@
 	let loadingResult = $state(true);
 
 	let firstVisit = firstVisitStore();
+
 	onMount(async () => {
+		if (pwaInstallHandler.canInstall()) {
+			console.log('Can install PWA');
+			pwaInstallHandler.install();
+		} else {
+			console.log('Cannot install PWA');
+		}
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
 
 		if (firstVisit.value == true) {
@@ -57,7 +64,6 @@
 			await goto(base + '/login');
 		}
 	}
-	if (pwaInstallHandler.canInstall()) pwaInstallHandler.install();
 </script>
 
 <ModeWatcher defaultMode={'dark'} track={false} />
