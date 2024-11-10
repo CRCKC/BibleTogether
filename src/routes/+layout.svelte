@@ -1,4 +1,7 @@
 <script lang="ts">
+	interface Window {
+		installApp: () => void;
+	}
 	import type { LayoutData } from './$types';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
@@ -18,22 +21,26 @@
 		children?: import('svelte').Snippet<[any]>;
 	}
 
-	let pwaInstallRef: PWAInstallElement;
-
 	let { data, children }: Props = $props();
 
 	let loadingResult = $state(true);
 
 	let firstVisit = firstVisitStore();
-	import { dev } from '$app/environment';
 
-	onMount(async () => {
-		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
+	let pwaInstallRef: PWAInstallElement;
+
+	function handlePWAInstall() {
 		if (pwaInstallRef) {
 			if (!pwaInstallRef.isUnderStandaloneMode) {
 				pwaInstallRef.showDialog(true);
 			}
 		}
+	}
+	handlePWAInstall();
+
+	onMount(async () => {
+		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
+
 		if (firstVisit.value == true) {
 			firstVisit.value = false;
 			console.log('First Visit');
@@ -69,6 +76,58 @@
 	}
 </script>
 
+<svelte:head>
+	<script>
+		let deferredPrompt;
+
+		if ('BeforeInstallPromptEvent' in window) {
+			console.log('⏳ BeforeInstallPromptEvent supported but not fired yet');
+		} else {
+			console.log('❌ BeforeInstallPromptEvent NOT supported');
+		}
+		window.addEventListener('beforeinstallprompt', (e) => {
+			e.preventDefault();
+			deferredPrompt = e;
+			installButtonVisible = true;
+			console.log('✅ BeforeInstallPromptEvent fired', true);
+		});
+		window.addEventListener('appinstalled', (e) => {
+			console.log('✅ AppInstalled fired', true);
+		});
+
+		localStorage.setItem('storedEvent', JSON.stringify({ type: 'click', target: 'button' }));
+
+		// Later, recreating and dispatching the event
+		window.reDispatch = function recreateAndDispatch() {
+			let storedEvent = JSON.parse(localStorage.getItem('storedEvent'));
+			let recreatedEvent = new Event(storedEvent.type);
+			recreatedEvent.target = document.querySelector(storedEvent.target);
+			window.dispatchEvent(recreatedEvent);
+		};
+
+		window.installApp = async function installApp() {
+			console.log('installApp button clicked');
+			console.log('deferredPrompt', deferredPrompt);
+			if (deferredPrompt) {
+				deferredPrompt.prompt();
+				console.log('🆗 Installation Dialog opened');
+				// Find out whether the user confirmed the installation or not
+				const { outcome } = await deferredPrompt.userChoice;
+				// The deferredPrompt can only be used once.
+				deferredPrompt = null;
+				// Act on the user's choice
+				if (outcome === 'accepted') {
+					console.log('😀 User accepted the install prompt.', true);
+				} else if (outcome === 'dismissed') {
+					console.log('😟 User dismissed the install prompt');
+				}
+				// Hide the install button
+				// installButtonVisible = false;
+			}
+		};
+	</script>
+</svelte:head>
+
 <ModeWatcher defaultMode={'dark'} track={false} />
 <button
 	class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
@@ -79,10 +138,12 @@
 			pwaInstallRef.showDialog(true);
 			// pwaInstallRef.install();
 		}
+		(window as unknown as Window).installApp();
 	}}
 >
 	Install bro
 </button>
+
 <div class="background">
 	{#await initLocale()}
 		<div class="flex items-center justify-center h-dvh">
