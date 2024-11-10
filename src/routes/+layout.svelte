@@ -14,8 +14,8 @@
 	import initLocale from '../i18n';
 	import { firstVisitStore } from '$lib/utils/firstVisit.svelte';
 	import PWASvlete from '$lib/pwa/pwa.svelte';
-	import { promptInstall } from '$lib/pwa/pwa';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
+	import { promptInstall } from '$lib/pwa/pwa';
 
 	interface Props {
 		data: LayoutData;
@@ -29,12 +29,6 @@
 	let firstVisit = firstVisitStore();
 
 	onMount(async () => {
-		if (pwaInstallHandler.canInstall()) {
-			console.log('Can install PWA');
-			pwaInstallHandler.install();
-		} else {
-			console.log('Cannot install PWA');
-		}
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
 		promptInstall();
 
