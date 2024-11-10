@@ -15,20 +15,7 @@
       "purpose": "any"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/favicon/web-app-manifest-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "form_factor": "narrow"
-    },
-    {
-      "src": "/favicon/web-app-manifest-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "form_factor": "wide"
-    }
-  ],
+  "screenshots": [],
   "start_url": ".",
   "scope": "/",
   "theme_color": "#000000",
