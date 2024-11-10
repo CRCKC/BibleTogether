@@ -120,7 +120,7 @@
 			<!-- Loading Placeholder -->
 			<div class="flex items-center justify-center w-full">Downloading Content...</div>
 		{/if}
-	{:then bibleContent}condition
+	{:then bibleContent}
 		{#if data.bible.chapter != 0}
 			<div class="w-full px-8 text-lg text-right">
 				{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
