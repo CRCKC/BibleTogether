@@ -7,6 +7,7 @@
 	// import type { PageData } from './$types';
 	import ZoomPopup from './zoomPopup.svelte';
 	import DeleteProgress from './deleteProgress.svelte';
+	import MigrateProgress from './migrateProgress.svelte';
 
 	// export let data: PageData;
 </script>
@@ -20,6 +21,7 @@
 	<div class="flex flex-col items-center justify-center mt-8">
 		<div class="flex flex-col items-center justify-center text-black">
 			<ZoomPopup />
+			<!-- <MigrateProgress /> -->
 			<!-- Change Language -->
 			<!-- <button
 				class="flex items-center justify-center h-12 mt-4 text-white bg-gray-600 rounded-md w-80"
