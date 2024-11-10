@@ -10,7 +10,7 @@
 	import { ModeWatcher, setMode } from 'mode-watcher';
 	import initLocale from '../i18n';
 	import { firstVisitStore } from '$lib/utils/firstVisit.svelte';
-
+	import { pwaInstallHandler } from 'pwa-install-handler';
 	interface Props {
 		data: LayoutData;
 		children?: import('svelte').Snippet<[any]>;
@@ -57,6 +57,7 @@
 			await goto(base + '/login');
 		}
 	}
+	if (pwaInstallHandler.canInstall()) pwaInstallHandler.install();
 </script>
 
 <ModeWatcher defaultMode={'dark'} track={false} />
