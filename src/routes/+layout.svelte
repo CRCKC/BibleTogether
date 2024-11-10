@@ -14,7 +14,8 @@
 	import initLocale from '../i18n';
 	import { firstVisitStore } from '$lib/utils/firstVisit.svelte';
 	import PWASvlete from '$lib/pwa/pwa.svelte';
-	import { installApp } from '$lib/pwa/pwa';
+	import { promptInstall } from '$lib/pwa/pwa';
+	import { Toaster } from '$lib/components/ui/sonner/index.js';
 
 	interface Props {
 		data: LayoutData;
@@ -29,6 +30,7 @@
 
 	onMount(async () => {
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
+		promptInstall();
 
 		if (firstVisit.value == true) {
 			firstVisit.value = false;
@@ -69,14 +71,7 @@
 
 <ModeWatcher defaultMode={'dark'} track={false} />
 
-<button
-	class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
-	onclick={() => {
-		installApp();
-	}}
->
-	Install bro
-</button>
+<Toaster />
 
 <div class="background">
 	{#await initLocale()}

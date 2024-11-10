@@ -1,3 +1,5 @@
+import { toast } from 'svelte-sonner';
+
 export interface BeforeInstallPromptEvent extends Event {
     readonly userChoice: Promise<{
         outcome: 'accepted' | 'dismissed';
@@ -12,6 +14,7 @@ interface PwaSvelte {
         readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
     }
 };
+
 
 export async function installApp() {
 
@@ -34,4 +37,28 @@ export async function installApp() {
             console.log('😟 User dismissed the install prompt');
         }
     }
+}
+
+export function isPwaSupported() {
+    // @ts-expect-error Property 'pwaSvelte' will be declared in pwa.svelte
+    const pwaSvelte = (window.pwaSvelte) as PwaSvelte
+
+    return pwaSvelte.installable;
+}
+
+export function promptInstall() {
+    if (isPwaSupported())
+        toast.info('安裝成應用程式？', {
+            action: {
+                label: '確認',
+                onClick: () => installApp()
+            },
+            // description: 'i strongly recommend you to install this app',
+            description: '強烈建議安裝此網站為應用程式',
+            position: 'top-center',
+            dismissable: true,
+
+            duration: 60000,
+            important: true
+        });
 }
