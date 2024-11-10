@@ -9,7 +9,32 @@
 	<link rel="shortcut icon" href="%sveltekit.assets%/favicon/favicon.ico" />
 	<link rel="apple-touch-icon" sizes="180x180" href="%sveltekit.assets%/favicon/apple-touch-icon.png" />
 	<link rel="manifest" href="%sveltekit.assets%/favicon/site.webmanifest" />
-	
+
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@2.6/dist/add-to-homescreen.min.css" />
+	<script src="https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@2.6/dist/add-to-homescreen.min.js"></script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			window.AddToHomeScreenInstance = window.AddToHomeScreen({
+				appName: '禮中齊讀經',                                   // Name of the app.
+				// Required.
+				appNameDisplay: 'standalone',                          // If set to 'standalone' (the default), the app name will be diplayed
+				// on it's own, beneath the "Install App" header. If set to 'inline', the
+				// app name will be displayed on a single line like "Install MyApp"
+				// Optional. Default 'standalone'
+				appIconUrl: '%sveltekit.assets%/favicon/apple-touch-icon.png',                    // App icon link (square, at least 40 x 40 pixels).
+				// Required.
+				assetUrl: 'https://cdn.jsdelivr.net/gh/philfung/add-to-homescreen@2.6/dist/assets/img/',  // Link to directory of library image assets.
+
+				maxModalDisplayCount: -1                               // If set, the modal will only show this many times.
+				// Optional. Default: -1 (no limit).  (Debugging: Use this.clearModalDisplayCount() to reset the count)
+			});
+			ret = window.AddToHomeScreenInstance.show('zh_HK');        // show "add-to-homescreen" instructions to user, or do nothing if already added to homescreen
+			// The only argument is the language to show the messages in (currently only 'da', 'de', 'en', 'es', 'fr', 'he', 'it', 'pt', 'ru', 'cs', 'ko', 'lv', 'pl', 'vn', 'zh_CN', 'zh_HK' and 'zh_TW' are available).
+		});
+	</script>
+
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<!-- <link rel="canonical" href="https://crckc.github.io/BibleTogether/" /> -->
 	%sveltekit.head%
@@ -17,6 +42,8 @@
 
 <body data-sveltekit-preload-data="hover">
 	<div style="display: contents">%sveltekit.body%</div>
+
+
 </body>
 
 </html>
