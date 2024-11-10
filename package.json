@@ -62,7 +62,6 @@
 	"dependencies": {
 		"@capacitor/android": "^6.1.2",
 		"@capacitor/core": "^6.1.2",
-		"@khmyznikov/pwa-install": "^0.4.8",
 		"jszip": "^3.10.1",
 		"motion": "^10.18.0",
 		"svelte-i18n": "^4.0.1",
