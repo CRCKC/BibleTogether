@@ -12,3 +12,7 @@ const precache_list = [
 }));
 
 precacheAndRoute(precache_list);
+
+self.addEventListener('fetch', function (event) {
+    event.respondWith(fetch(event.request))
+})
