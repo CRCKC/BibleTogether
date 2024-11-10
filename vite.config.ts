@@ -26,4 +26,7 @@ export default defineConfig({
 	preview: {
 		port: 4000,
 	},
+	define: {
+		"process.env.NODE_ENV": '"production"',
+	}
 });

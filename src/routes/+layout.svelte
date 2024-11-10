@@ -1,4 +1,7 @@
 <script lang="ts">
+	interface Window {
+		installApp: () => void;
+	}
 	import type { LayoutData } from './$types';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
@@ -10,7 +13,10 @@
 	import { ModeWatcher, setMode } from 'mode-watcher';
 	import initLocale from '../i18n';
 	import { firstVisitStore } from '$lib/utils/firstVisit.svelte';
-	import { pwaInstallHandler } from 'pwa-install-handler';
+	import PWASvlete from '$lib/pwa/pwa.svelte';
+	import { promptInstall } from '$lib/pwa/pwa';
+	import { Toaster } from '$lib/components/ui/sonner/index.js';
+
 	interface Props {
 		data: LayoutData;
 		children?: import('svelte').Snippet<[any]>;
@@ -30,6 +36,7 @@
 			console.log('Cannot install PWA');
 		}
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
+		promptInstall();
 
 		if (firstVisit.value == true) {
 			firstVisit.value = false;
@@ -66,7 +73,11 @@
 	}
 </script>
 
+<PWASvlete />
+
 <ModeWatcher defaultMode={'dark'} track={false} />
+
+<Toaster />
 
 <div class="background">
 	{#await initLocale()}
