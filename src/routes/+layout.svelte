@@ -13,7 +13,6 @@
 	import { ModeWatcher, setMode } from 'mode-watcher';
 	import initLocale from '../i18n';
 	import { firstVisitStore } from '$lib/utils/firstVisit.svelte';
-	import PWASvlete from '$lib/pwa/pwa.svelte';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import { promptInstall } from '$lib/pwa/pwa';
 
@@ -30,7 +29,7 @@
 
 	onMount(async () => {
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
-		promptInstall();
+		setTimeout(promptInstall, 0);
 
 		if (firstVisit.value == true) {
 			firstVisit.value = false;
@@ -66,8 +65,6 @@
 		}
 	}
 </script>
-
-<PWASvlete />
 
 <ModeWatcher defaultMode={'dark'} track={false} />
 

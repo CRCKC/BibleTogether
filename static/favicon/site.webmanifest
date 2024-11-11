@@ -16,11 +16,15 @@
     }
   ],
   "screenshots": [],
-  "start_url": ".",
+  "start_url": "/",
   "scope": "/",
   "theme_color": "#000000",
   "background_color": "#000000",
   "description": "禮中齊讀經",
   "display": "standalone",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "related_applications": [{
+    "platform": "webapp",
+    "url": "https://bible.crckc.org.hk/favicon/site.webmanifest"
+  }]
 }
