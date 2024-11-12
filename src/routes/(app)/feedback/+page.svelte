@@ -7,14 +7,8 @@
 
 	import { defaults, superForm, superValidate } from 'sveltekit-superforms';
 	import { zod, zodClient } from 'sveltekit-superforms/adapters';
-	import { z } from 'zod';
+	import { FeedbackFormSchema, FeedbackFormTypes } from './feedbackForm';
 	import { t } from 'svelte-i18n';
-
-	export const FeedbackFormSchema = z.object({
-		title: z.string().min(2).max(50),
-		description: z.string().min(2).max(500),
-		type: z.enum(['bug', 'feature', 'other'])
-	});
 
 	const form = superForm(defaults(zod(FeedbackFormSchema)), {
 		validators: zodClient(FeedbackFormSchema),
@@ -56,9 +50,9 @@
 							{$t(`feedback_type-${$formData.type}`) ?? 'Select a verified email to display'}
 						</Select.Trigger>
 						<Select.Content>
-							<Select.Item value="bug" label={$t('feedback_type-bug')} />
-							<Select.Item value="feature" label={$t('feedback_type-feature')} />
-							<Select.Item value="other" label={$t('feedback_type-other')} />
+							{#each FeedbackFormTypes as type}
+								<Select.Item value={type} label={$t(`feedback_type-${type}`)} />
+							{/each}
 						</Select.Content>
 					</Select.Root>
 				{/snippet}
