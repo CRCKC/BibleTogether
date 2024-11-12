@@ -35,6 +35,14 @@
 			<button
 				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
 				onclick={() => {
+					goto(`${base}/feedback`);
+				}}
+			>
+				{$t('feedback_submit')}
+			</button>
+			<button
+				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
+				onclick={() => {
 					logout();
 					session.v.loggedIn = false;
 					goto(`${base}/login`);
