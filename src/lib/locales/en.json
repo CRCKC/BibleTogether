@@ -33,5 +33,12 @@
     "deleteBibleProgressTitle": "Are you absolutely sure?",
     "deleteBibleProgressDesc": "This action cannot be undone. This will permanently delete your bible progress",
     "intro": "Intro",
-    "chapterToday": "Today's Chapter"
+    "chapterToday": "Today's Chapter",
+    "feedback": "Feedback",
+    "feedback_title": "Title",
+    "feedback_type": "Feedback Type",
+    "feedback_description": "Description",
+    "feedback_type-bug": "Bug",
+    "feedback_type-feature": "Feature",
+    "feedback_type-other": "other"
 }

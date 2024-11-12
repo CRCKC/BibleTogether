@@ -33,5 +33,12 @@
     "deleteBibleProgressTitle": "您真的確定嗎？",
     "deleteBibleProgressDesc": "此操作無法撤銷。這將永久刪除您的聖經進度",
     "intro": "簡介",
-    "chapterToday": "返回今天的章節"
+    "chapterToday": "返回今天的章節",
+    "feedback_submit": "提交回饋",
+    "feedback_title": "標題",
+    "feedback_type": "回饋類型",
+    "feedback_description": "詳細描述",
+    "feedback_type-bug": "錯誤",
+    "feedback_type-feature": "功能",
+    "feedback_type-other": "其他"
 }
