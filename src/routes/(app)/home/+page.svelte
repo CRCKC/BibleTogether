@@ -142,7 +142,11 @@
 			class="w-full mx-4 text-lg font-medium rounded-full hover:bg-secondary hover:brightness-150"
 			variant="secondary"
 			size="icon"
-			onclick={() => api?.scrollTo(todayIndex)}
+			onclick={() => {
+				current !== todayIndex
+					? api?.scrollTo(todayIndex)
+					: jumpToChapterWithProgress(schedule[year][month][0].scroll);
+			}}
 		>
 			{$t('chapterToday')}
 		</Button>
