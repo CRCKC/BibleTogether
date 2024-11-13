@@ -72,7 +72,12 @@ export function jumpToChapterWithProgress(scroll: string) {
     const scrollChapters = bibleList[scroll];
     const data = get(bibleProgressStore);
 
-    for (let i = startIndex; i < startIndex + scrollChapters; i++) {
+    if (!data[startIndex] && !data[startIndex + 1]) {
+        jumpToChapter({ scroll, chapter: 0 });
+        return;
+    }
+
+    for (let i = startIndex + 1; i < startIndex + scrollChapters; i++) {
         if (!data[i]) {
             jumpToChapter({ scroll, chapter: i - startIndex });
             return;
