@@ -5,23 +5,22 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { toast } from 'svelte-sonner';
 
-	import { defaults, superForm, superValidate } from 'sveltekit-superforms';
+	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod, zodClient } from 'sveltekit-superforms/adapters';
-	import { FeedbackFormSchema, FeedbackFormTypes } from './feedbackForm';
+	import { FeedbackFormSchema, FeedbackFormTypes, submitFeedback } from './feedbackForm';
 	import { t } from 'svelte-i18n';
 
 	const form = superForm(defaults(zod(FeedbackFormSchema)), {
 		validators: zodClient(FeedbackFormSchema),
 		SPA: true,
-		onSubmit: async () => {
-			const form = await superValidate(zod(FeedbackFormSchema));
-			console.log(form);
+		onSubmit: async ({ formData }) => {
+			submitFeedback(formData);
 		},
 		onUpdated: ({ form: f }) => {
 			if (f.valid) {
-				toast.success(`You submitted ${JSON.stringify(f.data, null, 2)}`);
+				toast.success($t('feedback_submit-success'));
 			} else {
-				toast.error('Please fix the errors in the form.');
+				toast.error($t('feedback_submit-invalid'));
 			}
 		}
 	});
@@ -46,7 +45,10 @@
 				{#snippet children({ props })}
 					<Form.Label>{$t('feedback_type')}</Form.Label>
 					<Select.Root type="single" bind:value={$formData.type} name={props.name}>
-						<Select.Trigger {...props}>
+						<Select.Trigger
+							{...props}
+							class={$formData.type in FeedbackFormTypes.enum ? '' : 'text-muted-foreground'}
+						>
 							{$t(`feedback_type-${$formData.type}`)}
 						</Select.Trigger>
 						<Select.Content>
