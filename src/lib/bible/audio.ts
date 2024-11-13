@@ -1,7 +1,7 @@
 import { type BibleChapter } from "./bible";
 import { bibleshort } from "./constants";
 
-const GITHUB_DATABASE_BASEURL = "https://raw.githubusercontent.com/CRCKC/BibleTogether/refs/heads/data";
+const GITHUB_DATABASE_BASEURL = "https://raw.githubusercontent.com/CRCKC/data/refs/heads/data";
 
 export function getAudioLink(bible: BibleChapter) {
     const index = bibleshort.findIndex((v) => v == bible.scroll) + 1;
