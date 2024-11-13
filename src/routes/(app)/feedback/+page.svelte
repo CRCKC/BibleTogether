@@ -9,6 +9,8 @@
 	import { zod, zodClient } from 'sveltekit-superforms/adapters';
 	import { FeedbackFormSchema, FeedbackFormTypes, submitFeedback } from './feedbackForm';
 	import { t } from 'svelte-i18n';
+	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 
 	const form = superForm(defaults(zod(FeedbackFormSchema)), {
 		validators: zodClient(FeedbackFormSchema),
@@ -19,6 +21,7 @@
 		onUpdated: ({ form: f }) => {
 			if (f.valid) {
 				toast.success($t('feedback_submit-success'));
+				goto(`${base}/settings`);
 			} else {
 				toast.error($t('feedback_submit-invalid'));
 			}
