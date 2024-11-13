@@ -38,7 +38,9 @@
     "feedback_title": "標題",
     "feedback_type": "回饋類型",
     "feedback_description": "詳細描述",
+    "feedback_description_d": "請描述您的回饋",
     "feedback_type-bug": "錯誤",
     "feedback_type-feature": "功能",
-    "feedback_type-other": "其他"
+    "feedback_type-other": "其他",
+    "feedback_type-not_selected": "請選擇回饋類型"
 }

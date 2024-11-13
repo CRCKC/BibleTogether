@@ -47,10 +47,10 @@
 					<Form.Label>{$t('feedback_type')}</Form.Label>
 					<Select.Root type="single" bind:value={$formData.type} name={props.name}>
 						<Select.Trigger {...props}>
-							{$t(`feedback_type-${$formData.type}`) ?? 'Select a verified email to display'}
+							{$t(`feedback_type-${$formData.type}`)}
 						</Select.Trigger>
 						<Select.Content>
-							{#each FeedbackFormTypes as type}
+							{#each FeedbackFormTypes.options as type}
 								<Select.Item value={type} label={$t(`feedback_type-${type}`)} />
 							{/each}
 						</Select.Content>
