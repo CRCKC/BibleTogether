@@ -29,7 +29,7 @@
 </script>
 
 <!-- center the div -->
-<div class="flex justify-center w-full">
+<div class="flex items-center justify-center w-full h-full">
 	<form use:enhance method="POST" class="w-full max-w-lg p-8">
 		<Form.Field {form} name="title">
 			<Form.Control>
@@ -44,7 +44,12 @@
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>{$t('feedback_type')}</Form.Label>
-					<Select.Root type="single" bind:value={$formData.type} name={props.name}>
+					<Select.Root
+						type="single"
+						bind:value={$formData.type}
+						name={props.name}
+						allowDeselect={false}
+					>
 						<Select.Trigger
 							{...props}
 							class={$formData.type in FeedbackFormTypes.enum ? '' : 'text-muted-foreground'}
