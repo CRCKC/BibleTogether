@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { logout } from '$lib/firebase/auth';
-	import { session } from '$lib/session.svelte';
 	import { t } from 'svelte-i18n';
 	// import type { PageData } from './$types';
 	import ZoomPopup from './zoomPopup.svelte';
 	import DeleteProgress from './deleteProgress.svelte';
 	import MigrateProgress from './migrateProgress.svelte';
+	import LogoutButton from './logoutButton.svelte';
 
 	// export let data: PageData;
 </script>
@@ -33,23 +32,14 @@
 			</button> -->
 
 			<button
-				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
+				class="flex items-center justify-center h-12 mt-4 text-white bg-gray-600 rounded-md w-80"
 				onclick={() => {
 					goto(`${base}/feedback`);
 				}}
 			>
 				{$t('feedback_submit')}
 			</button>
-			<button
-				class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
-				onclick={() => {
-					logout();
-					session.v.loggedIn = false;
-					goto(`${base}/login`);
-				}}
-			>
-				{$t('logout')}
-			</button>
+			<LogoutButton />
 			<!-- <DeleteProgress /> -->
 		</div>
 	</div>
