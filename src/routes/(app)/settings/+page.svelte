@@ -4,8 +4,8 @@
 	import { t } from 'svelte-i18n';
 	// import type { PageData } from './$types';
 	import ZoomPopup from './zoomPopup.svelte';
-	import DeleteProgress from './deleteProgress.svelte';
-	import MigrateProgress from './migrateProgress.svelte';
+	// import DeleteProgress from './deleteProgress.svelte';
+	// import MigrateProgress from './migrateProgress.svelte';
 	import LogoutButton from './logoutButton.svelte';
 
 	// export let data: PageData;
