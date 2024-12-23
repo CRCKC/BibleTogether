@@ -81,3 +81,16 @@ export function jumpToChapterWithProgress(scroll: string) {
 
 	jumpToChapter({ scroll, chapter: scrollChapters });
 }
+
+export function isScrollCompleted(scroll: string): boolean {
+	const startIndex = bibleIndex[scroll] + 1; // Skip the intro chapter
+	const scrollChapters = bibleList[scroll];
+	const data = get(bibleProgressStore);
+
+	for (let i = startIndex; i < startIndex + scrollChapters; i++) {
+		if (!data[i]) {
+			return false;
+		}
+	}
+	return true;
+}

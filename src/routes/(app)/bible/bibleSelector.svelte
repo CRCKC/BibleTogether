@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Info from '~icons/material-symbols/info-outline';
 	import { currentChapterStore, jumpToChapter } from '$lib/bible/bible';
-	import { bibleProgressStore, getProgressIndex } from '$lib/bible/progress';
+	import { bibleProgressStore, getProgressIndex, isScrollCompleted } from '$lib/bible/progress';
 	import { cn } from '$lib/utils';
 
 	import SearchIcon from '~icons/material-symbols/search';
@@ -69,7 +69,9 @@
 						>
 							<div
 								class="flex items-center justify-center h-12 bg-gray-900 rounded-full
-							{$currentChapterStore.scroll === key ? 'outline' : ''}"
+							{$currentChapterStore.scroll === key ? 'outline' : ''} 
+							{isScrollCompleted(key) ? 'bg-green-600' : ''} 
+							"
 							>
 								{bibleChinese[key] || key}
 							</div>

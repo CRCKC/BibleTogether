@@ -100,8 +100,9 @@
 					stopPlayback();
 				}}
 			>
-				{bibleChinese[$currentChapterStore.scroll]}
-				{$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter}
+				<!-- {bibleChinese[$currentChapterStore.scroll]} -->
+				<!-- {$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter} -->
+				{$t('menu')}
 			</button>
 			<button class="flex items-center h-10" onclick={gotoNextChapter}
 				><ChevronRight class="ml-1 mr-2 text-xl" />

@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite dev --port=4000",
 		"build": "pnpm run getFirestoreHelpers && vite build",
 		"vbuild": "vite build",
 		"preview": "vite preview",
