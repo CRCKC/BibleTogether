@@ -107,9 +107,9 @@
 						<div class="w-full p-1">
 							{#each schedule[item.year][item.month] as chap}
 								<Button
-									class="w-full my-1 bg-black h-14 disabled:opacity-100 disabled:bg-gray-900"
+									class="w-full my-1 bg-black h-14
+									{current != index ? 'opacity-100 bg-gray-900' : ''}"
 									variant="outline"
-									disabled={current != index}
 									size="lg"
 									onclick={() => jumpToChapterWithProgress(chap.scroll)}
 								>
