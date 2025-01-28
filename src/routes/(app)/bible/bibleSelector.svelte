@@ -35,9 +35,17 @@
 	function onClose() {
 		visible = false;
 	}
+
+	async function onOpen() {
+		const divId = `#bibleScrollButton_${$currentChapterStore.scroll}`;
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		const element = document.querySelector(divId);
+		element?.scrollIntoView({ inline: 'center', block: 'center' });
+	}
 </script>
 
 {#if visible}
+	{onOpen()}
 	<!-- A full screen div that covers all other elements -->
 	<div class="fixed inset-0 z-50 flex flex-col bg-black w-dvw h-dvh">
 		<div class="flex justify-end p-4">
@@ -62,7 +70,7 @@
 			<!-- For each key in bibleList create a rectangle with the name of it -->
 			{#each Object.keys(bibleList) as key}
 				{#if isSearch(key, searchQuery)}
-					<div class={cn({ 'col-span-2': expandedScroll === key })}>
+					<div id="bibleScrollButton_{key}" class={cn({ 'col-span-2': expandedScroll === key })}>
 						<button
 							class="w-full"
 							onclick={() => (expandedScroll = expandedScroll == key ? undefined : key)}
@@ -82,6 +90,7 @@
 								<!-- For each key create bibleList[key] amount of boxes -->
 								{#each Array.from({ length: bibleList[key] + 1 }) as _, i}
 									<button
+										id="bibleChapterButton_{key}_{i}"
 										class="flex items-center justify-center rounded-lg bg-gray-800 size-12
 									{$bibleProgressStore[getProgressIndex(key, i)]
 											? 'bg-green-600'

@@ -1,49 +1,52 @@
 <!doctype html>
-<html lang="en" style="background-color: black;">
+<html lang="en" style="background-color: black">
+	<head>
+		<script>
+			window.pwaSvelte = {};
+			if ('BeforeInstallPromptEvent' in window) {
+				console.log('⏳ BeforeInstallPromptEvent supported but not fired yet');
+				window.pwaSvelte.supported = true;
+			} else {
+				console.log('❌ BeforeInstallPromptEvent NOT supported');
+				window.pwaSvelte.supported = false;
+			}
+			window.pwaSvelte.installable = false;
 
-<head>
-	<script>
-		window.pwaSvelte = {};
-		if ('BeforeInstallPromptEvent' in window) {
-			console.log('⏳ BeforeInstallPromptEvent supported but not fired yet');
-			window.pwaSvelte.supported = true;
-		} else {
-			console.log('❌ BeforeInstallPromptEvent NOT supported');
-			window.pwaSvelte.supported = false;
-		}
-		window.pwaSvelte.installable = false;
+			window.addEventListener('beforeinstallprompt', (e) => {
+				e.preventDefault();
+				window.pwaSvelte.event = e;
+				window.pwaSvelte.installable = true;
+				console.log('✅ BeforeInstallPromptEvent fired', true);
+			});
 
-		window.addEventListener('beforeinstallprompt', (e) => {
-			e.preventDefault();
-			window.pwaSvelte.event = e;
-			window.pwaSvelte.installable = true;
-			console.log('✅ BeforeInstallPromptEvent fired', true);
-		});
+			window.addEventListener('appinstalled', (e) => {
+				console.log('✅ AppInstalled fired', true);
+			});
+		</script>
 
-		window.addEventListener('appinstalled', (e) => {
-			console.log('✅ AppInstalled fired', true);
-		});
-	</script>
+		<title>禮中齊讀經</title>
+		<meta charset="utf-8" />
+		<link
+			rel="icon"
+			type="image/png"
+			href="%sveltekit.assets%/favicon/favicon-96x96.png"
+			sizes="96x96"
+		/>
+		<link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon/favicon.svg" />
+		<link rel="shortcut icon" href="%sveltekit.assets%/favicon/favicon.ico" />
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="%sveltekit.assets%/favicon/apple-touch-icon.png"
+		/>
+		<link rel="manifest" href="%sveltekit.assets%/favicon/site.webmanifest" />
 
-	<title>禮中齊讀經</title>
-	<meta charset="utf-8" />
-	<link rel="icon" type="image/png" href="%sveltekit.assets%/favicon/favicon-96x96.png" sizes="96x96" />
-	<link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon/favicon.svg" />
-	<link rel="shortcut icon" href="%sveltekit.assets%/favicon/favicon.ico" />
-	<link rel="apple-touch-icon" sizes="180x180" href="%sveltekit.assets%/favicon/apple-touch-icon.png" />
-	<link rel="manifest" href="%sveltekit.assets%/favicon/site.webmanifest" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- <link rel="canonical" href="https://crckc.github.io/BibleTogether/" /> -->
+		%sveltekit.head%
+	</head>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<!-- <link rel="canonical" href="https://crckc.github.io/BibleTogether/" /> -->
-	%sveltekit.head%
-
-
-</head>
-
-<body data-sveltekit-preload-data="hover">
-	<div style="display: contents">%sveltekit.body%</div>
-
-
-</body>
-
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
 </html>
