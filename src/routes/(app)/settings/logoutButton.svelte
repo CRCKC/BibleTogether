@@ -5,6 +5,7 @@
 	import { session } from '$lib/session.svelte';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
+	import Button from '$lib/components/ui/button/button.svelte';
 
 	function onConfirm() {
 		logout();
@@ -14,10 +15,11 @@
 </script>
 
 <AlertDialog.Root>
-	<AlertDialog.Trigger
-		class="flex items-center justify-center h-12 mt-4 text-white bg-blue-500 rounded-md w-80"
-		>{$t('logout')}</AlertDialog.Trigger
-	>
+	<AlertDialog.Trigger>
+		<Button class="h-12 mt-4 rounded-md w-80" variant="destructive">
+			{$t('logout')}
+		</Button>
+	</AlertDialog.Trigger>
 	<AlertDialog.Content class="" interactOutsideBehavior="close">
 		<AlertDialog.Header>
 			<AlertDialog.Title>{$t('logoutTitle')}</AlertDialog.Title>

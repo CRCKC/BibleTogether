@@ -88,6 +88,22 @@ export async function queryChapterCount(scroll: string, chapter: number) {
     return snapshot.data().count;
 }
 
+export interface UserProfileData {
+    name: string;
+    gender: string;
+}
 
-
-
+export async function updateUserProfile(uid: string, data: UserProfileData) {
+    if (!uid) {
+        console.error('No user id provided');
+        return;
+    }
+    try {
+        const userDocRef = doc(firebaseFirestore, "users", uid);
+        await setDoc(userDocRef, data, { merge: true });
+        return true;
+    } catch (error) {
+        console.error('Error updating user profile:', error);
+        return false;
+    }
+}
