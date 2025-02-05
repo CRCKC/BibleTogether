@@ -23,7 +23,7 @@
 >
 	{#snippet children({ checked })}
 		<div class="flex items-center justify-center text-current size-4">
-			{#if checked === 'indeterminate'}
+			{#if checked === null}
 				<Minus class="size-4" />
 			{:else}
 				<Check strokeWidth={4} class={cn('size-4', !checked && 'text-transparent')} />
