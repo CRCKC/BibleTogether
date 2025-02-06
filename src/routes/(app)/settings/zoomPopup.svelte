@@ -8,10 +8,12 @@
 </script>
 
 <Dialog.Root bind:open={dialogOpen}>
-	<Dialog.Trigger
-		class="flex items-center justify-center h-12 mt-4 text-white bg-gray-600 rounded-md w-80"
-		>{$t('adjustFontSize')}</Dialog.Trigger
-	>
+	<Dialog.Trigger>
+		<Button class="h-12 mt-4rounded-md w-80"
+		variant="secondary">
+			{$t('adjustFontSize')}
+		</Button>
+	</Dialog.Trigger>
 	<Dialog.Content class="">
 		<Dialog.Header>
 			<Dialog.Title class="text-center">{$t('fontSize')}</Dialog.Title>

@@ -16,9 +16,9 @@
 	let passwordField: HTMLInputElement | null = $state(null);
 	let loggingIn = $state(false);
 
-	onMount(() => {
-		usernameField?.focus();
-	});
+	// onMount(() => {
+	// 	usernameField?.focus();
+	// });
 
 	function submitLogin() {
 		loggingIn = true;
@@ -53,7 +53,7 @@
 	</div>
 	<div class="flex flex-col items-center justify-center mt-8">
 		<div class="flex flex-col items-center justify-center">
-			<Input
+			<!-- <Input
 				type="email"
 				placeholder={$t('username')}
 				bind:value={username}
@@ -80,7 +80,7 @@
 					{$t('login')}
 				{/if}
 			</button>
-			<OrWithSeperator />
+			<OrWithSeperator /> -->
 
 			<div class="h-12 my-4 w-80">
 				<GoogleSigninButton text={$t('googleLogin')} />

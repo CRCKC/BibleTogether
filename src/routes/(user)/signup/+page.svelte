@@ -16,9 +16,9 @@
 	let signingUp = $state(false);
 	let usernameField: HTMLInputElement | null = $state(null);
 
-	onMount(() => {
-		usernameField?.focus();
-	});
+	// onMount(() => {
+	// 	usernameField?.focus();
+	// });
 
 	function validateSignup() {
 		username = username.trim();
@@ -67,7 +67,7 @@
 	</div>
 	<div class="flex flex-col items-center justify-center mt-8">
 		<form class="flex flex-col items-center justify-center">
-			<Input
+			<!-- <Input
 				type="text"
 				placeholder={$t('username')}
 				class="h-12 p-2 w-80"
@@ -98,7 +98,7 @@
 					{$t('signup')}
 				{/if}
 			</button>
-			<OrWithSeperator />
+			<OrWithSeperator /> -->			pnpm update			pnpm update
 			<div class="h-12 my-4 w-80">
 				<GoogleSigninButton text={$t('googleSignup')} />
 			</div>

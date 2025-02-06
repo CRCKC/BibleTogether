@@ -14,15 +14,9 @@ export async function getGoogleRedirectResult() {
   console.log('Getting redirect result');
   return getRedirectResult(auth)
     .then((result) => {
-      // console.log('Result: ', result);
-      if (!result) return;
+      if (!result) return null;
 
     }).catch((error) => {
-      // // The email of the user's account used.
-      // const email = error.customData.email;
-      // // The AuthCredential type that was used.
-      // const credential = GoogleAuthProvider.credentialFromError(error);
-
       console.log("Error: ", error);
     });
 }
