@@ -48,5 +48,12 @@
 	"feedback_submit-success": "回饋提交成功",
 	"feedback_submit-error": "提交回饋時發生錯誤",
 	"feedback_submit-invalid": "此表單尚未填寫完畢",
-	"menu": "目錄"
+	"menu": "目錄",
+	"profile_settings": "個人設定",
+	"profile_page_edit": "編輯個人資料",
+	"profile_page_displayName": "顯示名稱",
+	"profile_page_email": "電子郵件",
+	"profile_page_group_": "小組",
+	"profile_page_group_desc": "您所屬的小組",
+	"profile_page_submit": "更新"
 }

@@ -46,5 +46,13 @@
 	"feedback_submit-success": "Feedback submitted successfully",
 	"feedback_submit-error": "An error occurred while submitting feedback",
 	"feedback_submit-invalid": "Please fill in all the fields",
-	"menu": "Menu"
+	"menu": "Menu",
+	"profile_settings": "Profile Settings",
+	"profile_page_edit": "Edit Profile",
+	"profile_page_displayName": "Name",
+	"profile_page_displayName_placeholder": "Enter your name",
+	"profile_page_email": "Email",
+	"profile_page_group_": "Group",
+	"profile_page_group_desc": "The fellowship group you belong to",
+	"profile_page_submit": "Update"
 }

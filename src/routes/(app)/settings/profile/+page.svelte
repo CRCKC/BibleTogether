@@ -8,6 +8,7 @@
 	import { t } from 'svelte-i18n';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
+	import ArrowBack from '~icons/material-symbols/arrow-back';
 
 	let userData = $state<UserData>();
 
@@ -42,21 +43,21 @@
 	}
 </script>
 
-<main class="p-4">
-	<button onclick={goBack} class="mb-4">Back</button>
-	<h1 class="mb-4 text-2xl font-bold">Edit Profile</h1>
+<main class="max-w-xl p-4 mx-auto">
+	<button onclick={goBack} class="inline mr-2 text-lg"><ArrowBack /></button>
+	<h1 class="inline text-2xl font-bold">{$t('profile_page_edit')}</h1>
 	{#if userData}
-		<form onsubmit={handleSubmit}>
+		<form class="mt-4" onsubmit={handleSubmit}>
 			<div class="mb-4">
-				<label for="name" class="block mb-1">Name</label>
+				<label for="name" class="block mb-1">{$t('profile_page_displayName')}</label>
 				<Input
 					id="name"
 					type="text"
 					bind:value={userData.displayName}
-					placeholder="Enter your name"
+					placeholder={$t('profile_page_displayName_placeholder')}
 				/>
 			</div>
-			<div class="mb-4">
+			<!-- <div class="mb-4">
 				<Label class="block mb-1">Gender</Label>
 				<Select.Root type="single" bind:value={userData.fellowshipGroup as string}>
 					<Select.Trigger id="gender"
@@ -68,15 +69,8 @@
 						<Select.Item value="other">Other</Select.Item>
 					</Select.Content>
 				</Select.Root>
-			</div>
-			<Button type="submit">Update Profile</Button>
+			</div> -->
+			<Button type="submit">{$t('profile_page_submit')}</Button>
 		</form>
 	{/if}
 </main>
-
-<style>
-	main {
-		max-width: 600px;
-		margin: 0 auto;
-	}
-</style>
