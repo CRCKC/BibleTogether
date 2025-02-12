@@ -11,30 +11,38 @@
 	import ArrowBack from '~icons/material-symbols/arrow-back';
 
 	let userData = $state<UserData>();
+	let initialUserData = $state<UserData>();
+
+	let edited = $derived(
+		userData?.displayName !== initialUserData?.displayName ||
+			userData?.fellowshipGroup !== initialUserData?.fellowshipGroup
+	);
 
 	fetchUserData().then((d) => {
 		userData = d;
+		initialUserData = d;
 	});
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
 
 		if (!userData?.displayName || !userData.fellowshipGroup) {
-			toast.error('Please fill out all fields');
-			return;
+			// This should not happen
+			throw new Error('Please fill out all fields');
 		}
 
 		const uid = firebaseAuth.currentUser?.uid;
 		if (!uid) {
-			toast.error('User not logged in');
-			return;
+			// This should not happen
+			throw new Error('User not logged in, but this should not happen');
 		}
 
 		const result = await updateUserProfile(uid, userData);
 		if (result) {
-			toast.success('Profile updated successfully');
+			toast.success($t('profile_page_submit_success'));
+			initialUserData = userData;
 		} else {
-			toast.error('Failed to update profile. Please try again.');
+			toast.error($t('profile_page_submit_error'));
 		}
 	}
 
@@ -70,7 +78,7 @@
 					</Select.Content>
 				</Select.Root>
 			</div> -->
-			<Button type="submit">{$t('profile_page_submit')}</Button>
+			<Button type="submit" disabled={!edited}>{$t('profile_page_submit')}</Button>
 		</form>
 	{/if}
 </main>

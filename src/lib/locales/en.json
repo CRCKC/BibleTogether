@@ -54,5 +54,7 @@
 	"profile_page_email": "Email",
 	"profile_page_group_": "Group",
 	"profile_page_group_desc": "The fellowship group you belong to",
-	"profile_page_submit": "Update"
+	"profile_page_submit": "Update",
+	"profile_page_submit_success": "Profile updated successfully",
+	"profile_page_submit_error": "An error occurred while updating your profile"
 }

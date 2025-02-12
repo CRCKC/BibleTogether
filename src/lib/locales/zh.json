@@ -55,5 +55,7 @@
 	"profile_page_email": "電子郵件",
 	"profile_page_group_": "小組",
 	"profile_page_group_desc": "您所屬的小組",
-	"profile_page_submit": "更新"
+	"profile_page_submit": "更新",
+	"profile_page_submit_success": "個人資料更新成功",
+	"profile_page_submit_error": "更新個人資料時發生錯誤"
 }
