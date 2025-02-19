@@ -1,4 +1,12 @@
+<script lang="ts">
+	import { pwaInfo } from 'virtual:pwa-info';
+
+	let webManifest = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
+</script>
+
 <svelte:head>
+	{@html webManifest}
+
 	<script>
 		window.pwaSvelte = {};
 		if ('BeforeInstallPromptEvent' in window) {

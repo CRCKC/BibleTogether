@@ -19,12 +19,14 @@ const config = {
 			// base: process.env.NODE_ENV === 'production' ? '/BibleTogether' : '',
 			// base: '/BibleTogether',
 		},
-		// serviceWorker: {
-		// 	register: true,
-		// },
-
+		serviceWorker: {
+			register: false
+		},
+		files: {
+			// you don't need to do this if you're using generateSW strategy in your app
+			serviceWorker: 'src/prompt-sw.ts'
+		}
 	}
-
 };
 
 export default config;

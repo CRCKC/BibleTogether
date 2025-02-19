@@ -12,6 +12,7 @@
 	import { firstVisitStore } from '$lib/utils/firstVisit.svelte';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import { promptInstall } from '$lib/pwa/pwa';
+	import Pwa from '$lib/pwa/pwa.svelte';
 
 	interface Props {
 		data: LayoutData;
@@ -63,6 +64,7 @@
 	}
 </script>
 
+<Pwa />
 <ModeWatcher defaultMode={'dark'} track={false} />
 
 <Toaster />
