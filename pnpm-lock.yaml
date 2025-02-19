@@ -26,9 +26,6 @@ importers:
       svelte-persisted-store:
         specifier: ^0.11.0
         version: 0.11.0(svelte@5.19.7)
-      workbox-routing:
-        specifier: ^7.3.0
-        version: 7.3.0
       zod-i18n-map:
         specifier: ^2.27.0
         version: 2.27.0(i18next@23.16.5)(zod@3.24.1)
@@ -153,7 +150,16 @@ importers:
       vitest:
         specifier: ^2.1.9
         version: 2.1.9(@types/node@22.13.1)(less@4.2.2)(terser@5.39.0)
+      workbox-build:
+        specifier: ^7.3.0
+        version: 7.3.0
       workbox-precaching:
+        specifier: ^7.3.0
+        version: 7.3.0
+      workbox-routing:
+        specifier: ^7.3.0
+        version: 7.3.0
+      workbox-window:
         specifier: ^7.3.0
         version: 7.3.0
       zod:

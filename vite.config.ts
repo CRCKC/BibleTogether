@@ -12,6 +12,10 @@ export default defineConfig({
 			autoInstall: true
 		}),
 		SvelteKitPWA({
+			kit: {
+				spa: true
+			},
+
 			srcDir: './src',
 			mode: 'development',
 			strategies: 'injectManifest',
@@ -19,6 +23,7 @@ export default defineConfig({
 			scope: '/',
 			base: '/',
 			selfDestroying: process.env.SELF_DESTROYING_SW === 'true',
+
 			manifest: {
 				name: '禮中齊讀經',
 				short_name: '禮中齊讀經',
@@ -50,9 +55,24 @@ export default defineConfig({
 						url: 'https://bible.crckc.org.hk/favicon/site.webmanifest'
 					}
 				]
+			},
+			injectManifest: {
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2,html,json}']
+			},
+			devOptions: {
+				enabled: true,
+				suppressWarnings: process.env.SUPPRESS_WARNING === 'true',
+				type: 'module',
+				navigateFallback: '/'
 			}
+
+			// if you have shared info in svelte config file put in a separate module and use it also here
+			// kit: {
+			// 	includeVersionFile: true
+			// }
 		})
 	],
+
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	},
@@ -68,8 +88,8 @@ export default defineConfig({
 	preview: {
 		port: 4000
 	},
-	// define: {
-	// 	'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"'
-	// }
-	define: { 'process.env.NODE_ENV': '"production"' }
+	define: {
+		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"'
+	}
+	// define: { 'process.env.NODE_ENV': '"production"' }
 });

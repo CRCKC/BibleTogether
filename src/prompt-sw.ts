@@ -13,19 +13,21 @@ declare let self: ServiceWorkerGlobalScope;
 
 self.addEventListener('message', (event) => {
 	if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
-	console.log('Service worker loaded2');
 });
-
-// self.__WB_MANIFEST is default injection point
-precacheAndRoute(self.__WB_MANIFEST);
 
 // clean old assets
 cleanupOutdatedCaches();
 
+// self.__WB_MANIFEST is default injection point
+// precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute([{ url: '/' }, { url: '/home' }, { url: '/bible' }]);
+
+console.log('Service worker: ', self.__WB_MANIFEST);
+
 let allowlist: undefined | RegExp[];
-if (import.meta.env.DEV) allowlist = [/^\/$/];
+if (import.meta.env.DEV) allowlist = [/^\/*$/, /^\/bible\/*$/];
 
 // to allow work offline
 registerRoute(new NavigationRoute(createHandlerBoundToURL('/'), { allowlist }));
 
-console.log('Service worker loaded');
+console.log('Allow list: ', allowlist);

@@ -60,7 +60,10 @@
 		"vite": "^5.4.14",
 		"vite-plugin-pwa": "^0.21.1",
 		"vitest": "^2.1.9",
+		"workbox-build": "^7.3.0",
 		"workbox-precaching": "^7.3.0",
+		"workbox-routing": "^7.3.0",
+		"workbox-window": "^7.3.0",
 		"zod": "^3.24.1"
 	},
 	"type": "module",
@@ -71,7 +74,6 @@
 		"motion": "^10.18.0",
 		"svelte-i18n": "^4.0.1",
 		"svelte-persisted-store": "^0.11.0",
-		"workbox-routing": "^7.3.0",
 		"zod-i18n-map": "^2.27.0"
 	}
 }
