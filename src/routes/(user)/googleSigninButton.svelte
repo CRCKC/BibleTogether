@@ -1,9 +1,29 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { base } from '$app/paths';
 	import { loginWithGoogle } from '$lib/firebase/auth';
+	import { session } from '$lib/session.svelte';
 
 	let { text }: { text: string } = $props();
 
-	const onClick = loginWithGoogle;
+	const onClick = async () => {
+		const user = await loginWithGoogle();
+		console.log('User', user);
+		const loggedIn = user.emailVerified;
+		session.update((cur: any) => {
+			return {
+				...cur,
+				user,
+				loggedIn,
+				loading: false
+			};
+		});
+		if (loggedIn) {
+			await goto(base + '/home');
+		} else {
+			await goto(base + '/login');
+		}
+	};
 </script>
 
 <button

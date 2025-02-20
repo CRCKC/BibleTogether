@@ -19,7 +19,8 @@ export async function loginWithGoogle() {
 		customParameters: [{ key: 'prompt', value: 'select_account' }]
 	});
 	const credential = GoogleAuthProvider.credential(result.credential?.idToken);
-	await signInWithCredential(firebaseAuth, credential);
+	const result2 = await signInWithCredential(firebaseAuth, credential);
+	return result2.user;
 }
 
 export async function createUserWithEmail(email: string, password: string) {
