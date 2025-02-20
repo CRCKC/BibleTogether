@@ -1,30 +1,25 @@
 import {
-	signInWithRedirect,
 	getRedirectResult,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
-	type UserCredential
+	type UserCredential,
+	GoogleAuthProvider,
+	signInWithCredential
 } from 'firebase/auth';
 import { firebaseAuth } from './firebase';
-import { GoogleProvider } from './providers';
 import { session } from '$lib/session.svelte';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 
 const auth = firebaseAuth;
 auth.useDeviceLanguage();
 
 export async function loginWithGoogle() {
-	signInWithRedirect(auth, GoogleProvider);
-}
-
-export async function getGoogleRedirectResult() {
-	console.log('Getting redirect result');
-	return getRedirectResult(auth)
-		.then((result) => {
-			if (!result) return null;
-		})
-		.catch((error) => {
-			console.log('Error: ', error);
-		});
+	const result = await FirebaseAuthentication.signInWithGoogle({
+		mode: 'redirect',
+		customParameters: [{ key: 'prompt', value: 'select_account' }]
+	});
+	const credential = GoogleAuthProvider.credential(result.credential?.idToken);
+	await signInWithCredential(firebaseAuth, credential);
 }
 
 export async function createUserWithEmail(email: string, password: string) {

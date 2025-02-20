@@ -5,7 +5,6 @@
 	import { base } from '$app/paths';
 	import { session } from '$lib/session.svelte';
 	import '../app.css';
-	import { getGoogleRedirectResult } from '$lib/firebase/auth';
 	import '../i18n';
 	import { ModeWatcher, setMode } from 'mode-watcher';
 	import initLocale from '../i18n';
@@ -42,8 +41,6 @@
 	});
 
 	async function autoLogin() {
-		await getGoogleRedirectResult();
-
 		const user: any = await data.getAuthUser?.();
 
 		const loggedIn = !!user && user?.emailVerified;

@@ -48,11 +48,15 @@ export default defineConfig({
 				background_color: '#000000',
 				description: '禮中齊讀經',
 				display: 'standalone',
-				prefer_related_applications: false,
+				prefer_related_applications: true,
 				related_applications: [
 					{
 						platform: 'webapp',
 						url: 'https://bible.crckc.org.hk/favicon/site.webmanifest'
+					},
+					{
+						platform: 'play',
+						url: 'https://play.google.com/store/apps/details?id=com.crckc.bibletogether'
 					}
 				]
 			},

@@ -32,7 +32,6 @@ base64 -i -w 0 .env
 - [Firebase Auth tutorial](https://gundogmuseray.medium.com/easy-way-to-stop-worry-about-client-side-auth-with-firebase-and-sveltekit-d17cdcccb663)
 - [Index DB tutorial](https://github.com/falcosan/TS_IndexedDB/blob/main/db/index.ts)
 
-
 https://github.com/khmyznikov/pwa-install?tab=readme-ov-file
 https://stackoverflow.com/questions/53594466/are-service-workers-necessary-for-a-progressive-web-application
 https://stackoverflow.com/questions/58985103/progressive-web-app-not-showing-install-button-in-browser-bar
