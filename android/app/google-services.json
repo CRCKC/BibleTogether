@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "369676244209",
+    "firebase_url": "https://bibletogether-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "bibletogether",
+    "storage_bucket": "bibletogether.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369676244209:android:28282c99981e7fee880550",
+        "android_client_info": {
+          "package_name": "com.crckc.bibletogether"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369676244209-9c2jvfbh391stnpc48v7qqthcj47ed9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVO-6iCSElg7Hbde_ySClyZU0MBCT0d0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369676244209-9c2jvfbh391stnpc48v7qqthcj47ed9b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
