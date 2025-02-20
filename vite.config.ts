@@ -84,7 +84,7 @@ export default defineConfig({
 			key: process.env.NODE_ENV === 'production' ? undefined : readFileSync('.cert/key.pem'),
 			cert: process.env.NODE_ENV === 'production' ? undefined : readFileSync('.cert/cert.pem')
 			// key: readFileSync('.cert/key.pem'),
-			// cert: readFileSync('.cert/cert.pem'),
+			// cert: readFileSync('.cert/cert.pem')
 		},
 		proxy: {}
 	},

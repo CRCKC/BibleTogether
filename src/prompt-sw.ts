@@ -16,14 +16,7 @@ self.addEventListener('message', (event) => {
 cleanupOutdatedCaches();
 
 // self.__WB_MANIFEST is default injection point
-precacheAndRoute(self.__WB_MANIFEST);
-
-// import { build, files, prerendered, version } from '$service-worker';
-
-// const precache_list = [...build, ...files, ...prerendered].map((s) => ({
-// 	url: s,
-// 	revision: version
-// }));
+precacheAndRoute([...self.__WB_MANIFEST]);
 
 // precacheAndRoute([...precache_list]);
 
@@ -40,8 +33,8 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 // console.log('Allow list: ', allowlist);
 
-let allowlist: undefined | RegExp[];
-if (import.meta.env.DEV) allowlist = [/^\/$/];
+// let allowlist: undefined | RegExp[];
+// if (import.meta.env.DEV) allowlist = [/^\/$/];
 
 // to allow work offline
-registerRoute(new NavigationRoute(createHandlerBoundToURL('/'), { allowlist }));
+// registerRoute(new NavigationRoute(createHandlerBoundToURL('/'), { allowlist }));
