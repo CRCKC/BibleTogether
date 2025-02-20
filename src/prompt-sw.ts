@@ -2,11 +2,8 @@
 /// <reference types="vite/client" />
 /// <reference no-default-lib="true"/>
 /// <reference lib="esnext" />
-import {
-	cleanupOutdatedCaches,
-	createHandlerBoundToURL,
-	precacheAndRoute
-} from 'workbox-precaching';
+import { createHandlerBoundToURL } from 'workbox-precaching';
+import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
 import { NavigationRoute, registerRoute } from 'workbox-routing';
 
 declare let self: ServiceWorkerGlobalScope;
@@ -19,15 +16,32 @@ self.addEventListener('message', (event) => {
 cleanupOutdatedCaches();
 
 // self.__WB_MANIFEST is default injection point
-// precacheAndRoute(self.__WB_MANIFEST);
-precacheAndRoute([{ url: '/' }, { url: '/home' }, { url: '/bible' }]);
+precacheAndRoute(self.__WB_MANIFEST);
 
-console.log('Service worker: ', self.__WB_MANIFEST);
+// import { build, files, prerendered, version } from '$service-worker';
+
+// const precache_list = [...build, ...files, ...prerendered].map((s) => ({
+// 	url: s,
+// 	revision: version
+// }));
+
+// precacheAndRoute([...precache_list]);
+
+// let allowlist: undefined | RegExp[];
+// if (import.meta.env.DEV) allowlist = [/^\/bible\/.*$/];
+
+// precache([{ url: '/bible', revision: '1114244' }]);
+// // to allow work offline
+// registerRoute(
+// 	new NavigationRoute(createHandlerBoundToURL('/'), {
+// 		allowlist: [/^\/bible\/.{3}\/[0-9]{1,3}$/]
+// 	})
+// );
+
+// console.log('Allow list: ', allowlist);
 
 let allowlist: undefined | RegExp[];
-if (import.meta.env.DEV) allowlist = [/^\/*$/, /^\/bible\/*$/];
+if (import.meta.env.DEV) allowlist = [/^\/$/];
 
 // to allow work offline
 registerRoute(new NavigationRoute(createHandlerBoundToURL('/'), { allowlist }));
-
-console.log('Allow list: ', allowlist);

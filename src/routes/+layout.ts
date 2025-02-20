@@ -2,8 +2,6 @@ import type { LayoutLoad } from './$types';
 import { firebaseAuth } from '$lib/firebase/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
-// export const prerender = true;
-
 export const load = (async ({ route, url }) => {
 	let requireLogin = false;
 

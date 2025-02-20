@@ -24,6 +24,10 @@ const config = {
 		},
 		files: {
 			serviceWorker: 'src/prompt-sw.ts'
+		},
+		prerender: {
+			crawl: true,
+			entries: ['*']
 		}
 	}
 };

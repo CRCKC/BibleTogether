@@ -98,7 +98,7 @@
 					{$t('signup')}
 				{/if}
 			</button>
-			<OrWithSeperator /> -->			pnpm update			pnpm update
+			<OrWithSeperator /> -->
 			<div class="h-12 my-4 w-80">
 				<GoogleSigninButton text={$t('googleSignup')} />
 			</div>

@@ -57,7 +57,7 @@
 		});
 		// console.log('Session', $session);
 		if (loggedIn) {
-			if (!data.requireLogin) await goto(base + '/home');
+			if (!data.requireLogin && data.url == '/') await goto(base + '/home');
 		} else {
 			await goto(base + '/login');
 		}

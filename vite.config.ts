@@ -57,7 +57,10 @@ export default defineConfig({
 				]
 			},
 			injectManifest: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2,html,json}']
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
+			},
+			workbox: {
+				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			devOptions: {
 				enabled: true,
@@ -89,7 +92,7 @@ export default defineConfig({
 		port: 4000
 	},
 	define: {
-		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"'
+		'process.env.NODE_ENV': '"production"'
+		// 'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"'
 	}
-	// define: { 'process.env.NODE_ENV': '"production"' }
 });
