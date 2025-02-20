@@ -23,7 +23,7 @@ const config = {
 			register: false
 		},
 		files: {
-			serviceWorker: 'src/prompt-sw.ts'
+			serviceWorker: 'src/sw.ts'
 		},
 		prerender: {
 			crawl: true,

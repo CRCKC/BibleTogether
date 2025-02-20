@@ -19,7 +19,7 @@ export default defineConfig({
 			srcDir: './src',
 			mode: 'development',
 			strategies: 'injectManifest',
-			filename: 'prompt-sw.ts',
+			filename: 'sw.ts',
 			scope: '/',
 			base: '/',
 			selfDestroying: process.env.SELF_DESTROYING_SW === 'true',
