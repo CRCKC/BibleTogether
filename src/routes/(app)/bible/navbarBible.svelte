@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import BibleSelector from './bibleSelector.svelte';
 	import AudioBar from './audioBar.svelte';
 	import { currentChapterStore, nextChapter, prevChapter } from '$lib/bible/bible';
@@ -14,6 +12,7 @@
 	import { updateProgress } from '$lib/bible/progress';
 	import { t } from 'svelte-i18n';
 	import { settingsStore } from '$lib/userSettings';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 
 	let isSelecting = $state(false);
 	let paused = $state(true);
@@ -23,6 +22,8 @@
 	let duration: number = $state(10);
 	let audioPlayer: HTMLAudioElement | undefined = $state();
 	let currentTime: number = $state(0);
+
+	let showConfirmDialog = $state(false);
 
 	function onClickPlay() {
 		if (chapterChnaged) {
@@ -48,6 +49,18 @@
 	function gotoPrevChapter() {
 		stopPlayback();
 		prevChapter($currentChapterStore);
+	}
+
+	function openBibleSelection() {
+		expandedScroll = $currentChapterStore.scroll;
+		isSelecting = true;
+		stopPlayback();
+	}
+
+	function onAttemptLeave() {
+		if (audioPlayer?.ended) {
+			showConfirmDialog = true;
+		}
 	}
 
 	$effect(() => {
@@ -92,14 +105,7 @@
 			<button class="flex items-center h-10" onclick={gotoPrevChapter}
 				><ChevronLeft class="ml-2 mr-1 text-xl" />
 			</button>
-			<button
-				class="w-full h-10"
-				onclick={() => {
-					expandedScroll = $currentChapterStore.scroll;
-					isSelecting = true;
-					stopPlayback();
-				}}
-			>
+			<button class="w-full h-10" onclick={openBibleSelection}>
 				<!-- {bibleChinese[$currentChapterStore.scroll]} -->
 				<!-- {$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter} -->
 				{$t('menu')}
@@ -117,6 +123,22 @@
 		</button>
 	</div>
 </div>
+
+<AlertDialog.Root open={showConfirmDialog}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+			<AlertDialog.Description>
+				This action cannot be undone. This will permanently delete your account and remove your data
+				from our servers.
+			</AlertDialog.Description>
+		</AlertDialog.Header>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Action>Continue</AlertDialog.Action>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root>
 
 <!-- The actual audio element -->
 <audio
