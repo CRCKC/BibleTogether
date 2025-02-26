@@ -94,3 +94,9 @@ export function isScrollCompleted(scroll: string): boolean {
 	}
 	return true;
 }
+
+export function isChapterCompleted(bible: BibleChapter): boolean {
+	const index = getProgressIndex(bible.scroll, bible.chapter);
+	const data = get(bibleProgressStore);
+	return data[index];
+}

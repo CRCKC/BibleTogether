@@ -9,14 +9,14 @@
 	import ChevronLeft from '~icons/material-symbols/chevron-left';
 	import PlayArrow from '~icons/material-symbols/play-arrow';
 	import Pause from '~icons/material-symbols/pause';
-	import { updateProgress } from '$lib/bible/progress';
+	import { bibleProgressStore, isChapterCompleted, updateProgress } from '$lib/bible/progress';
 	import { t } from 'svelte-i18n';
 	import { settingsStore } from '$lib/userSettings';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 
 	let isSelecting = $state(false);
 	let paused = $state(true);
-	let chapterChnaged = $state(true);
+	let chapterChanged = $state(true);
 	let audioSrc: string = $state('');
 
 	let duration: number = $state(10);
@@ -25,9 +25,12 @@
 
 	let showConfirmDialog = $state(false);
 
+	// svelte-ignore non_reactive_update
+	let confirmFunction: () => void;
+
 	function onClickPlay() {
-		if (chapterChnaged) {
-			chapterChnaged = false;
+		if (chapterChanged) {
+			chapterChanged = false;
 			audioPlayer?.load(); // Such that the audio doesn't load on page load but only when the user clicks play
 		}
 		if (paused) {
@@ -42,29 +45,51 @@
 	}
 
 	function gotoNextChapter() {
-		stopPlayback();
-		nextChapter($currentChapterStore);
+		onAttemptLeave(() => {
+			stopPlayback();
+			nextChapter($currentChapterStore);
+		});
 	}
 
 	function gotoPrevChapter() {
-		stopPlayback();
-		prevChapter($currentChapterStore);
+		onAttemptLeave(() => {
+			stopPlayback();
+			prevChapter($currentChapterStore);
+		});
 	}
 
 	function openBibleSelection() {
-		expandedScroll = $currentChapterStore.scroll;
-		isSelecting = true;
-		stopPlayback();
+		onAttemptLeave(() => {
+			expandedScroll = $currentChapterStore.scroll;
+			isSelecting = true;
+			stopPlayback();
+		});
 	}
 
-	function onAttemptLeave() {
-		if (audioPlayer?.ended) {
+	// Function to confirm if the user wants to leave the page
+	function onAttemptLeave(func: () => void) {
+		if (!chapterChanged) {
+			// If the user finished listening to the audio, and the chapter is checked, then the user can leave without confirmation
+			if (isChapterCompleted($currentChapterStore) && audioPlayer?.ended) {
+				func();
+				return;
+			}
+			// If the user is playing the audio or haven't checked this chapter, then the user must confirm before leaving
+			confirmFunction = func;
 			showConfirmDialog = true;
+		} else {
+			// If the play button is never clicked on this chapter, then the user can leave without confirmation
+			func();
 		}
 	}
 
+	function onConfirm() {
+		confirmFunction.call(null);
+		showConfirmDialog = false;
+	}
+
 	$effect(() => {
-		chapterChnaged = true;
+		chapterChanged = true;
 		audioSrc = getAudioLink($currentChapterStore);
 	});
 
@@ -93,7 +118,7 @@
 <BibleSelector bind:visible={isSelecting} {expandedScroll} />
 
 <div class="flex flex-col items-center justify-center">
-	{#if !chapterChnaged && audioPlayer}
+	{#if !chapterChanged && audioPlayer}
 		<div class="w-full px-4 pt-3 max-w-96">
 			<!-- Audio control bar -->
 			<AudioBar {audioPlayer} {currentTime} {duration} />
@@ -124,18 +149,21 @@
 	</div>
 </div>
 
-<AlertDialog.Root open={showConfirmDialog}>
-	<AlertDialog.Content>
+<AlertDialog.Root bind:open={showConfirmDialog}>
+	<AlertDialog.Content interactOutsideBehavior="close">
 		<AlertDialog.Header>
-			<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+			<AlertDialog.Title>{$t('navbar_alert_title')}</AlertDialog.Title>
 			<AlertDialog.Description>
-				This action cannot be undone. This will permanently delete your account and remove your data
-				from our servers.
+				{$t(
+					audioPlayer?.ended && !isChapterCompleted($currentChapterStore)
+						? 'navbar_alert_desc_unchecked'
+						: 'navbar_alert_desc_audio'
+				)}
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action>Continue</AlertDialog.Action>
+			<AlertDialog.Cancel>{$t('navbar_alert_cancel')}</AlertDialog.Cancel>
+			<AlertDialog.Action onclick={onConfirm}>{$t('navbar_alert_confirm')}</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

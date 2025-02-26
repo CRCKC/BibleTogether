@@ -39,16 +39,18 @@
 
 	$effect(() => {
 		if (toToast) {
-			toast('Update available', {
-				duration: 100000,
-				action: {
-					label: 'Refresh',
-					onClick: () => {
-						updateServiceWorker();
-						close();
-					}
-				}
-			});
+			// toast('Update available', {
+			// 	duration: 100000,
+			// 	action: {
+			// 		label: 'Refresh',
+			// 		onClick: () => {
+			// 			updateServiceWorker();
+			// 			close();
+			// 		}
+			// 	}
+			// });
+			updateServiceWorker();
+			close();
 		}
 	});
 </script>

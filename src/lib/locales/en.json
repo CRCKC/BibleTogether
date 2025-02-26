@@ -56,5 +56,10 @@
 	"profile_page_group_desc": "The fellowship group you belong to",
 	"profile_page_submit": "Update",
 	"profile_page_submit_success": "Profile updated successfully",
-	"profile_page_submit_error": "An error occurred while updating your profile"
+	"profile_page_submit_error": "An error occurred while updating your profile",
+	"navbar_alert_title": "Are you sure you want to leave?",
+	"navbar_alert_desc_audio": "The audio has not finished playing yet",
+	"navbar_alert_desc_unchecked": "This chapter still hasn't been marked as completed",
+	"navbar_alert_confirm": "Leave",
+	"navbar_alert_cancel": "Stay"
 }
