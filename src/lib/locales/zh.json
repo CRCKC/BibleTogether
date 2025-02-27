@@ -58,7 +58,7 @@
 	"profile_page_submit": "更新",
 	"profile_page_submit_success": "個人資料更新成功",
 	"profile_page_submit_error": "更新個人資料時發生錯誤",
-	"navbar_alert_title": "您確定要離開嗎？",
+	"navbar_alert_title": "您確定要離開此章節嗎？",
 	"navbar_alert_desc_audio": "錄音尚未播放完畢",
 	"navbar_alert_desc_unchecked": "此章節尚未標記為已完成",
 	"navbar_alert_confirm": "離開",

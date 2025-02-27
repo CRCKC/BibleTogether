@@ -57,7 +57,7 @@
 	"profile_page_submit": "Update",
 	"profile_page_submit_success": "Profile updated successfully",
 	"profile_page_submit_error": "An error occurred while updating your profile",
-	"navbar_alert_title": "Are you sure you want to leave?",
+	"navbar_alert_title": "Are you sure you want to leave this chapter?",
 	"navbar_alert_desc_audio": "The audio has not finished playing yet",
 	"navbar_alert_desc_unchecked": "This chapter still hasn't been marked as completed",
 	"navbar_alert_confirm": "Leave",
