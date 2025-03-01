@@ -12,6 +12,7 @@
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import { promptInstall } from '$lib/pwa/pwa';
 	import Pwa from '$lib/pwa/pwa.svelte';
+	import { browser } from '$app/environment';
 
 	interface Props {
 		data: LayoutData;
@@ -61,7 +62,10 @@
 	}
 </script>
 
-<Pwa />
+{#if browser}
+	<Pwa />
+{/if}
+
 <ModeWatcher defaultMode={'dark'} track={false} />
 
 <Toaster />
