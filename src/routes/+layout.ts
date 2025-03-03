@@ -10,7 +10,7 @@ export const load = (async ({ route, url }) => {
 		requireLogin = true;
 	}
 
-	// requireLogin = false; // Comment this line to disable login
+	// requireLogin = false; // Uncomment this line to disable login
 
 	function getAuthUser() {
 		return new Promise((resolve) => {

@@ -105,12 +105,18 @@
 	let queryCount: number | undefined = $state(undefined);
 </script>
 
-<ScrollArea class="size-full" style="zoom: {$settingsStore.fontZoom};">
+<ScrollArea class="size-full">
 	<!-- Title Widget -->
-	<div class="inline-block w-full mt-4 text-2xl text-center text-gray-400">
+	<div
+		class="inline-block w-full mt-4 text-2xl text-center text-gray-400"
+		style="zoom: {$settingsStore.fontZoom};"
+	>
 		{bibleChinese[data.bible.scroll]}
 	</div>
-	<div class="inline-block w-full mt-2 mb-5 text-5xl text-center">
+	<div
+		class="inline-block w-full mt-2 mb-5 text-5xl text-center"
+		style="zoom: {$settingsStore.fontZoom};"
+	>
 		{data.bible.chapter == 0 ? $t('intro') : data.bible.chapter}
 	</div>
 
@@ -118,17 +124,19 @@
 	{#await bibleContentPromise(data.bible)}
 		{#if downloadingBible}
 			<!-- Loading Placeholder -->
-			<div class="flex items-center justify-center w-full">Downloading Content...</div>
+			<div class="flex items-center justify-center w-full" style="zoom: {$settingsStore.fontZoom};">
+				Downloading Content...
+			</div>
 		{/if}
 	{:then bibleContent}
 		{#if data.bible.chapter != 0}
-			<div class="w-full px-8 text-lg text-right">
+			<div class="w-full px-8 text-lg text-right" style="zoom: {$settingsStore.fontZoom};">
 				{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
 				{$t('peopleAlreadyRead')}
 			</div>
 		{/if}
 		<!-- Actual Bible -->
-		<div class="mx-4 bible">
+		<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
 			{@html bibleContent}
 			{#key bibleContent}
 				{(() => {
@@ -143,6 +151,7 @@
 		<!-- Bottom Div -->
 		<div
 			class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400"
+			style="zoom: {$settingsStore.fontZoom};"
 		>
 			{#if data.bible.chapter != 0}
 				<BibleCheckbox bind:checked={chapterCompleted} />
