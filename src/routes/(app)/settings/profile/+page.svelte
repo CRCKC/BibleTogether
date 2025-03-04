@@ -26,7 +26,8 @@
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
 
-		if (!userData?.displayName || !userData.fellowshipGroup) {
+		if (!userData?.displayName) {
+			// if (!userData?.displayName || !userData.fellowshipGroup) {
 			// This should not happen
 			throw new Error('Please fill out all fields');
 		}

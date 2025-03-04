@@ -17,7 +17,7 @@
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte';
 
 	let { data }: { data: PageData } = $props();
-	let selectedScroll: string = $state('GEN');
+	let selectedScroll: string = $state('ROM');
 	let loading = $state(false);
 	let results: Array<{
 		userId: string;
@@ -32,7 +32,7 @@
 		try {
 			// Get starting index for the selected scroll
 			const startingIndex = bibleIndex[selectedScroll];
-			const totalChapters = bibleList[selectedScroll];
+			const totalChapters = bibleList[selectedScroll] + 1;
 
 			// Query all users in the bibleProgress collection
 			const coll = collection(firebaseFirestore, 'bibleProgress');
