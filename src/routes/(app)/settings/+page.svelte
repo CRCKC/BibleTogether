@@ -12,7 +12,7 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Label } from '$lib/components/ui/label';
 	import { Button } from '$lib/components/ui/button';
-	// import { getVerseOfTheDay } from '$lib/votd/votd';
+	import { getVerseOfTheDay } from '$lib/votd/votd';
 
 	let { data }: { data: PageData } = $props();
 	const imageUrl = session.v.user?.photoURL;
@@ -62,15 +62,15 @@
 			>
 				{$t('feedback_submit')}
 			</Button>
-			<!-- <Button
+			<Button
 				class="flex items-center justify-center h-12 mt-4 rounded-md w-80"
 				variant="secondary"
-				onclick={() => {
-					getVerseOfTheDay();
+				onclick={async () => {
+					await getVerseOfTheDay();
 				}}
 			>
 				{$t('Test')}
-			</Button> -->
+			</Button>
 			<LogoutButton />
 			<!-- <DeleteProgress /> -->
 		</div>

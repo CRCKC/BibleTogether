@@ -1,6 +1,10 @@
-import type { BibleChapter } from '$lib/bible/bible';
+import scrollMap from '$lib/votd/scrollMap.json';
 
-export async function getVerseOfTheDay(): Promise<BibleChapter> {
+export async function getVerseOfTheDay(): Promise<{
+	scroll: string;
+	chapter: number;
+	verse: number;
+}> {
 	const options = { method: 'GET', headers: { accept: 'application/json' } };
 
 	const request = await fetch(
@@ -9,9 +13,15 @@ export async function getVerseOfTheDay(): Promise<BibleChapter> {
 	);
 
 	const response = await request.json();
-	console.log(response);
-	const ref = response.verse.details.reference;
-	console.log(ref);
+	const ref = response.verse.details.reference as string;
 
-	return { scroll: 'GEN', chapter: 1 };
+	const [front, back] = ref.split(':');
+	const verse = parseInt(back, 10);
+	const idx = front.lastIndexOf(' ');
+	const scrollFull = front.substring(0, idx);
+	const chapter = parseInt(front.substring(idx + 1), 10);
+	const scroll = (scrollMap as { [scroll: string]: string })[scrollFull];
+
+	console.log('scroll', scroll, 'chapter', chapter, 'verse', verse);
+	return { scroll, chapter, verse };
 }
