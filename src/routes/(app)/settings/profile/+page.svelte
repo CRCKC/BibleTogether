@@ -9,19 +9,21 @@
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 	import ArrowBack from '~icons/material-symbols/arrow-back';
+	import { onMount } from 'svelte';
 
 	let userData = $state<UserData>();
 	let initialUserData = $state<UserData>();
-
 	let edited = $derived(
 		userData?.displayName !== initialUserData?.displayName ||
 			userData?.fellowshipGroup !== initialUserData?.fellowshipGroup
 	);
 
-	fetchUserData().then((d) => {
-		userData = d;
-		initialUserData = d;
-	});
+	onMount(() =>
+		fetchUserData().then((d) => {
+			userData = d;
+			initialUserData = d;
+		})
+	);
 
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
@@ -40,8 +42,8 @@
 
 		const result = await updateUserProfile(uid, userData);
 		if (result) {
+			initialUserData = { ...userData };
 			toast.success($t('profile_page_submit_success'));
-			initialUserData = userData;
 		} else {
 			toast.error($t('profile_page_submit_error'));
 		}
