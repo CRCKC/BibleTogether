@@ -12,6 +12,7 @@
 	// import ArrowRight from '~icons/material-symbols/arrow-right';
 	import ArrowRight from 'lucide-svelte/icons/chevron-down';
 	import ArrowLeft from 'lucide-svelte/icons/chevron-up';
+	import { getVerseOfTheDay } from '$lib/votd/votd';
 
 	// export let data: PageData;
 
@@ -65,6 +66,12 @@
 		}
 	}
 </script>
+
+<!-- <div>
+	{#await getVerseOfTheDay() then data}
+		{data}
+	{/await}
+</div> -->
 
 <div class="flex flex-col items-center justify-center w-full h-full p-6">
 	<Button
