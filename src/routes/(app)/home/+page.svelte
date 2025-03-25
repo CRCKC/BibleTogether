@@ -22,28 +22,6 @@
 	const month = today.getMonth() + 1;
 	const todayIndex = (year - 2024) * 12 + month - 1;
 
-	let api = $state<CarouselAPI>();
-
-	let current = $state(todayIndex);
-
-	$effect(() => {
-		if (api) {
-			current = api.selectedScrollSnap();
-
-			api.on('select', () => {
-				current = api?.selectedScrollSnap() ?? todayIndex;
-			});
-		}
-	});
-
-	const handlePrevious = () => {
-		api?.scrollPrev();
-	};
-
-	const handleNext = () => {
-		api?.scrollNext();
-	};
-
 	const schedule = bibleSchedule as {
 		[year: number]: {
 			[month: number]: Array<{
@@ -53,118 +31,10 @@
 			}>;
 		};
 	};
-
-	// CarouselArray will be an array of objects, each object will have a year and month, we will start from 1/2024
-	// to 12/2027 as the end
-	const carouselData: Array<{ year: number; month: number }> = [];
-	for (let year = 2024; year <= 2027; year++) {
-		for (let month = 1; month <= 12; month++) {
-			carouselData.push({
-				year,
-				month
-			});
-		}
-	}
 </script>
 
-<!-- <div>
-	{#await getVerseOfTheDay() then data}
-		{data}
-	{/await}
-</div> -->
-
 <div class="flex flex-col items-center justify-center w-full h-full p-6">
-	<Button
-		variant="secondary"
-		class="p-6 mb-4 text-2xl text-center rounded-full"
-		onclick={() => api?.scrollTo(todayIndex)}
-	>
-		{$t('currentMonth', { values: { month, year } })}
-	</Button>
-	<Carousel.Root
-		setApi={(emblaApi) => (api = emblaApi as CarouselAPI)}
-		class="w-full max-w-sm select-none "
-		orientation="vertical"
-		opts={{
-			align: 'center',
-			loop: false,
-			startIndex: todayIndex,
-			slidesToScroll: 1,
-			containScroll: 'trimSnaps',
-			dragFree: false,
-			skipSnaps: true
-		}}
-	>
-		<Carousel.Content class="-mt-1 h-[450px]">
-			<!-- This is a hack to make the first item visible -->
-			<Carousel.Item class="py-1 basis-1/3" />
-			{#each carouselData as item, index}
-				<Carousel.Item
-					class={cn('py-1 basis-[25%]', {
-						'font-bold text-yellow-300': index === todayIndex
-					})}
-				>
-					<div
-						class={cn(
-							'transition-all duration-300 ease-in-out flex flex-row items-center',
-							current === index ? 'scale-100' : 'scale-90 brightness-[0.4]'
-						)}
-					>
-						<div class="w-8 mr-3 text-sm text-center text-nowrap">{item.month} {'月'}</div>
-						<div class="w-full p-1">
-							{#each schedule[item.year][item.month] as chap}
-								<Button
-									class="w-full my-1 bg-black h-14
-									{current != index ? 'opacity-100 bg-gray-900' : ''}"
-									variant="outline"
-									size="lg"
-									onclick={() => jumpToChapterWithProgress(chap.scroll)}
-								>
-									<div class="flex items-center justify-center">
-										<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
-										<span class="ml-2 opacity-85">{chap.start}-{chap.end}</span>
-									</div>
-								</Button>
-							{/each}
-						</div>
-						<div class="w-10 ml-3 text-sm text-center text-nowrap">{item.year - 2000} {'年'}</div>
-					</div>
-				</Carousel.Item>
-			{/each}
-			<!-- This is a hack to make the last item visible -->
-			<Carousel.Item class="py-1 basis-1/3" />
-		</Carousel.Content>
-	</Carousel.Root>
-	<div class="relative flex justify-between w-full h-10 max-w-sm">
-		<Button
-			class="rounded-full aspect-square"
-			variant="outline"
-			size="icon"
-			onclick={handlePrevious}
-			disabled={current === 0}
-		>
-			<ArrowLeft class="text-xl" />
-		</Button>
-		<Button
-			class="w-full mx-4 text-lg font-medium rounded-full hover:bg-secondary hover:brightness-150"
-			variant="secondary"
-			size="icon"
-			onclick={() => {
-				current !== todayIndex
-					? api?.scrollTo(todayIndex)
-					: jumpToChapterWithProgress(schedule[year][month][0].scroll);
-			}}
-		>
-			{$t('chapterToday')}
-		</Button>
-		<Button
-			class="rounded-full aspect-square"
-			variant="outline"
-			size="icon"
-			onclick={handleNext}
-			disabled={current === carouselData.length - 1}
-		>
-			<ArrowRight class="text-xl" />
-		</Button>
-	</div>
+	{#await getVerseOfTheDay() then data}
+		{data.text}
+	{/await}
 </div>

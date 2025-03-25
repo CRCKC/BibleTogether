@@ -1,5 +1,7 @@
 import { loadVerse } from '$lib/backend';
 import scrollMap from '$lib/votd/scrollMap.json';
+import { persisted } from 'svelte-persisted-store';
+import { get } from 'svelte/store';
 
 export async function getVerseOfTheDayData(random = false): Promise<{
 	scroll: string;
@@ -29,11 +31,54 @@ export async function getVerseOfTheDayData(random = false): Promise<{
 	return { scroll, chapter, verse };
 }
 
-export async function getVerseOfTheDay(random = false): Promise<string | undefined> {
+const verseOfTheDayStore = persisted<{
+	scroll: string;
+	chapter: number;
+	verse: number;
+	text: string | undefined;
+	time: number;
+}>(
+	'verseOfTheDay',
+	{
+		scroll: 'GEN',
+		chapter: 1,
+		verse: 1,
+		text: 'In the beginning God created the heavens and the earth.',
+		time: 0
+	},
+	{
+		syncTabs: false
+	}
+);
+
+// Make this function cache for today
+export async function getVerseOfTheDay(random = false) {
+	if (random === false) {
+		const store = get(verseOfTheDayStore);
+		const now = Date.now();
+
+		if (store.time > now - 24 * 60 * 60 * 1000) {
+			return {
+				text: store.text,
+				scroll: store.scroll,
+				chapter: store.chapter,
+				verse: store.verse
+			};
+		}
+	}
+
 	const { scroll, chapter, verse } = await getVerseOfTheDayData(random);
 
-	const verseText = await loadVerse(scroll, chapter, verse);
+	const text = await loadVerse(scroll, chapter, verse);
 	console.log('scroll', scroll, 'chapter', chapter, 'verse', verse);
-
-	return verseText;
+	if (random === false) {
+		verseOfTheDayStore.set({
+			scroll,
+			chapter,
+			verse,
+			text: text,
+			time: Date.now()
+		});
+	}
+	return { text, scroll, chapter, verse };
 }
