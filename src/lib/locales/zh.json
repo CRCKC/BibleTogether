@@ -62,5 +62,6 @@
 	"navbar_alert_desc_audio": "錄音尚未播放完畢",
 	"navbar_alert_desc_unchecked": "此章節尚未標記為已完成",
 	"navbar_alert_confirm": "離開",
-	"navbar_alert_cancel": "留下"
+	"navbar_alert_cancel": "留下",
+	"verse_of_the_day": "每日經文"
 }

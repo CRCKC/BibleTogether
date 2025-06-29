@@ -13,7 +13,8 @@
 	import ArrowRight from 'lucide-svelte/icons/chevron-down';
 	import ArrowLeft from 'lucide-svelte/icons/chevron-up';
 	import { getVerseOfTheDay } from '$lib/votd/votd';
-
+	import * as Card from '$lib/components/ui/card';
+	import { onMount } from 'svelte';
 	// export let data: PageData;
 
 	// Get Today's year and month
@@ -31,10 +32,39 @@
 			}>;
 		};
 	};
+
+	let votd: {
+		text: string | undefined;
+		scroll: string;
+		chapter: number;
+		verse: number;
+	} = $state({
+		text: undefined,
+		scroll: '',
+		chapter: 0,
+		verse: 0
+	});
+
+	onMount(async () => {
+		votd = await getVerseOfTheDay();
+	});
 </script>
 
+<!-- Main Frame-->
 <div class="flex flex-col items-center justify-center w-full h-full p-6">
-	{#await getVerseOfTheDay() then data}
-		{data.text}
-	{/await}
+	<!-- Verse of the day Card -->
+	<Card.Root class="w-full max-w-2xl">
+		<Card.Header>
+			<Card.Title>{$t('verse_of_the_day')}</Card.Title>
+			<Card.Description
+				>{`${bibleChinese[votd.scroll]} ${votd.chapter}:${votd.verse}`}</Card.Description
+			>
+		</Card.Header>
+		<Card.Content class="flex flex-col items-center justify-center">
+			<div class="text-lg text-center">
+				{votd.text}
+			</div>
+		</Card.Content>
+		<Card.Footer class="flex items-center justify-between"></Card.Footer>
+	</Card.Root>
 </div>

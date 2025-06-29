@@ -62,7 +62,7 @@
 			>
 				{$t('feedback_submit')}
 			</Button>
-			<Button
+			<!-- <Button
 				class="flex items-center justify-center h-12 mt-4 rounded-md w-80"
 				variant="secondary"
 				onclick={async () => {
@@ -70,7 +70,7 @@
 				}}
 			>
 				{$t('Test')}
-			</Button>
+			</Button> -->
 			<LogoutButton />
 			<!-- <DeleteProgress /> -->
 		</div>
