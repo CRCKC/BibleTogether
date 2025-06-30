@@ -1,4 +1,4 @@
-import { getFileData } from './bible/download';
+import { downloadAndUnzip, getFileData } from './bible/download';
 
 export async function loadChapter(scroll: string, chapter: number) {
 	let bibleContent = '';
@@ -9,6 +9,19 @@ export async function loadChapter(scroll: string, chapter: number) {
 			bibleContent = content;
 		} else {
 			console.error('File not found:', `${scroll}_${chapter}.html`);
+			const downloadSucceed = await downloadAndUnzip();
+			if (!downloadSucceed) {
+				console.error(
+					'Download and unzip failed. Please check your internet connection or try again later.'
+				);
+				throw new Error('Download bible failed');
+			}
+			const retryContent = await getFileData(`${scroll}_${chapter}.html`);
+			if (retryContent) {
+				bibleContent = retryContent;
+			} else {
+				console.error('File still not found after download:', `${scroll}_${chapter}.html`);
+			}
 		}
 	} catch (error) {
 		console.error('Error reading file:', error);
