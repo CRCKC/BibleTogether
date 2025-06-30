@@ -12,8 +12,6 @@ Make the .env file
 
 ## TODO
 
-- Use tailwind css to set color theme
-- Redo home page
 - Optimize API calls
 - Localization
 - Add user profile, see who finished the bible recently

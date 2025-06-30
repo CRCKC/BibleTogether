@@ -104,6 +104,7 @@
 						current === index ? 'scale-100' : 'scale-90 brightness-[0.4]'
 					)}
 				>
+					<!-- TODO: Show reading progress by filling up % of the box green -->
 					<Card.Root
 						class={cn('', {
 							'bg-primary-foreground border-muted-foreground font-bold text-yellow-300':
