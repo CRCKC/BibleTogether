@@ -20,4 +20,7 @@ git merge main
 # Push the updated production branch to GitHub
 git push origin production
 
+# Return to the main branch
+git checkout main
+
 echo "Successfully merged main into production and pushed to GitHub."
