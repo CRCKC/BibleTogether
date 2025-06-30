@@ -3,6 +3,7 @@ import { jumpToChapter, type BibleChapter } from './bible';
 import { uploadBibleProgress } from '../firebase/firestore';
 import { bibleIndex, bibleList } from '$lib/bible/constants';
 import { get } from 'svelte/store';
+import { bibleSchedule } from '$lib/bible/constants';
 
 const TOTAL_CHAPTERS = 1255; // Including intro chapters
 export interface BibleProgress {
@@ -99,4 +100,24 @@ export function isChapterCompleted(bible: BibleChapter): boolean {
 	const index = getProgressIndex(bible.scroll, bible.chapter);
 	const data = get(bibleProgressStore);
 	return data[index];
+}
+
+// TODO: Complete this function properly
+export function jumpToNextUnreadChapterInSchedule(year: number, month: number): void {
+	const schedule = bibleSchedule[year]?.[month];
+	if (!schedule) return;
+
+	for (const item of schedule) {
+		if (item.scroll in bibleList) {
+			const startIndex = bibleIndex[item.scroll];
+			const scrollChapters = bibleList[item.scroll];
+
+			for (let i = startIndex + 1; i < startIndex + scrollChapters + 1; i++) {
+				if (!get(bibleProgressStore)[i]) {
+					jumpToChapter({ scroll: item.scroll, chapter: i - startIndex });
+					return;
+				}
+			}
+		}
+	}
 }
