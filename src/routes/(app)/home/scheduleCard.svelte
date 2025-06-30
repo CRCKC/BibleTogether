@@ -7,13 +7,10 @@
 	import { bibleChinese } from '$lib/bible/constants';
 	import { t } from 'svelte-i18n';
 	import { jumpToChapterWithProgress } from '$lib/bible/progress';
-	// import ArrowLeft from '~icons/material-symbols/arrow-left';
-	// import ArrowRight from '~icons/material-symbols/arrow-right';
-	import ArrowRight from 'lucide-svelte/icons/chevron-down';
-	import ArrowLeft from 'lucide-svelte/icons/chevron-up';
 	import * as Card from '$lib/components/ui/card';
 
 	import bibleSchedule from '$lib/bible/schedule.json';
+	import * as ScrollArea from '$lib/components/ui/scroll-area';
 
 	// Get Today's year and month
 	const today = new Date();
@@ -65,6 +62,23 @@
 		}
 	}
 </script>
+
+<Button
+	class="w-full my-4 text-lg font-semibold h-14"
+	variant="outline"
+	size="icon"
+	onclick={async () => {
+		if (current !== todayIndex) {
+			api?.scrollTo(todayIndex);
+			await new Promise((resolve) => {
+				setTimeout(resolve, 500); // Wait for the scroll to finish
+			});
+		}
+		jumpToChapterWithProgress(schedule[year][month][0].scroll);
+	}}
+>
+	{$t('chapterToday')}
+</Button>
 
 <Carousel.Root
 	setApi={(emblaApi) => (api = emblaApi as CarouselAPI)}
@@ -123,31 +137,22 @@
 	<Carousel.Next /> -->
 </Carousel.Root>
 
-{#each schedule[carouselData[current].year][carouselData[current].month] as chap}
-	<Button
-		class="w-full my-1 bg-black h-14 "
-		variant="outline"
-		size="lg"
-		onclick={() => jumpToChapterWithProgress(chap.scroll)}
-	>
-		<div class="flex items-center justify-center">
-			<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
-			<span class="ml-2 opacity-85">{chap.start}-{chap.end}</span>
-		</div>
-	</Button>
-{/each}
-<!-- <Button
-	class="w-full mx-4 text-lg font-medium rounded-full hover:bg-secondary hover:brightness-150"
-	variant="secondary"
-	size="icon"
-	onclick={() => {
-		current !== todayIndex
-			? api?.scrollTo(todayIndex)
-			: jumpToChapterWithProgress(schedule[year][month][0].scroll);
-	}}
->
-	{$t('chapterToday')}
-</Button> -->
+<ScrollArea.Root class="w-full max-w-sm max-h-[9rem] mt-4" type="auto">
+	{#each schedule[carouselData[current].year][carouselData[current].month] as chap}
+		<Button
+			class="w-full my-1 bg-black h-14 "
+			variant="outline"
+			size="lg"
+			onclick={() => jumpToChapterWithProgress(chap.scroll)}
+		>
+			<div class="flex items-center justify-center">
+				<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
+				<span class="ml-2 opacity-85">{chap.start}-{chap.end}</span>
+			</div>
+		</Button>
+	{/each}
+</ScrollArea.Root>
+
 <!-- <Carousel.Root
 		setApi={(emblaApi) => (api = emblaApi as CarouselAPI)}
 		class="w-full max-w-sm select-none "
