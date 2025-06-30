@@ -69,8 +69,7 @@
 			<Card.Footer class="flex items-center justify-between"></Card.Footer>
 		{:else}
 			<Card.Header>
-				<Card.Title>{$t('loading_votd')}</Card.Title>
-				<Card.Description>{$t('loading_votd_desc')}</Card.Description>
+				<Card.Title>{$t('verse_of_the_day_loading')}</Card.Title>
 			</Card.Header>
 			<Card.Content class="flex items-center justify-center">
 				<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>

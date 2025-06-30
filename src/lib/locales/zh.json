@@ -63,5 +63,6 @@
 	"navbar_alert_desc_unchecked": "此章節尚未標記為已完成",
 	"navbar_alert_confirm": "離開",
 	"navbar_alert_cancel": "留下",
-	"verse_of_the_day": "每日經文"
+	"verse_of_the_day": "每日經文",
+	"verse_of_the_day_loading": "正在加載每日經文..."
 }
