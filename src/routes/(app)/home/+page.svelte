@@ -54,17 +54,27 @@
 <div class="flex flex-col items-center justify-center w-full h-full p-6">
 	<!-- Verse of the day Card -->
 	<Card.Root class="w-full max-w-2xl">
-		<Card.Header>
-			<Card.Title>{$t('verse_of_the_day')}</Card.Title>
-			<Card.Description
-				>{`${bibleChinese[votd.scroll]} ${votd.chapter}:${votd.verse}`}</Card.Description
-			>
-		</Card.Header>
-		<Card.Content class="flex flex-col items-center justify-center">
-			<div class="text-lg text-center">
-				{votd.text}
-			</div>
-		</Card.Content>
-		<Card.Footer class="flex items-center justify-between"></Card.Footer>
+		{#if votd.text != undefined}
+			<Card.Header>
+				<Card.Title>{$t('verse_of_the_day')}</Card.Title>
+				<Card.Description
+					>{`${bibleChinese[votd.scroll]} ${votd.chapter}:${votd.verse}`}</Card.Description
+				>
+			</Card.Header>
+			<Card.Content class="flex flex-col items-center justify-center">
+				<div class="text-lg text-center">
+					{votd.text}
+				</div>
+			</Card.Content>
+			<Card.Footer class="flex items-center justify-between"></Card.Footer>
+		{:else}
+			<Card.Header>
+				<Card.Title>{$t('loading_votd')}</Card.Title>
+				<Card.Description>{$t('loading_votd_desc')}</Card.Description>
+			</Card.Header>
+			<Card.Content class="flex items-center justify-center">
+				<div class="w-16 h-16 border-b-2 border-white rounded-full animate-spin"></div>
+			</Card.Content>
+		{/if}
 	</Card.Root>
 </div>
