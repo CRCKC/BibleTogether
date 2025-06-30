@@ -43,7 +43,7 @@ const verseOfTheDayStore = persisted<{
 		scroll: 'GEN',
 		chapter: 1,
 		verse: 1,
-		text: 'In the beginning God created the heavens and the earth.',
+		text: undefined,
 		time: 0
 	},
 	{
@@ -57,7 +57,7 @@ export async function getVerseOfTheDay(random = false) {
 		const store = get(verseOfTheDayStore);
 		const now = Date.now();
 
-		if (store.time > now - 24 * 60 * 60 * 1000) {
+		if (store.time > now - 24 * 60 * 60 * 1000 && store.text) {
 			return {
 				text: store.text,
 				scroll: store.scroll,
@@ -70,7 +70,7 @@ export async function getVerseOfTheDay(random = false) {
 	const { scroll, chapter, verse } = await getVerseOfTheDayData(random);
 
 	const text = await loadVerse(scroll, chapter, verse);
-	console.log('scroll', scroll, 'chapter', chapter, 'verse', verse);
+	// console.log('scroll', scroll, 'chapter', chapter, 'verse', verse);
 	if (random === false) {
 		verseOfTheDayStore.set({
 			scroll,
