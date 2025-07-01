@@ -64,7 +64,7 @@
 </script>
 
 <Button
-	class="w-full my-4 text-lg font-semibold h-14"
+	class="w-full max-w-sm my-4 text-lg font-semibold h-14"
 	variant="outline"
 	size="icon"
 	onclick={async () => {

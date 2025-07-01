@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { currentChapterStore, setCurrentChapter, type BibleChapter } from '$lib/bible/bible';
+	import { setCurrentChapter, type BibleChapter } from '$lib/bible/bible';
 	import viewport from '$lib/utils/viewportAction';
 	import { bibleProgressStore, getProgressIndex, updateProgress } from '$lib/bible/progress';
 	import { settingsStore } from '$lib/userSettings';
@@ -106,64 +106,69 @@
 </script>
 
 <ScrollArea class="size-full">
-	<!-- Title Widget -->
-	<div
-		class="inline-block w-full mt-4 text-2xl text-center text-gray-400"
-		style="zoom: {$settingsStore.fontZoom};"
-	>
-		{bibleChinese[data.bible.scroll]}
-	</div>
-	<div
-		class="inline-block w-full mt-2 mb-5 text-5xl text-center"
-		style="zoom: {$settingsStore.fontZoom};"
-	>
-		{data.bible.chapter == 0 ? $t('intro') : data.bible.chapter}
-	</div>
-
-	<!-- Await for bibleContent -->
-	{#await bibleContentPromise(data.bible)}
-		{#if downloadingBible}
-			<!-- Loading Placeholder -->
-			<div class="flex items-center justify-center w-full" style="zoom: {$settingsStore.fontZoom};">
-				Downloading Content...
-			</div>
-		{/if}
-	{:then bibleContent}
-		{#if data.bible.chapter != 0}
-			<div class="w-full px-8 text-lg text-right" style="zoom: {$settingsStore.fontZoom};">
-				{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
-				{$t('peopleAlreadyRead')}
-			</div>
-		{/if}
-		<!-- Actual Bible -->
-		<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
-			{@html bibleContent}
-			{#key bibleContent}
-				{(() => {
-					// Run setupTooltip after bibleContent is loaded, here I made a function to return empty string after running setupTooltip,
-					// as setupTooltip will return undefined and it will be displayed on the html,
-					// the setTimeout 0 fixes an issue where it doesnt replace the html element rendered in bibleContent
-					setTimeout(() => setupTooltip(), 0);
-					return '';
-				})()}
-			{/key}
-		</div>
-		<!-- Bottom Div -->
+	<div id="bible-tooltip-boundary" class="h-full w-dvw">
+		<!-- Title Widget -->
 		<div
-			class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400"
+			class="inline-block w-full mt-4 text-2xl text-center text-gray-400"
 			style="zoom: {$settingsStore.fontZoom};"
 		>
-			{#if data.bible.chapter != 0}
-				<BibleCheckbox bind:checked={chapterCompleted} />
-			{/if}
+			{bibleChinese[data.bible.scroll]}
 		</div>
 		<div
-			class="h-4"
-			use:viewport={{
-				onEnter: handleScrollFinish
-			}}
-		></div>
-	{/await}
+			class="inline-block w-full mt-2 mb-5 text-5xl text-center"
+			style="zoom: {$settingsStore.fontZoom};"
+		>
+			{data.bible.chapter == 0 ? $t('intro') : data.bible.chapter}
+		</div>
+
+		<!-- Await for bibleContent -->
+		{#await bibleContentPromise(data.bible)}
+			{#if downloadingBible}
+				<!-- Loading Placeholder -->
+				<div
+					class="flex items-center justify-center w-full"
+					style="zoom: {$settingsStore.fontZoom};"
+				>
+					Downloading Content...
+				</div>
+			{/if}
+		{:then bibleContent}
+			{#if data.bible.chapter != 0}
+				<div class="w-full px-8 text-lg text-right" style="zoom: {$settingsStore.fontZoom};">
+					{queryCount == undefined ? '...' : queryCount + localUserQueryCount}
+					{$t('peopleAlreadyRead')}
+				</div>
+			{/if}
+			<!-- Actual Bible -->
+			<div class="mx-4 bible" style="zoom: {$settingsStore.fontZoom};">
+				{@html bibleContent}
+				{#key bibleContent}
+					{(() => {
+						// Run setupTooltip after bibleContent is loaded, here I made a function to return empty string after running setupTooltip,
+						// as setupTooltip will return undefined and it will be displayed on the html,
+						// the setTimeout 0 fixes an issue where it doesnt replace the html element rendered in bibleContent
+						setTimeout(() => setupTooltip(), 0);
+						return '';
+					})()}
+				{/key}
+			</div>
+			<!-- Bottom Div -->
+			<div
+				class="flex flex-row items-center justify-center w-full h-6 mt-4 text-center text-gray-400"
+				style="zoom: {$settingsStore.fontZoom};"
+			>
+				{#if data.bible.chapter != 0}
+					<BibleCheckbox bind:checked={chapterCompleted} />
+				{/if}
+			</div>
+			<div
+				class="h-4"
+				use:viewport={{
+					onEnter: handleScrollFinish
+				}}
+			></div>
+		{/await}
+	</div>
 </ScrollArea>
 
 <style lang="postcss">
