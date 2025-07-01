@@ -10,10 +10,10 @@ export interface BibleProgress {
 	[scroll: string]: boolean;
 }
 
-function createEmptyProgress(): BibleProgress {
+function createEmptyProgress(setTrue = false): BibleProgress {
 	const progress: BibleProgress = {};
 	for (let i = 0; i < TOTAL_CHAPTERS; i++) {
-		progress[i] = false;
+		progress[i] = setTrue;
 	}
 	return progress;
 }
@@ -22,6 +22,10 @@ export function resetProgress() {
 	bibleProgressStore.set(createEmptyProgress());
 }
 
+export function completeAllProgress() {
+	const progress = createEmptyProgress(true);
+	bibleProgressStore.set(progress);
+}
 /**
  * It actually doesnt migrate from old data to new data, it just tries to fix the data if it is not in the correct format,
  * but data is not guaranteed to persist if it is not in the correct format
@@ -102,22 +106,42 @@ export function isChapterCompleted(bible: BibleChapter): boolean {
 	return data[index];
 }
 
-// TODO: Complete this function properly
 export function jumpToNextUnreadChapterInSchedule(year: number, month: number): void {
-	const schedule = bibleSchedule[year]?.[month];
-	if (!schedule) return;
-
-	for (const item of schedule) {
-		if (item.scroll in bibleList) {
-			const startIndex = bibleIndex[item.scroll];
-			const scrollChapters = bibleList[item.scroll];
-
-			for (let i = startIndex + 1; i < startIndex + scrollChapters + 1; i++) {
-				if (!get(bibleProgressStore)[i]) {
-					jumpToChapter({ scroll: item.scroll, chapter: i - startIndex });
-					return;
-				}
+	let m = month;
+	for (let y = year; y <= 2027; y++) {
+		while (m <= 12) {
+			const chapter = getFirstUnreadChapterInMonth(y, m);
+			if (chapter) {
+				jumpToChapter(chapter);
+				return;
 			}
+			m++;
+		}
+		m = 1; // Reset month to January for the next year
+	}
+}
+
+function getFirstUnreadChapterInMonth(year: number, month: number): BibleChapter | null {
+	const schedule = bibleSchedule[year]?.[month];
+	if (!schedule) return null;
+	for (const item of schedule) {
+		const chapter = getFirstUnreadChapterInScroll(item.scroll);
+		if (chapter) {
+			return chapter;
 		}
 	}
+	return null;
+}
+
+function getFirstUnreadChapterInScroll(scroll: string): BibleChapter | null {
+	const startIndex = bibleIndex[scroll];
+	const scrollChapters = bibleList[scroll];
+	const data = get(bibleProgressStore);
+
+	for (let i = startIndex + 1; i < startIndex + scrollChapters + 1; i++) {
+		if (!data[i]) {
+			return { scroll, chapter: i - startIndex };
+		}
+	}
+	return null;
 }

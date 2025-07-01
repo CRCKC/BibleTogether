@@ -6,7 +6,10 @@
 	import { cn } from '$lib/utils';
 	import { bibleChinese } from '$lib/bible/constants';
 	import { t } from 'svelte-i18n';
-	import { jumpToChapterWithProgress } from '$lib/bible/progress';
+	import {
+		jumpToChapterWithProgress,
+		jumpToNextUnreadChapterInSchedule
+	} from '$lib/bible/progress';
 	import * as Card from '$lib/components/ui/card';
 
 	import bibleSchedule from '$lib/bible/schedule.json';
@@ -74,7 +77,7 @@
 				setTimeout(resolve, 500); // Wait for the scroll to finish
 			});
 		}
-		jumpToChapterWithProgress(schedule[year][month][0].scroll);
+		jumpToNextUnreadChapterInSchedule(year, month);
 	}}
 >
 	{$t('chapterToday')}
