@@ -98,9 +98,9 @@
 		dragFree: false,
 		skipSnaps: true
 	}}
-	class="w-full max-w-sm"
+	class="w-full max-w-sm overflow-x-clip"
 >
-	<Carousel.Content>
+	<Carousel.Content class="overflow-y-visible">
 		<!-- This is a hack to make the first item visible -->
 		<Carousel.Item class="basis-1/3" />
 		{#each carouselData as item, index}
@@ -113,10 +113,11 @@
 					)}
 				>
 					<Card.Root
-						class={cn('relative overflow-hidden', {
+						class={cn('relative overflow-hidden transition-all', {
 							'bg-primary-foreground border-yellow-300 font-bold text-yellow-300 ':
 								index === todayIndex,
-							'border-green-500': itemProgress == 100
+							'border-green-500': itemProgress == 100,
+							'active:scale-110 active:opacity-60': current === index
 						})}
 						onclick={() => {
 							api?.scrollTo(index);
