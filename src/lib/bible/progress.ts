@@ -145,3 +145,30 @@ function getFirstUnreadChapterInScroll(scroll: string): BibleChapter | null {
 	}
 	return null;
 }
+
+export function getMonthlyProgress(year: number, month: number): number {
+	const schedule = bibleSchedule[year]?.[month];
+	if (!schedule) return 0;
+
+	const progressData = get(bibleProgressStore);
+	let totalChapters = 0;
+	let completedChapters = 0;
+
+	for (const item of schedule) {
+		if (item.scroll in bibleList) {
+			const startIndex = bibleIndex[item.scroll];
+			const scheduleStart = Math.max(1, item.start);
+			const scheduleEnd = Math.min(item.end, bibleList[item.scroll]);
+
+			// Count chapters in this scheduled range
+			for (let chapter = scheduleStart; chapter <= scheduleEnd; chapter++) {
+				totalChapters++;
+				const progressIndex = startIndex + chapter;
+				if (progressData[progressIndex]) {
+					completedChapters++;
+				}
+			}
+		}
+	}
+	return totalChapters > 0 ? Math.round((completedChapters / totalChapters) * 100) : 0;
+}

@@ -8,7 +8,8 @@
 	import { t } from 'svelte-i18n';
 	import {
 		jumpToChapterWithProgress,
-		jumpToNextUnreadChapterInSchedule
+		jumpToNextUnreadChapterInSchedule,
+		getMonthlyProgress
 	} from '$lib/bible/progress';
 	import * as Card from '$lib/components/ui/card';
 
@@ -100,6 +101,7 @@
 		<!-- This is a hack to make the first item visible -->
 		<Carousel.Item class="basis-1/3" />
 		{#each carouselData as item, index}
+			{@const itemProgress = getMonthlyProgress(item.year, item.month)}
 			<Carousel.Item class="relative basis-1/3">
 				<div
 					class={cn(
@@ -107,18 +109,29 @@
 						current === index ? 'scale-100' : 'scale-90 brightness-[0.4]'
 					)}
 				>
-					<!-- TODO: Show reading progress by filling up % of the box green -->
 					<Card.Root
-						class={cn('', {
+						class={cn('relative overflow-hidden', {
 							'bg-primary-foreground border-muted-foreground font-bold text-yellow-300':
-								index === todayIndex
+								index === todayIndex,
+							'border-green-500': itemProgress == 100
 						})}
 						onclick={() => {
 							api?.scrollTo(index);
 						}}
 					>
+						<!-- Progress background -->
+						<div
+							class={cn(
+								'absolute bottom-0 left-0 right-0 transition-all duration-500 bg-green-500/20',
+								{
+									'bg-green-500/40': itemProgress == 100
+								}
+							)}
+							style="height: {itemProgress}%"
+						></div>
+
 						<Card.Content
-							class={cn('flex flex-col items-center justify-center p-1 aspect-square', {})}
+							class={cn('relative flex flex-col items-center justify-center p-1 aspect-square', {})}
 						>
 							<div class="text-3xl font-semibold">{item.month}{'月'}</div>
 							<div
@@ -128,6 +141,10 @@
 							>
 								{item.year - 2000}
 								{'年'}
+							</div>
+							<!-- Progress percentage text -->
+							<div class="mt-1 text-xs opacity-75">
+								{itemProgress}%
 							</div>
 						</Card.Content>
 					</Card.Root>
