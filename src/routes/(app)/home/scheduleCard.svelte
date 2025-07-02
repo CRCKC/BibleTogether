@@ -40,8 +40,12 @@
 		if (api) {
 			current = api.selectedScrollSnap();
 
-			api.on('select', () => {
-				current = api?.selectedScrollSnap() ?? todayIndex;
+			// api.on('select', () => {
+			// 	current = api?.selectedScrollSnap() ?? todayIndex;
+			// });
+
+			api.on('slidesInView', () => {
+				current = api?.slidesInView()[0] ?? todayIndex;
 			});
 		}
 	});
@@ -111,7 +115,7 @@
 				>
 					<Card.Root
 						class={cn('relative overflow-hidden', {
-							'bg-primary-foreground border-muted-foreground font-bold text-yellow-300':
+							'bg-primary-foreground border-yellow-300 font-bold text-yellow-300 ':
 								index === todayIndex,
 							'border-green-500': itemProgress == 100
 						})}
