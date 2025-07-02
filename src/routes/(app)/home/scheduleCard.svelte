@@ -40,12 +40,11 @@
 		if (api) {
 			current = api.selectedScrollSnap();
 
-			// api.on('select', () => {
-			// 	current = api?.selectedScrollSnap() ?? todayIndex;
-			// });
-
-			api.on('slidesInView', () => {
-				current = api?.slidesInView()[0] ?? todayIndex;
+			const snapl = api.scrollSnapList().length;
+			api.on('scroll', () => {
+				const scrollp = api?.scrollProgress() ?? 0;
+				const nearestSnap = Math.round(scrollp * (snapl - 1));
+				current = nearestSnap;
 			});
 		}
 	});
