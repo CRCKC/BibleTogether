@@ -9,8 +9,7 @@
 
 <Dialog.Root bind:open={dialogOpen}>
 	<Dialog.Trigger>
-		<Button class="h-12 mt-4rounded-md w-80"
-		variant="secondary">
+		<Button class="h-12 mt-4rounded-md w-80" variant="secondary">
 			{$t('adjustFontSize')}
 		</Button>
 	</Dialog.Trigger>
@@ -70,6 +69,9 @@
 </Dialog.Root>
 
 <style lang="postcss">
+	.sampleText {
+		-webkit-text-size-adjust: none;
+	}
 	.sampleText :global(b) {
 		color: #aaa;
 		padding: 0 0.2em;
