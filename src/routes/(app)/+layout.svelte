@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	// import type { LayoutData } from './$types';
 	import { base } from '$app/paths';
 	import Item from './navbarItem.svelte';
@@ -16,11 +16,12 @@
 	import Book2Outline from '~icons/material-symbols/book-2-outline';
 	import HomeIcon from '~icons/material-symbols/home';
 	import HomeOutline from '~icons/material-symbols/home-outline';
+	import { fade, fly } from 'svelte/transition';
 
 	let { children } = $props();
 
 	let subscribtion: Unsubscribe | undefined = $state();
-	let isBible = $derived($page.url.pathname.startsWith(`${base}/bible`));
+	let isBible = $derived(page.url.pathname.startsWith(`${base}/bible`));
 	$effect.pre(() => {
 		try {
 			if (session.v.loggedIn == true) {
@@ -44,10 +45,11 @@
 </script>
 
 <div class="flex flex-col h-dvh w-dvw">
-	<div class="relative h-full">
-		{@render children?.()}
-	</div>
-
+	{#key page.url.pathname}
+		<div class="relative h-full" transition:fade={{}}>
+			{@render children?.()}
+		</div>
+	{/key}
 	<div class="z-40 w-full transition-all bg-black border-t-2 border-gray-600">
 		<!-- Bible nav bar -->
 		{#if isBible}
