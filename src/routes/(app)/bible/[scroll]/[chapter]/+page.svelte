@@ -178,6 +178,7 @@
 		letter-spacing: normal;
 		word-spacing: normal;
 		vertical-align: top;
+		-webkit-text-size-adjust: none;
 	}
 	.bible :global(h1),
 	:global(h2),

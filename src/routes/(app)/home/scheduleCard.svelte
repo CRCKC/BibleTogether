@@ -157,8 +157,6 @@
 		<!-- This is a hack to make the last item visible -->
 		<Carousel.Item class="basis-1/3" />
 	</Carousel.Content>
-	<!-- <Carousel.Previous />
-	<Carousel.Next /> -->
 </Carousel.Root>
 
 <ScrollArea.Root class="w-full max-w-sm max-h-[9rem] mt-4" type="auto">
@@ -176,55 +174,3 @@
 		</Button>
 	{/each}
 </ScrollArea.Root>
-
-<!-- <Carousel.Root
-		setApi={(emblaApi) => (api = emblaApi as CarouselAPI)}
-		class="w-full max-w-sm select-none "
-		orientation="vertical"
-		opts={{
-			align: 'center',
-			loop: false,
-			startIndex: todayIndex,
-			slidesToScroll: 1,
-			containScroll: 'trimSnaps',
-			dragFree: false,
-			skipSnaps: true
-		}}
-	>
-		<Carousel.Content class="-mt-1 h-[450px]">
-			{#each carouselData as item, index}
-				<Carousel.Item
-					class={cn('py-1 basis-[25%]', {
-						'font-bold text-yellow-300': index === todayIndex
-					})}
-				>
-					<div
-						class={cn(
-							'transition-all duration-300 ease-in-out flex flex-row items-center',
-							current === index ? 'scale-100' : 'scale-90 brightness-[0.4]'
-						)}
-					>
-						<div class="w-8 mr-3 text-sm text-center text-nowrap">{item.month} {'月'}</div>
-						<div class="w-full p-1">
-							{#each schedule[item.year][item.month] as chap}
-								<Button
-									class="w-full my-1 bg-black h-14
-									{current != index ? 'opacity-100 bg-gray-900' : ''}"
-									variant="outline"
-									size="lg"
-									onclick={() => jumpToChapterWithProgress(chap.scroll)}
-								>
-									<div class="flex items-center justify-center">
-										<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
-										<span class="ml-2 opacity-85">{chap.start}-{chap.end}</span>
-									</div>
-								</Button>
-							{/each}
-						</div>
-						<div class="w-10 ml-3 text-sm text-center text-nowrap">{item.year - 2000} {'年'}</div>
-					</div>
-				</Carousel.Item>
-			{/each}
-
-		</Carousel.Content>
-	</Carousel.Root> -->
