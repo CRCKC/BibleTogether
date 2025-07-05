@@ -46,7 +46,7 @@
 
 <div class="flex flex-col h-dvh w-dvw">
 	{#key page.url.pathname}
-		<div class="relative h-full" transition:fade={{}}>
+		<div class="relative h-full">
 			{@render children?.()}
 		</div>
 	{/key}
