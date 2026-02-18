@@ -39,18 +39,18 @@
 
 	$effect(() => {
 		if (toToast) {
-			// toast('Update available', {
-			// 	duration: 100000,
-			// 	action: {
-			// 		label: 'Refresh',
-			// 		onClick: () => {
-			// 			updateServiceWorker();
-			// 			close();
-			// 		}
-			// 	}
-			// });
-			updateServiceWorker();
-			close();
+			toast('更新可用', {
+				duration: 6000000,
+				action: {
+					label: '重新載入',
+					onClick: () => {
+						updateServiceWorker();
+						close();
+					}
+				},
+				position: 'top-center',
+				dismissable: true
+			});
 		}
 	});
 </script>
