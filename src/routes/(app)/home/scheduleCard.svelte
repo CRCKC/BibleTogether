@@ -38,13 +38,19 @@
 
 	$effect(() => {
 		if (api) {
-			current = api.selectedScrollSnap();
-
 			const snapl = api.scrollSnapList().length;
+			const clamp = (i: number) => Math.max(0, Math.min(i, snapl - 1));
+
+			current = clamp(api.selectedScrollSnap());
+
 			api.on('scroll', () => {
 				const scrollp = api?.scrollProgress() ?? 0;
-				const nearestSnap = Math.round(scrollp * (snapl - 1));
-				current = nearestSnap;
+				current = clamp(Math.round(scrollp * (snapl - 1)));
+			});
+
+			// ponytail: fix overscroll -> stuck index by correcting on settle
+			api.on('settle', () => {
+				current = clamp(api.selectedScrollSnap());
 			});
 		}
 	});
@@ -167,7 +173,8 @@
 </div>
 
 <ScrollArea.Root class="w-full max-w-sm max-h-[9rem]" type="auto">
-	{#each schedule[carouselData[current].year][carouselData[current].month] as chap}
+	{#if carouselData[current]}
+		{#each schedule[carouselData[current].year][carouselData[current].month] as chap}
 		<Button
 			class="w-full my-1 bg-black h-14 "
 			variant="outline"
@@ -179,5 +186,6 @@
 				<span class="ml-2 opacity-85">{chap.start}-{chap.end}</span>
 			</div>
 		</Button>
-	{/each}
+		{/each}
+	{/if}
 </ScrollArea.Root>
