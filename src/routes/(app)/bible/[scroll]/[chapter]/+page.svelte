@@ -59,12 +59,8 @@
 	}
 
 	// Bible load controls
-	let prevBible = data.bible;
 	$effect(() => {
-		if (prevBible != data.bible) {
-			onLoadChapter(data.bible);
-			prevBible = data.bible;
-		}
+		onLoadChapter(data.bible);
 	});
 
 	async function bibleContentPromise(bible: BibleChapter): Promise<string> {
@@ -90,9 +86,11 @@
 		firstTimeScrolledToBottom = true;
 	}
 
-	if (data.bible) {
-		currentChapterStore.set(data.bible);
-	}
+	$effect(() => {
+		if (data.bible) {
+			currentChapterStore.set(data.bible);
+		}
+	});
 
 	function handleScrollFinish() {
 		if (firstTimeScrolledToBottom) {

@@ -18,7 +18,7 @@
 	const displayName = session.user?.displayName;
 	const email = session.user?.email;
 
-	const userData = data.userdata;
+	let userData = $derived(data.userdata);
 </script>
 
 <!-- Change font size, logout -->

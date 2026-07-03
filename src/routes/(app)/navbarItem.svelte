@@ -9,14 +9,9 @@
 		path: string;
 	}
 
-	let {
-		title = 'PlaceHolder',
-		icon,
-		activeIcon,
-		path
-	}: Props = $props();
+	let { title = 'PlaceHolder', icon, activeIcon, path }: Props = $props();
 
-	const targetLocation = `${base}/${path}`;
+	let targetLocation = $derived(`${base}/${path}`);
 	let isActive = $derived($page.url.pathname.startsWith(targetLocation));
 
 	const SvelteComponent = $derived(isActive ? activeIcon : icon);
