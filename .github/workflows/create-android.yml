@@ -24,23 +24,14 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          version: 9
-          run_install: false
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
 
       - name: install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Create Build Folder
-        run: pnpm run build
+        run: bun run build
 
       - name: Add android folder if not present
         run: if [ ! -d "./android" ]; then npx cap add android; fi
