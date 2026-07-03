@@ -15,7 +15,7 @@
 	} = $props();
 </script>
 
-<Card.Root class="w-full max-w-2xl">
+<Card.Root class="w-full max-w-sm">
 	{#if votd.text != undefined}
 		<Card.Header>
 			<Card.Title>{$t('verse_of_the_day')}</Card.Title>
