@@ -10,14 +10,9 @@
 		const user = await loginWithGoogle();
 		console.log('User', user);
 		const loggedIn = user.emailVerified;
-		session.update((cur: any) => {
-			return {
-				...cur,
-				user,
-				loggedIn,
-				loading: false
-			};
-		});
+		session.user = user;
+		session.loggedIn = loggedIn;
+		session.loading = false;
 		if (loggedIn) {
 			await goto(base + '/home');
 		} else {

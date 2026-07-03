@@ -110,7 +110,7 @@
 		<Carousel.Content class="">
 			<!-- This is a hack to make the first item visible -->
 			<Carousel.Item class="basis-1/3" />
-			{#each carouselData as item, index}
+			{#each carouselData as item, index (index)}
 				{@const itemProgress = getMonthlyProgress(item.year, item.month)}
 				<Carousel.Item class={cn('relative basis-1/3', current === index && 'z-50')}>
 					<div
@@ -174,18 +174,18 @@
 
 <ScrollArea.Root class="w-full max-w-sm max-h-36" type="auto">
 	{#if carouselData[current]}
-		{#each schedule[carouselData[current].year][carouselData[current].month] as chap}
-		<Button
-			class="w-full my-1 bg-black h-14 "
-			variant="outline"
-			size="lg"
-			onclick={() => jumpToChapterWithProgress(chap.scroll)}
-		>
-			<div class="flex items-center justify-center">
-				<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
-				<span class="ml-2 opacity-85">{chap.start}-{chap.end}</span>
-			</div>
-		</Button>
+		{#each schedule[carouselData[current].year][carouselData[current].month] as chap (chap)}
+			<Button
+				class="w-full my-1 h-14"
+				variant="outline"
+				size="lg"
+				onclick={() => jumpToChapterWithProgress(chap.scroll)}
+			>
+				<div class="flex items-center justify-center">
+					<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
+					<span class="ml-2 opacity-85">{chap.start}-{chap.end}</span>
+				</div>
+			</Button>
 		{/each}
 	{/if}
 </ScrollArea.Root>

@@ -121,7 +121,7 @@
 											class:bg-green-500={completed}
 											class:bg-gray-200={!completed}
 											title={completed ? 'Completed' : 'Not completed'}
-										/>
+										></div>
 									{/each}
 								</div>
 							</TableCell>

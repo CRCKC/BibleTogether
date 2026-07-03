@@ -28,7 +28,7 @@
 				{votd.text}
 			</div>
 		</Card.Content>
-		<Card.Footer class="flex items-center justify-between"></Card.Footer>
+		<Card.Footer class="flex items-center justify-between bg-background"></Card.Footer>
 	{:else}
 		<Card.Header>
 			<Card.Title>{$t('verse_of_the_day_loading')}</Card.Title>
