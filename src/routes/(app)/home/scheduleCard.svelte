@@ -122,7 +122,7 @@
 						)}
 					>
 						<Card.Root
-							class={cn('relative overflow-hidden transition-all', {
+							class={cn('relative overflow-hidden transition-all !py-0', {
 								'bg-primary-foreground border-yellow-300 font-bold text-yellow-300 ':
 									index === todayIndex,
 								'border-green-500': itemProgress == 100
