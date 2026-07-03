@@ -76,6 +76,8 @@
 	}
 </script>
 
+<div class="flex flex-col flex-1 min-h-0">
+
 <Button
 	class="w-full max-w-sm mt-2 text-lg font-semibold h-14"
 	variant="outline"
@@ -172,7 +174,8 @@
 	</Carousel.Root>
 </div>
 
-<ScrollArea.Root class="w-full max-w-sm max-h-36" type="auto">
+<!-- Schedule Month's Scroll list -->
+<ScrollArea.Root class="w-full flex-1 min-h-0" type="auto">
 	{#if carouselData[current]}
 		{#each schedule[carouselData[current].year][carouselData[current].month] as chap (chap)}
 			<Button
@@ -189,3 +192,4 @@
 		{/each}
 	{/if}
 </ScrollArea.Root>
+</div>

@@ -23,8 +23,9 @@
 </script>
 
 <!-- Main Frame-->
-<div class="flex flex-col items-center justify-start w-full h-full p-4 gap-4 overflow-y-auto overflow-x-hidden">
+<div class="flex flex-col items-center w-full h-full p-4 gap-4 overflow-auto">
 	<VotdCard {votd} />
-	<!-- <div class="pt-8"></div> -->
-	<ScheduleCard />
+	<div class="flex flex-col flex-1 min-h-0 w-full max-w-sm">
+		<ScheduleCard />
+	</div>
 </div>

@@ -46,7 +46,7 @@
 
 <div class="flex flex-col h-dvh w-dvw">
 	{#key page.url.pathname}
-		<div class="relative h-full">
+		<div class="relative flex-1 min-h-0">
 			{@render children?.()}
 		</div>
 	{/key}
