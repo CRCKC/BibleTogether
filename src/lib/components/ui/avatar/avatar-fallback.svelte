@@ -11,6 +11,10 @@
 
 <AvatarPrimitive.Fallback
 	bind:ref
-	class={cn("bg-muted flex h-full w-full items-center justify-center rounded-full", className)}
+	data-slot="avatar-fallback"
+	class={cn(
+		"bg-muted text-muted-foreground rounded-full flex size-full items-center justify-center text-sm group-data-[size=sm]/avatar:text-xs",
+		className
+	)}
 	{...restProps}
 />

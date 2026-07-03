@@ -41,7 +41,7 @@
 			const snapl = api.scrollSnapList().length;
 			const clamp = (i: number) => Math.max(0, Math.min(i, snapl - 1));
 
-			current = clamp(api.selectedScrollSnap());
+			current = clamp(api?.selectedScrollSnap() ?? 0);
 
 			api.on('scroll', () => {
 				const scrollp = api?.scrollProgress() ?? 0;
@@ -49,8 +49,8 @@
 			});
 
 			// ponytail: fix overscroll -> stuck index by correcting on settle
-			api.on('settle', () => {
-				current = clamp(api.selectedScrollSnap());
+			api?.on('settle', () => {
+				current = clamp(api?.selectedScrollSnap() ?? 0);
 			});
 		}
 	});
@@ -172,7 +172,7 @@
 	</Carousel.Root>
 </div>
 
-<ScrollArea.Root class="w-full max-w-sm max-h-[9rem]" type="auto">
+<ScrollArea.Root class="w-full max-w-sm max-h-36" type="auto">
 	{#if carouselData[current]}
 		{#each schedule[carouselData[current].year][carouselData[current].month] as chap}
 		<Button

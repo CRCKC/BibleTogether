@@ -1,24 +1,22 @@
 <script lang="ts">
 	import type { HTMLAttributes } from "svelte/elements";
-	import type { WithElementRef } from "bits-ui";
-	import { cn } from "$lib/utils.js";
+	import { cn, type WithElementRef } from "$lib/utils.js";
 
 	let {
 		ref = $bindable(null),
 		class: className,
-		level = 5,
 		children,
 		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		level?: 1 | 2 | 3 | 4 | 5 | 6;
-	} = $props();
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
 <div
-	role="heading"
-	aria-level={level}
 	bind:this={ref}
-	class={cn("mb-1 font-medium leading-none tracking-tight", className)}
+	data-slot="alert-title"
+	class={cn(
+		"font-medium group-has-[>svg]/alert:col-start-2 [&_a]:hover:text-foreground [&_a]:underline [&_a]:underline-offset-3",
+		className
+	)}
 	{...restProps}
 >
 	{@render children?.()}

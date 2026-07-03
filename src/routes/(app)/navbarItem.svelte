@@ -34,6 +34,7 @@
 </a>
 
 <style lang="postcss">
+	@reference "tailwindcss";
 	.active {
 		@apply text-white;
 	}

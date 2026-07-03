@@ -81,7 +81,7 @@
 							>
 								<div
 									class="flex items-center justify-center h-12 bg-gray-900 rounded-full
-				{$currentChapterStore.scroll === key ? 'outline' : ''} 
+				{$currentChapterStore.scroll === key ? 'outline-solid' : ''} 
 				{isScrollCompleted(key) ? 'bg-green-600' : ''} 
 				"
 								>
@@ -101,7 +101,7 @@
 												: i == 0 && $bibleProgressStore[getProgressIndex(key, 1)]
 													? 'bg-green-600'
 													: ''}
-									{$currentChapterStore.scroll === key && $currentChapterStore.chapter === i ? 'outline' : ''}
+									{$currentChapterStore.scroll === key && $currentChapterStore.chapter === i ? 'outline-solid' : ''}
 									"
 											onclick={() => {
 												jumpToChapter({ scroll: key, chapter: i });

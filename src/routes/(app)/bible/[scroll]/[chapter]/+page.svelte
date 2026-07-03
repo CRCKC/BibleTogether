@@ -172,6 +172,7 @@
 </ScrollArea>
 
 <style lang="postcss">
+	@reference "tailwindcss";
 	.bible {
 		@apply text-base;
 		display: inline-block;

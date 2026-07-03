@@ -3,9 +3,11 @@ import { defineConfig } from 'vitest/config';
 import { readFileSync } from 'fs';
 import Icons from 'unplugin-icons/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
 	plugins: [
+		tailwindcss(),
 		sveltekit(),
 		Icons({
 			compiler: 'svelte',
@@ -17,7 +19,7 @@ export default defineConfig({
 			},
 
 			srcDir: './src',
-			mode: 'development',
+			mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 			strategies: 'injectManifest',
 			filename: 'sw.ts',
 			scope: '/',

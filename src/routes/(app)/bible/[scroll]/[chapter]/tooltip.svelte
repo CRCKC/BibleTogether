@@ -25,7 +25,6 @@
 			collisionBoundary={boundary}
 			hideWhenDetached
 		>
-			<Popover.Arrow class="text-gray-700" />
 			<div style="zoom: {$settingsStore.fontZoom};">
 				{text}
 			</div>
