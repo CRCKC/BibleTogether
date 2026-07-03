@@ -23,7 +23,7 @@
 </script>
 
 <!-- Main Frame-->
-<div class="flex flex-col items-center justify-start w-full h-full p-6">
+<div class="flex flex-col items-center justify-start w-full h-full p-4 gap-4 overflow-y-auto">
 	<VotdCard {votd} />
 	<!-- <div class="pt-8"></div> -->
 	<ScheduleCard />

@@ -77,7 +77,7 @@
 </script>
 
 <Button
-	class="w-full max-w-sm mt-4 text-lg font-semibold h-14"
+	class="w-full max-w-sm mt-2 text-lg font-semibold h-14"
 	variant="outline"
 	size="icon"
 	onclick={async () => {

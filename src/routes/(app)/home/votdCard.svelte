@@ -24,7 +24,7 @@
 			>
 		</Card.Header>
 		<Card.Content class="flex flex-col items-center justify-center">
-			<div class="text-lg text-center">
+			<div class="text-base text-center line-clamp-4">
 				{votd.text}
 			</div>
 		</Card.Content>
