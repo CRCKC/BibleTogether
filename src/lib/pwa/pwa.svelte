@@ -7,24 +7,8 @@
 	import { useRegisterSW } from 'virtual:pwa-register/svelte';
 
 	const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
-		onRegisteredSW(swUrl, r) {
-			r &&
-				setInterval(async () => {
-					if (r.installing || !navigator) return;
-
-					if ('connection' in navigator && !navigator.onLine) return;
-
-					const resp = await fetch(swUrl, {
-						cache: 'no-store',
-						headers: {
-							cache: 'no-store',
-							'cache-control': 'no-cache'
-						}
-					});
-
-					if (resp?.status === 200) await r.update();
-				}, 20000 /* 20s for testing purposes */);
-		},
+		// ponytail: useRegisterSW handles update detection via visibilitychange + native SW lifecycle.
+		// Custom polling was the refresh-loop root cause.
 		onRegisterError(error) {
 			console.log('SW registration error', error);
 		}

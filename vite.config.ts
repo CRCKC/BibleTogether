@@ -50,7 +50,7 @@ export default defineConfig({
 				background_color: '#000000',
 				description: '禮中齊讀經',
 				display: 'standalone',
-				prefer_related_applications: true,
+				prefer_related_applications: false,
 				related_applications: [
 					{
 						platform: 'webapp',
@@ -69,7 +69,7 @@ export default defineConfig({
 				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
 			},
 			devOptions: {
-				enabled: true,
+				enabled: false,
 				suppressWarnings: process.env.SUPPRESS_WARNING === 'true',
 				type: 'module',
 				navigateFallback: '/'

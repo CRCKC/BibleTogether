@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -114,16 +114,31 @@
 	--animate-caret-blink: caret-blink 1.25s ease-out infinite;
 
 	@keyframes accordion-down {
-		from { height: 0; }
-		to { height: var(--bits-accordion-content-height); }
+		from {
+			height: 0;
+		}
+		to {
+			height: var(--bits-accordion-content-height);
+		}
 	}
 	@keyframes accordion-up {
-		from { height: var(--bits-accordion-content-height); }
-		to { height: 0; }
+		from {
+			height: var(--bits-accordion-content-height);
+		}
+		to {
+			height: 0;
+		}
 	}
 	@keyframes caret-blink {
-		0%, 70%, 100% { opacity: 1; }
-		20%, 50% { opacity: 0; }
+		0%,
+		70%,
+		100% {
+			opacity: 1;
+		}
+		20%,
+		50% {
+			opacity: 0;
+		}
 	}
 }
 
@@ -136,10 +151,35 @@
 	}
 }
 
+/* ponytail: restore opaque button colors. shadcn-svelte TW4 registry
+   uses translucent variants (bg-destructive/10 etc). Override via
+   !important so we don't touch components/ui/. */
+@layer utilities {
+	[data-slot="button"].bg-destructive\/10,
+	[data-slot="button"].dark\:bg-destructive\/20 {
+		background-color: var(--destructive) !important;
+		color: var(--destructive-foreground) !important;
+	}
+	[data-slot="button"].dark\:bg-input\/30,
+	[data-slot="alert-dialog-cancel"].dark\:bg-input\/30 {
+		background-color: var(--background) !important;
+	}
+	[data-slot="button"].dark\:hover\:bg-input\/50:hover,
+	[data-slot="alert-dialog-cancel"].dark\:hover\:bg-input\/50:hover {
+		background-color: var(--accent) !important;
+		color: var(--accent-foreground) !important;
+	}
+	[data-slot="button"].dark\:hover\:bg-muted\/50:hover {
+		background-color: var(--accent) !important;
+		color: var(--accent-foreground) !important;
+	}
+}
+
 html {
 	color: black;
 	min-height: calc(100% + env(safe-area-inset-top));
-	padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+	padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+		env(safe-area-inset-left);
 }
 
 html,
