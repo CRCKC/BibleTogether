@@ -5,10 +5,10 @@ const storeName = 'bibleStore';
 const dbName = 'bibleLocalDatabase';
 const storeKeyName = 'name';
 
-export async function downloadAndUnzip(): Promise<boolean | undefined> {
+export async function downloadAndUnzip(): Promise<boolean> {
     if (typeof window === 'undefined' || !('indexedDB' in window)) {
         console.error('IndexedDB is not available in this environment.');
-        return undefined;
+        return false;
     }
     try {
         const response = await fetch(PUBLIC_BIBLE_DOWNLOAD_URL);
@@ -17,7 +17,7 @@ export async function downloadAndUnzip(): Promise<boolean | undefined> {
         const files = Object.keys(zip.files);
 
         const dbRequest = await openDatabaseSafely();
-        if (!dbRequest) return undefined;
+        if (!dbRequest) return false;
 
         const db = dbRequest;
 
@@ -30,7 +30,7 @@ export async function downloadAndUnzip(): Promise<boolean | undefined> {
         await Promise.all(files.map(async (fileName) => {
             const fileData = await zip.file(fileName)?.async('text');
             if (fileData) {
-                bibleList.push({ [storeKeyName]: fileName, data: fileData });
+                bibleList.push({ name: fileName, data: fileData });
             } else {
                 console.log("File not found: ", fileName);
             }

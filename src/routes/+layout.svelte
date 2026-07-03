@@ -81,7 +81,7 @@
 	{/await}
 </div>
 
-<style lang="less">
+<style>
 	.background {
 		background-image: url('$lib/assets/icons/icon.svg');
 		background-repeat: no-repeat;
