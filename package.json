@@ -14,7 +14,7 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"getFirestoreHelpers": "mkdir -p static/__/auth && mkdir -p static/__/firebase && curl -o 'static/__/auth/#1' 'https://bibletogether.firebaseapp.com/__/auth/{handler.js,iframe.js,experiments.js}' && curl -o 'static/__/auth/#1.html' 'https://bibletogether.firebaseapp.com/__/auth/{handler,iframe}' && curl -o 'static/__/firebase/init.json' 'https://bibletogether.firebaseapp.com/__/firebase/init.json'",
+		"getFirestoreHelpers": "mkdir -p static/__/auth && mkdir -p static/__/firebase && curl -o 'static/__/auth/#1' 'https://bibletogether.firebaseapp.com/__/auth/{handler.js,iframe.js,experiments.js}' && curl -o 'static/__/auth/#1.html' 'https://bibletogether.firebaseapp.com/__/auth/{handler,iframe}' && curl -o 'static/__/firebase/init.json' 'https://bibletogether.firebaseapp.com/__/firebase/init.json' && cp static/__/auth/handler.html static/__/auth/handler && cp static/__/auth/iframe.html static/__/auth/iframe",
 		"emulator": "firebase emulators:start",
 		"cert": "rm -rf .cert && mkdir -p .cert && mkcert -key-file ./.cert/key.pem -cert-file ./.cert/cert.pem 'localhost'",
 		"certDependencies": "sudo apt install libnss3-tools mkcert"
@@ -23,7 +23,6 @@
 		"@capacitor/assets": "^3.0.5",
 		"@capacitor/cli": "^7.0.1",
 		"@iconify-json/material-symbols": "^1.2.14",
-		"@lucide/svelte": "^0.482.0",
 		"@playwright/test": "^1.50.1",
 		"@sveltejs/adapter-auto": "^3.3.1",
 		"@sveltejs/adapter-static": "^3.0.8",

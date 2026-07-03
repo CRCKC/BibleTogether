@@ -14,9 +14,9 @@
 	import { Button } from '$lib/components/ui/button';
 
 	let { data }: { data: PageData } = $props();
-	const imageUrl = session.v.user?.photoURL;
-	const displayName = session.v.user?.displayName;
-	const email = session.v.user?.email;
+	const imageUrl = session.user?.photoURL;
+	const displayName = session.user?.displayName;
+	const email = session.user?.email;
 
 	const userData = data.userdata;
 </script>

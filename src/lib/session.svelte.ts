@@ -11,19 +11,4 @@ export type SessionState = {
     loggedIn?: boolean;
 };
 
-
-export function createSession() {
-    let value: SessionState = $state({ user: null });
-
-    return {
-        get v() { return value },
-        set(state: SessionState) {
-            value = state;
-        },
-        update(fn: (state: SessionState) => SessionState) {
-            value = fn(value);
-        }
-    };
-}
-
-export const session = createSession();
+export const session = $state<SessionState>({ user: null });

@@ -8,7 +8,7 @@
 	import '../i18n';
 	import { ModeWatcher, setMode } from 'mode-watcher';
 	import initLocale from '../i18n';
-	import { firstVisitStore } from '$lib/utils/firstVisit.svelte';
+	import { localStore } from '$lib/utils/localStore.svelte';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import { promptInstall } from '$lib/pwa/pwa';
 	import Pwa from '$lib/pwa/pwa.svelte';
@@ -23,13 +23,13 @@
 
 	let loadingResult = $state(true);
 
-	let firstVisit = firstVisitStore();
+	let firstVisit = localStore('firstVisit', true);
 
 	onMount(async () => {
 		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
 		setTimeout(promptInstall, 0);
 
-		if (firstVisit.value == true) {
+		if (firstVisit.value) {
 			firstVisit.value = false;
 			console.log('First Visit');
 			await goto(base + '/signup');
@@ -45,14 +45,9 @@
 		const user: any = await data.getAuthUser?.();
 
 		const loggedIn = !!user && user?.emailVerified;
-		session.update((cur: any) => {
-			return {
-				...cur,
-				user,
-				loggedIn,
-				loading: false
-			};
-		});
+		session.user = user;
+		session.loggedIn = loggedIn;
+		session.loading = false;
 		// console.log('Session', $session);
 		if (loggedIn) {
 			if (!data.requireLogin) await goto(base + '/home');

@@ -21,12 +21,8 @@ export function getBibleUrl(bible: BibleChapter) {
     return `${base}/bible/${bible.scroll.toLowerCase()}/${bible.chapter}`;
 }
 
-export function setCurrentChapter(bible: BibleChapter) {
-    currentChapterStore.set(bible);
-}
-
 export function jumpToChapter(bible: BibleChapter) {
-    setCurrentChapter({ scroll: bible.scroll, chapter: bible.chapter });
+    currentChapterStore.set({ scroll: bible.scroll, chapter: bible.chapter });
     goto(getBibleUrl({ scroll: bible.scroll, chapter: bible.chapter }));
 }
 

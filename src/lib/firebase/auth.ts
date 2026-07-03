@@ -36,15 +36,13 @@ export async function login(username: string, password: string): Promise<boolean
 		const result = await signInWithEmailAndPassword(firebaseAuth, username, password);
 
 		const { user }: UserCredential = result;
-		session.set({
-			loggedIn: true,
-			user: {
-				displayName: user?.displayName,
-				email: user?.email,
-				photoURL: user?.photoURL,
-				uid: user?.uid
-			}
-		});
+		session.loggedIn = true;
+		session.user = {
+			displayName: user?.displayName,
+			email: user?.email,
+			photoURL: user?.photoURL,
+			uid: user?.uid
+		};
 
 		return true;
 	} catch (error) {

@@ -9,7 +9,7 @@
 
 	function onConfirm() {
 		logout();
-		session.v.loggedIn = false;
+		session.loggedIn = false;
 		goto(`${base}/login`);
 	}
 </script>

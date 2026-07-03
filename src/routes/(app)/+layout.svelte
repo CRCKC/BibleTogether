@@ -24,7 +24,7 @@
 	let isBible = $derived(page.url.pathname.startsWith(`${base}/bible`));
 	$effect.pre(() => {
 		try {
-			if (session.v.loggedIn == true) {
+			if (session.loggedIn) {
 				if (!subscribtion) {
 					subScribeUpdates().then((sub) => {
 						console.log('Subscribing to updates');

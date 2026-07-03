@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { setCurrentChapter, type BibleChapter } from '$lib/bible/bible';
+	import { currentChapterStore, type BibleChapter } from '$lib/bible/bible';
 	import viewport from '$lib/utils/viewportAction';
 	import { bibleProgressStore, getProgressIndex, updateProgress } from '$lib/bible/progress';
 	import { settingsStore } from '$lib/userSettings';
@@ -91,7 +91,7 @@
 	}
 
 	if (data.bible) {
-		setCurrentChapter(data.bible);
+		currentChapterStore.set(data.bible);
 	}
 
 	function handleScrollFinish() {
