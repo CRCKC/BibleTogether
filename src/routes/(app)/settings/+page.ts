@@ -3,8 +3,10 @@ import type { PageLoad } from './$types';
 
 // TODO move this to layout or something to avoid unnecessary calls
 export const load = (async () => {
-	const userdata = await fetchUserData();
-	return {
-		userdata
-	};
+	try {
+		const userdata = await fetchUserData();
+		return { userdata };
+	} catch {
+		return { userdata: undefined };
+	}
 }) satisfies PageLoad;

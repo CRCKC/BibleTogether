@@ -22,7 +22,7 @@
 		fetchUserData().then((d) => {
 			userData = d;
 			initialUserData = d;
-		})
+		}).catch(() => {}) // ponytail: silently skip when offline, form stays empty
 	);
 
 	async function handleSubmit(e: Event) {
