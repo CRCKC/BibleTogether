@@ -68,11 +68,11 @@
 			</button>
 		</div>
 		<!-- A div that contains the modal -->
-		<ScrollArea>
+		<ScrollArea class="flex-1 overflow-hidden">
 			<div class="grid grid-cols-2 gap-2 p-4 align-top">
 				<!-- A div that contains the close button -->
 				<!-- For each key in bibleList create a rectangle with the name of it -->
-				{#each Object.keys(bibleList) as key}
+				{#each Object.keys(bibleList) as key (key)}
 					{#if isSearch(key, searchQuery)}
 						<div id="bibleScrollButton_{key}" class={cn({ 'col-span-2': expandedScroll === key })}>
 							<button
@@ -92,7 +92,7 @@
 								<!-- If the expandedScroll is equal to the key, create a div with a grid layout -->
 								<div class="grid grid-cols-[repeat(auto-fill,minmax(3rem,1fr))] gap-2 my-2">
 									<!-- For each key create bibleList[key] amount of boxes -->
-									{#each Array.from({ length: bibleList[key] + 1 }) as _, i}
+									{#each Array.from({ length: bibleList[key] + 1 }) as _, i (key + i)}
 										<button
 											id="bibleChapterButton_{key}_{i}"
 											class="flex items-center justify-center rounded-lg bg-gray-800 size-12
