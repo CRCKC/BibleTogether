@@ -36,32 +36,37 @@
 
 	let current = $state(todayIndex);
 
+	// ponytail: global settle promise, per-action resolution if race matters
+	let settleResolve: (() => void) | null = null;
+
 	$effect(() => {
-		if (api) {
-			const snapl = api.scrollSnapList().length;
-			const clamp = (i: number) => Math.max(0, Math.min(i, snapl - 1));
+		if (!api) return;
 
-			current = clamp(api?.selectedScrollSnap() ?? 0);
+		const snap = api;
+		const snapl = snap.scrollSnapList().length;
+		const clamp = (i: number) => Math.max(0, Math.min(i, snapl - 1));
 
-			api.on('scroll', () => {
-				const scrollp = api?.scrollProgress() ?? 0;
-				current = clamp(Math.round(scrollp * (snapl - 1)));
-			});
+		current = clamp(snap.selectedScrollSnap() ?? 0);
 
-			// ponytail: fix overscroll -> stuck index by correcting on settle
-			api?.on('settle', () => {
-				current = clamp(api?.selectedScrollSnap() ?? 0);
-			});
-		}
+		const onScroll = () => {
+			const scrollp = snap.scrollProgress() ?? 0;
+			current = clamp(Math.round(scrollp * (snapl - 1)));
+		};
+
+		const onSettle = () => {
+			current = clamp(snap.selectedScrollSnap() ?? 0);
+			settleResolve?.();
+			settleResolve = null;
+		};
+
+		snap.on('scroll', onScroll);
+		snap.on('settle', onSettle);
+
+		return () => {
+			snap.off('scroll', onScroll);
+			snap.off('settle', onSettle);
+		};
 	});
-
-	const handlePrevious = () => {
-		api?.scrollPrev();
-	};
-
-	const handleNext = () => {
-		api?.scrollNext();
-	};
 
 	// CarouselArray will be an array of objects, each object will have a year and month, we will start from 1/2024
 	// to 12/2027 as the end
@@ -85,8 +90,9 @@
 	onclick={async () => {
 		if (current !== todayIndex) {
 			api?.scrollTo(todayIndex);
-			await new Promise((resolve) => {
-				setTimeout(resolve, 500); // Wait for the scroll to finish
+			// ponytail: await settle instead of setTimeout — works at any device speed
+			await new Promise<void>((resolve) => {
+				settleResolve = resolve;
 			});
 		}
 		jumpToNextUnreadChapterInSchedule(year, month);
@@ -117,7 +123,7 @@
 				<Carousel.Item class={cn('relative basis-1/3', current === index && 'z-50')}>
 					<div
 						class={cn(
-							'transition-all duration-300 ease-in-out relative',
+							'transition-all duration-200 ease-in-out relative',
 							current === index
 								? 'scale-100 active:scale-110 active:opacity-60'
 								: 'scale-90 brightness-[0.4]'
@@ -136,7 +142,7 @@
 							<!-- Progress background -->
 							<div
 								class={cn(
-									'absolute bottom-0 left-0 right-0 transition-all duration-500 bg-green-500/20',
+									'absolute bottom-0 left-0 right-0 transition-all duration-200 bg-green-500/20',
 									{
 										'bg-green-500/40': itemProgress == 100
 									}

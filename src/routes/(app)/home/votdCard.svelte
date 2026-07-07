@@ -2,9 +2,12 @@
 	import { bibleChinese } from '$lib/bible/constants';
 	import { t } from 'svelte-i18n';
 	import * as Card from '$lib/components/ui/card';
+	import Button from '$lib/components/ui/button/button.svelte';
 
 	let {
-		votd
+		votd,
+		error = null,
+		onRetry
 	}: {
 		votd: {
 			text: string | undefined;
@@ -12,11 +15,21 @@
 			chapter: number;
 			verse: number;
 		};
+		error?: string | null;
+		onRetry: () => void;
 	} = $props();
 </script>
 
 <Card.Root class="w-full max-w-sm">
-	{#if votd.text != undefined}
+	{#if error}
+		<Card.Header>
+			<Card.Title>{$t('verse_of_the_day')}</Card.Title>
+		</Card.Header>
+		<Card.Content class="flex flex-col items-center justify-center gap-3">
+			<p class="text-sm text-muted-foreground text-center">{error}</p>
+			<Button variant="outline" size="sm" onclick={onRetry}>{$t('retry')}</Button>
+		</Card.Content>
+	{:else if votd.text != undefined}
 		<Card.Header>
 			<Card.Title>{$t('verse_of_the_day')}</Card.Title>
 			<Card.Description
@@ -28,7 +41,6 @@
 				{votd.text}
 			</div>
 		</Card.Content>
-		<Card.Footer class="flex items-center justify-between bg-background"></Card.Footer>
 	{:else}
 		<Card.Header>
 			<Card.Title>{$t('verse_of_the_day_loading')}</Card.Title>

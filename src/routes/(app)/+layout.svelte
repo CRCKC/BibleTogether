@@ -50,7 +50,7 @@
 			{@render children?.()}
 		</div>
 	{/key}
-	<div class="z-40 w-full transition-all bg-black border-t-2 border-gray-600">
+	<div class="z-40 w-full transition-all bg-background border-t-2 border-gray-600">
 		<!-- Bible nav bar -->
 		{#if isBible}
 			<BibleNavBar />

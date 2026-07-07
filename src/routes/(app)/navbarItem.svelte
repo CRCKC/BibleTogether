@@ -21,6 +21,7 @@
 	href={targetLocation}
 	class="mt-2 mb-2 text-xs text-center text-gray-400 transition-all"
 	class:active={isActive}
+	aria-current={isActive ? 'page' : undefined}
 >
 	<div class="flex items-center justify-center mb-1 text-2xl">
 		<SvelteComponent />
