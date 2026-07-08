@@ -3,6 +3,7 @@
 	import { getVerseOfTheDay } from '$lib/votd/votd';
 	import { onMount } from 'svelte';
 	import ScheduleCard from './scheduleCard.svelte';
+	import { fade } from 'svelte/transition';
 
 	let votd: {
 		text: string | undefined;
@@ -31,7 +32,7 @@
 </script>
 
 <!-- Main Frame-->
-<div class="flex flex-col items-center w-full h-full p-4 gap-4 overflow-auto">
+<div class="flex flex-col items-center w-full h-full p-4 gap-4 overflow-auto" transition:fade={{ duration: 200 }}>
 	<VotdCard {votd} error={votdError} onRetry={fetchVotd} />
 	<div class="flex flex-col flex-1 min-h-0 w-full max-w-sm">
 		<ScheduleCard />

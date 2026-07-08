@@ -8,11 +8,14 @@
 
 	// ponytail: animation fires on check, no cleanup needed (single-shot $effect)
 	let animating = $state(false);
+	let showDone = $state(false);
 	let prevChecked = $state(checked);
 
 	$effect(() => {
 		if (checked && !prevChecked) {
 			animating = true;
+			showDone = true;
+			setTimeout(() => { showDone = false; }, 2000);
 		}
 		prevChecked = checked;
 	});
@@ -52,7 +55,9 @@
 		<Checkbox class="flex items-center justify-center size-6" id="bibleCheckbox" bind:checked />
 	</div>
 	<Label for="bibleCheckbox">
-		<div class="font-semibold">{$t('bibleCheckboxLabel')}</div>
+		<div class="font-semibold">
+			{showDone ? $t('bibleCheckboxDone') : $t('bibleCheckboxLabel')}
+		</div>
 	</Label>
 </div>
 

@@ -3,6 +3,7 @@
 	import { t } from 'svelte-i18n';
 	import * as Card from '$lib/components/ui/card';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { fade } from 'svelte/transition';
 
 	let {
 		votd,
@@ -37,7 +38,7 @@
 			>
 		</Card.Header>
 		<Card.Content class="flex flex-col items-center justify-center">
-			<div class="text-base text-center line-clamp-4">
+			<div class="text-base text-center line-clamp-4" transition:fade={{ duration: 400 }}>
 				{votd.text}
 			</div>
 		</Card.Content>
