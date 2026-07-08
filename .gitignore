@@ -29,4 +29,5 @@ certs
 static/__
 src/lib/firebase/helper
 
-*.log.pi-subagents/
+*.log
+.pi-subagents/
