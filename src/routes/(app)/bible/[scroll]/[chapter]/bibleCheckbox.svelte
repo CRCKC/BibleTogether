@@ -6,54 +6,101 @@
 
 	let { checked = $bindable(false) }: { checked: boolean } = $props();
 
+	// ponytail: animation fires on check, no cleanup needed (single-shot $effect)
+	let animating = $state(false);
+	let prevChecked = $state(checked);
+
+	$effect(() => {
+		if (checked && !prevChecked) {
+			animating = true;
+		}
+		prevChecked = checked;
+	});
+
+	function onRippleEnd() {
+		animating = false;
+	}
+
+	// Shake on scroll-into-view to prompt user to check the box
 	const observer = new IntersectionObserver((entries) => {
 		entries.forEach((entry) => {
 			if (entry.isIntersecting) {
-				// console.log('In view');
 				if (!checked && !entry.target.classList.contains('in-view')) {
 					entry.target.classList.add('animated');
 				}
 				entry.target.classList.add('in-view');
-			} else {
-				// console.log('Out of view');
-				// entry.target.classList.remove('in-view');
 			}
 		});
 	});
 
 	onMount(() => {
-		const bibleCheckbox = document.querySelector('.bibleCheckbox');
-		if (bibleCheckbox) observer.observe(bibleCheckbox);
+		const el = document.querySelector('.bibleCheckbox');
+		if (el) observer.observe(el);
 	});
 
 	onDestroy(() => {
-		const bibleCheckbox = document.querySelector('.bibleCheckbox');
-		if (bibleCheckbox) observer.unobserve(bibleCheckbox);
+		const el = document.querySelector('.bibleCheckbox');
+		if (el) observer.unobserve(el);
 	});
 </script>
 
-<div class="inline bibleCheckbox">
-	<Checkbox class="flex items-center justify-center mr-2 size-6" id="bibleCheckbox" bind:checked />
+<div class="inline-flex items-center gap-2 bibleCheckbox" class:check-animating={animating}>
+	<div class="relative size-6">
+		{#if animating}
+			<div class="ripple-ring" onanimationend={onRippleEnd}></div>
+		{/if}
+		<Checkbox class="flex items-center justify-center size-6" id="bibleCheckbox" bind:checked />
+	</div>
+	<Label for="bibleCheckbox">
+		<div class="font-semibold">{$t('bibleCheckboxLabel')}</div>
+	</Label>
 </div>
-<Label for="bibleCheckbox"><div class="font-semibold">{$t('bibleCheckboxLabel')}</div></Label>
 
 <style>
+	@keyframes checkPulse {
+		0% { transform: scale(1); box-shadow: 0 0 0 0 oklch(65% 0.18 145 / 0.5); }
+		40% { transform: scale(1.15); box-shadow: 0 0 0 8px oklch(65% 0.18 145 / 0.3); }
+		100% { transform: scale(1); box-shadow: 0 0 0 0 oklch(65% 0.18 145 / 0); }
+	}
+
+	@keyframes rippleExpand {
+		0% { transform: scale(0.4); opacity: 0.6; }
+		100% { transform: scale(2.5); opacity: 0; }
+	}
+
 	@keyframes shake {
-		0% {
-			transform: translate(0, 0) rotate(0deg);
-		}
-		25% {
-			transform: translate(15%, -15%) rotate(10deg);
-		}
-		50% {
-			transform: translate(0, 0) rotate(0deg) scale(1.2);
-		}
-		75% {
-			transform: translate(-15%, -15%) rotate(-10deg);
-		}
-		100% {
-			transform: translate(0, 0) rotate(0deg);
-		}
+		0% { transform: translate(0, 0) rotate(0deg); }
+		25% { transform: translate(15%, -15%) rotate(10deg); }
+		50% { transform: translate(0, 0) rotate(0deg) scale(1.2); }
+		75% { transform: translate(-15%, -15%) rotate(-10deg); }
+		100% { transform: translate(0, 0) rotate(0deg); }
+	}
+
+	/* Prompt shake on scroll-into-view (fires once) */
+	.bibleCheckbox:global(.animated) {
+		transform-origin: 50% 50%;
+		animation-delay: 0.2s;
+		animation-name: shake;
+		animation-duration: 0.25s;
+		animation-iteration-count: 2;
+	}
+
+	/* Celebration pulse on check */
+	.check-animating :global(button[data-state='checked']) {
+		animation: checkPulse 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+	}
+
+	.ripple-ring {
+		position: absolute;
+		inset: 0;
+		margin: auto;
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+		border: 2px solid oklch(65% 0.18 145 / 0.7);
+		animation: rippleExpand 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+		pointer-events: none;
+		z-index: 1;
 	}
 
 	/* ponytail: bits-ui sets data-state not data-checked, so data-checked:bg-primary from base component never matches.
@@ -66,18 +113,11 @@
 	.bibleCheckbox :global(button[data-state='checked']) {
 		background-color: #16a34a;
 		color: white;
+		transition: background-color 0.15s ease;
 	}
 
 	:global(.dark) .bibleCheckbox :global(button[data-state='unchecked']) {
 		background-color: #374151;
 		border-color: #6b7280;
-	}
-
-	.bibleCheckbox:global(.animated) {
-		transform-origin: 50% 50%;
-		animation-delay: 0.2s;
-		animation-name: shake;
-		animation-duration: 0.25s;
-		animation-iteration-count: 2;
 	}
 </style>

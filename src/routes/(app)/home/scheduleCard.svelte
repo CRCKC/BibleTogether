@@ -82,120 +82,159 @@
 </script>
 
 <div class="flex flex-col flex-1 min-h-0">
-
-<Button
-	class="w-full max-w-sm mt-2 text-lg font-semibold h-14"
-	variant="outline"
-	size="icon"
-	onclick={async () => {
-		if (current !== todayIndex) {
-			api?.scrollTo(todayIndex);
-			// ponytail: await settle instead of setTimeout — works at any device speed
-			await new Promise<void>((resolve) => {
-				settleResolve = resolve;
-			});
-		}
-		jumpToNextUnreadChapterInSchedule(year, month);
-	}}
->
-	{$t('chapterToday')}
-</Button>
-
-<div class="py-4 overflow-y-visible carouseldiv overflow-x-clip">
-	<Carousel.Root
-		setApi={(emblaApi) => (api = emblaApi as CarouselAPI)}
-		opts={{
-			align: 'center',
-			loop: false,
-			startIndex: todayIndex,
-			slidesToScroll: 1,
-			containScroll: 'trimSnaps',
-			dragFree: false,
-			skipSnaps: true
+	<Button
+		class="w-full max-w-sm mt-2 text-lg font-semibold h-14"
+		variant="outline"
+		size="icon"
+		onclick={async () => {
+			if (current !== todayIndex) {
+				api?.scrollTo(todayIndex);
+				// ponytail: await settle instead of setTimeout — works at any device speed
+				await new Promise<void>((resolve) => {
+					settleResolve = resolve;
+				});
+			}
+			jumpToNextUnreadChapterInSchedule(year, month);
 		}}
-		class="w-full max-w-sm"
 	>
-		<Carousel.Content class="">
-			<!-- This is a hack to make the first item visible -->
-			<Carousel.Item class="basis-1/3" />
-			{#each carouselData as item, index (index)}
-				{@const itemProgress = getMonthlyProgress(item.year, item.month)}
-				<Carousel.Item class={cn('relative basis-1/3', current === index && 'z-50')}>
-					<div
-						class={cn(
-							'transition-all duration-200 ease-in-out relative',
-							current === index
-								? 'scale-100 active:scale-110 active:opacity-60'
-								: 'scale-90 brightness-[0.4]'
-						)}
-					>
-						<Card.Root
-							class={cn('relative overflow-hidden transition-all !py-0', {
-								'bg-primary-foreground border-yellow-300 font-bold text-yellow-300 ':
-									index === todayIndex,
-								'border-green-500': itemProgress == 100
-							})}
-							onclick={() => {
-								api?.scrollTo(index);
-							}}
+		{$t('chapterToday')}
+	</Button>
+
+	<div class="py-4 overflow-y-visible carouseldiv overflow-x-clip">
+		<Carousel.Root
+			setApi={(emblaApi) => (api = emblaApi as CarouselAPI)}
+			opts={{
+				align: 'center',
+				loop: false,
+				startIndex: todayIndex,
+				slidesToScroll: 1,
+				containScroll: 'trimSnaps',
+				dragFree: false,
+				skipSnaps: true
+			}}
+			class="w-full max-w-sm"
+		>
+			<Carousel.Content class="">
+				<!-- This is a hack to make the first item visible -->
+				<Carousel.Item class="basis-1/3" />
+				{#each carouselData as item, index (index)}
+					{@const itemProgress = getMonthlyProgress(item.year, item.month)}
+					<Carousel.Item class={cn('relative basis-1/3', current === index && 'z-50')}>
+						<div
+							class={cn(
+								'transition-all duration-200 ease-in-out relative',
+								current === index
+									? 'scale-100 active:scale-110 active:opacity-60'
+									: 'scale-90 brightness-[0.4]'
+							)}
 						>
-							<!-- Progress background -->
-							<div
-								class={cn(
-									'absolute bottom-0 left-0 right-0 transition-all duration-200 bg-green-500/20',
-									{
-										'bg-green-500/40': itemProgress == 100
+							<Card.Root
+								class={cn('relative overflow-hidden transition-all !py-0', {
+									'bg-primary-foreground border-yellow-300 font-bold text-yellow-300 ':
+										index === todayIndex,
+									'ring-2 ring-yellow-400': itemProgress == 100
+								})}
+								role="button"
+								tabindex={0}
+								onclick={() => {
+									api?.scrollTo(index);
+								}}
+								onkeydown={(e) => {
+									if (e.key === 'Enter' || e.key === ' ') {
+										e.preventDefault();
+										api?.scrollTo(index);
 									}
-								)}
-								style="height: {itemProgress}%"
-							></div>
-
-							<Card.Content
-								class={cn(
-									'relative flex flex-col items-center justify-center p-1 aspect-square',
-									{}
-								)}
+								}}
 							>
-								<div class="text-3xl font-semibold">{item.month}{'月'}</div>
+								<!-- Progress background -->
 								<div
-									class={cn('text-base font-semibold text-gray-500', {
-										'font-bold text-yellow-300': index === todayIndex
-									})}
+									class={cn(
+										'absolute bottom-0 left-0 right-0 transition-all duration-200 bg-green-500/20',
+										{
+											'bg-green-500/60': itemProgress == 100
+										},
+										index === todayIndex && itemProgress > 0 && 'animate-progress-fill',
+										index === todayIndex && itemProgress === 100 && 'animate-glow'
+									)}
+									style="height: {itemProgress}%"
+								></div>
+
+								<Card.Content
+									class={cn(
+										'relative flex flex-col items-center justify-center p-1 aspect-square',
+										{}
+									)}
 								>
-									{item.year - 2000}
-									{'年'}
-								</div>
-								<!-- Progress percentage text -->
-								<div class="mt-1 text-xs opacity-75">
-									{itemProgress}%
-								</div>
-							</Card.Content>
-						</Card.Root>
+									<div class="text-3xl font-semibold">{item.month}{'月'}</div>
+									<div
+										class={cn('text-base font-semibold text-gray-500', {
+											'font-bold text-yellow-300': index === todayIndex
+										})}
+									>
+										{item.year - 2000}
+										{'年'}
+									</div>
+									<!-- Progress percentage text -->
+									<div class="mt-1 text-xs opacity-75">
+										{itemProgress}%
+									</div>
+								</Card.Content>
+							</Card.Root>
+						</div>
+					</Carousel.Item>
+				{/each}
+				<!-- This is a hack to make the last item visible -->
+				<Carousel.Item class="basis-1/3" />
+			</Carousel.Content>
+		</Carousel.Root>
+	</div>
+
+	<!-- Schedule Month's Scroll list -->
+	<ScrollArea.Root class="w-full flex-1 min-h-0" type="auto">
+		{#if carouselData[current]}
+			{#each schedule[carouselData[current].year][carouselData[current].month] as chap (chap)}
+				<Button
+					class="w-full my-1 h-14"
+					variant="outline"
+					size="lg"
+					onclick={() => jumpToChapterWithProgress(chap.scroll)}
+				>
+					<div class="flex items-center justify-center">
+						<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
+						<span class="ml-2 opacity-85">{chap.start}-{chap.end}</span>
 					</div>
-				</Carousel.Item>
+				</Button>
 			{/each}
-			<!-- This is a hack to make the last item visible -->
-			<Carousel.Item class="basis-1/3" />
-		</Carousel.Content>
-	</Carousel.Root>
+		{/if}
+	</ScrollArea.Root>
 </div>
 
-<!-- Schedule Month's Scroll list -->
-<ScrollArea.Root class="w-full flex-1 min-h-0" type="auto">
-	{#if carouselData[current]}
-		{#each schedule[carouselData[current].year][carouselData[current].month] as chap (chap)}
-			<Button
-				class="w-full my-1 h-14"
-				variant="outline"
-				size="lg"
-				onclick={() => jumpToChapterWithProgress(chap.scroll)}
-			>
-				<div class="flex items-center justify-center">
-					<span class="text-lg font-semibold">{bibleChinese[chap.scroll]}</span>
-					<span class="ml-2 opacity-85">{chap.start}-{chap.end}</span>
-				</div>
-			</Button>
-		{/each}
-	{/if}
-</ScrollArea.Root>
-</div>
+<style lang="postcss">
+	@reference "tailwindcss";
+
+	@keyframes progress-fill {
+		from {
+			height: 0%;
+		}
+	}
+
+	@keyframes glow-pulse {
+		0%,
+		100% {
+			opacity: 0.4;
+			filter: brightness(1);
+		}
+		50% {
+			opacity: 0.85;
+			filter: brightness(1.6);
+		}
+	}
+
+	:global(.animate-progress-fill) {
+		animation: progress-fill 400ms ease-out;
+	}
+
+	:global(.animate-glow) {
+		animation: glow-pulse 600ms ease-in-out;
+	}
+</style>

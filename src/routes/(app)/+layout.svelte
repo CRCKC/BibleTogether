@@ -27,8 +27,7 @@
 			if (session.loggedIn) {
 				if (!subscribtion) {
 					subScribeUpdates().then((sub) => {
-						console.log('Subscribing to updates');
-						if (sub) subscribtion = sub;
+							if (sub) subscribtion = sub;
 					});
 				}
 			} else {

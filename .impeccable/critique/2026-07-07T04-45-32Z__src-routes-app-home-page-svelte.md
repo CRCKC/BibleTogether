@@ -1,13 +1,14 @@
 ---
 target: home page
-total_score: 30
-p0_count: 1
-p1_count: 2
+total_score: 35
+p0_count: 0
+p1_count: 0
 timestamp: 2026-07-07T04-45-32Z
+updated: 2026-07-08
 slug: src-routes-app-home-page-svelte
 ---
 
-# Critique: BibleTogether Home Page
+# Critique: BibleTogether Home Page (Updated)
 
 **Target:** src/routes/(app)/home/+page.svelte (includes VotdCard + ScheduleCard + NavBar layout)
 **Slug:** src-routes-app-home-page-svelte
@@ -18,21 +19,21 @@ slug: src-routes-app-home-page-svelte
 
 | #         | Heuristic                       | Score     | Key Issue                                                          |
 | --------- | ------------------------------- | --------- | ------------------------------------------------------------------ |
-| 1         | Visibility of System Status     | 3         | Votd fetch failure → infinite spinner, no error state              |
+| 1         | Visibility of System Status     | 4         | Votd error state + retry added                                     |
 | 2         | Match System / Real World       | 4         | Chinese throughout, monthly schedule fits real reading rhythm      |
 | 3         | User Control and Freedom        | 3         | No prev/next year jump, overscroll can corrupt index               |
-| 4         | Consistency and Standards       | 3         | bg-black in nav vs bg-background, placeholder item hacks           |
-| 5         | Error Prevention                | 2         | No votd error handling, 500ms setTimeout race, hardcoded 2024-2027 |
+| 4         | Consistency and Standards       | 4         | bg-black fixed, placeholder items still needed for carousel        |
+| 5         | Error Prevention                | 3         | Votd error handling added, setTimeout race fixed                   |
 | 6         | Recognition Rather Than Recall  | 4         | Month cards show everything in one glance                          |
-| 7         | Flexibility and Efficiency      | 3         | Chapter Today shortcut good, no keyboard nav                       |
-| 8         | Aesthetic and Minimalist Design | 3         | Empty Card.Footer, competing CSS overflow                          |
-| 9         | Error Recovery                  | 2         | No votd error path, no toast/retry                                 |
+| 7         | Flexibility and Efficiency      | 4         | Chapter Today shortcut + keyboard nav on cards                     |
+| 8         | Aesthetic and Minimalist Design | 3         | Minor: competing CSS overflow, size conflict on button             |
+| 9         | Error Recovery                  | 3         | Votd retry button present                                          |
 | 10        | Help and Documentation          | 3         | Self-explanatory happy path, no onboarding                         |
-| **Total** |                                 | **30/40** | **Good — address P0/P1 issues**                                    |
+| **Total** |                                 | **35/40** | **Good — P0/P1 issues resolved**                                   |
 
 ## Anti-Patterns Verdict
 
-Not AI-generated. Human-authored with intentional tradeoffs: ponytail comments, real Tailwind v4 migration issues, pragmatic setTimeout shortcut. One slop tell: empty Card.Footer remnant.
+Not AI-generated. Human-authored with intentional tradeoffs (ponytail comments, embla carousel hacks). P0/P1 bugs have been fixed since original critique.
 
 ## What's Working
 
@@ -40,56 +41,69 @@ Not AI-generated. Human-authored with intentional tradeoffs: ponytail comments, 
 2. Chapter Today CTA — one tap to next unread chapter
 3. Smart integrated progress — month-card fill better than dashboard charts
 
-## Priority Issues
+## Fixed Since Original Critique
 
-### P0 — Votd fetch failure causes permanent loading spinner
+### ~~P0 — Votd fetch failure causes permanent loading spinner~~ ✅ FIXED
 
-+page.svelte:15, votdCard.svelte:23-28. Network failure → infinite spinner, no retry, no error. Complete task blocker.
+`+page.svelte` now catches errors, sets `votdError` state, passes `error` + `onRetry` to VotdCard. VotdCard renders error message and retry button.
 
-### P1 — 500ms setTimeout race in Chapter Today
+### ~~P1 — 500ms setTimeout race in Chapter Today~~ ✅ FIXED
 
-scheduleCard.svelte:62-65. Scroll animation may take >500ms on slow devices → navigates to wrong month. Also: $effect listeners never cleaned up.
+Replaced with settle promise:
+```ts
+await new Promise<void>((resolve) => { settleResolve = resolve; });
+```
+`$effect` listeners also have proper cleanup via returned function.
 
-### P1 — Carousel schedule cards not keyboard accessible
+### ~~P1 — Carousel schedule cards not keyboard accessible~~ ✅ FIXED
 
-scheduleCard.svelte:69. Clickable div with no role="button", tabindex, or onkeydown. WCAG SC 4.1.2.
+Added `role="button"`, `tabindex="0"`, `onkeydown` (Enter/Space) to clickable `Card.Root`.
 
-### P2 — Green progress bars on every card violate The Rarity Rule
+### ~~P3 — Empty Card.Footer in votdCard~~ ✅ FIXED
 
-scheduleCard.svelte:57-58, 76-78. 100% coverage vs ≤5% spec. Progress dashboard feel. USER ANSWER: THIS IS SUPPOSED TO BE A PROGRESS INDICATOR
+Footer removed from VotdCard.
 
-### P2 — $effect event listeners never cleaned up
+### ~~P3 — bg-black in nav vs midnight-ink~~ ✅ FIXED
 
-scheduleCard.svelte:30-39. api.on('scroll') and api.on('settle') registered with no cleanup → memory leaks on remount.
+Nav uses `bg-background` (design token).
+
+### ~~Minor — console.log debugging in production~~ ✅ FIXED
+
+Removed from `+layout.svelte`.
+
+### ~~Minor — No aria-current="page" on nav link~~ ✅ FIXED
+
+`navbarItem.svelte` already had `aria-current={isActive ? 'page' : undefined}`.
+
+## Remaining Observations (Intentionally Deferred)
+
+### P2 — Green progress bars on every card
+
+User confirmed: "THIS IS SUPPOSED TO BE A PROGRESS INDICATOR". Intentional.
 
 ### P2 — Carousel empty placeholder items
 
-scheduleCard.svelte:80-81, 111-112. Invisible focusable DOM capturing taps. Competing overflow values on .carouseldiv.
+scheduleCard.svelte: first/last `Carousel.Item` hacks. Required by embla carousel for proper centering.
 
-### P3 — Empty Card.Footer in votdCard
+### Minor — No skeleton loading
 
-votdCard.svelte:21. Dead DOM, breaks visual continuity.
+DESIGN.md requests it. Separate feature.
 
-### P3 — bg-black in nav vs midnight-ink
+### Minor — Button size="icon" + class="h-14"
 
-+layout.svelte:32. Off-spec by hex points.
+Chapter Today button has both `size="icon"` and `h-14`. Shadcn `h-9` vs custom `h-14`. Cosmetic.
 
-## Cognitive Load
+### Minor — transition-duration 300ms exceeds 150-200ms spec
 
-Low in happy path. Spikes to high on votd failure (infinite spinner with no recourse).
+Carousel card transition. Minor spec drift.
 
-## Persona Red Flags
+### Minor — Hardcoded 2024-2027 carousel range
 
-- **Alex (Power User):** No keyboard nav or year jump
+Static schedule bounds. Update when extending.
+
+## Persona Red Flags (Still Valid)
+
+- **Alex (Power User):** No prev/next year jump on carousel
 - **Jordan (First-Timer):** No onboarding, empty schedule list has no explanation
 - **Casey (Mobile):** 48 DOM items always rendered, getMonthlyProgress 48× per render
-- **Elderly Member:** Infinite spinner on votd failure, small progress text
-
-## Minor Observations
-
-- console.log debugging in production
-- No skeleton loading (DESIGN.md requires it)
-- Button size="icon" + class="h-14" — conflicting size
-- transition-duration 300ms exceeds 150-200ms spec
-- Hardcoded 2024-2027 carousel range
-- No aria-current="page" on nav link
+- **Elderly Member:** Small progress text on cards
