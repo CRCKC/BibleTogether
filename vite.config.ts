@@ -46,6 +46,7 @@ export default defineConfig({
 				screenshots: [],
 				start_url: '/',
 				scope: '/',
+				handle_links: 'preferred',
 				theme_color: '#000000',
 				background_color: '#000000',
 				description: '禮中齊讀經',
