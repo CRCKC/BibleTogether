@@ -1,13 +1,22 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	// import type { LayoutData } from './$types';
-	import { base } from '$app/paths';
+	import { base, resolve } from '$app/paths';
 	import Item from './navbarItem.svelte';
 	import BibleNavBar from './bible/navbarBible.svelte';
-	import { onDestroy } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { onDestroy, onMount } from 'svelte';
 	import { subScribeUpdates } from '$lib/firebase/firestore';
 	import type { Unsubscribe } from 'firebase/firestore';
 	import { session } from '$lib/session.svelte';
+	import {
+		changelogEntries,
+		currentVersion,
+		markLastSeenVersion,
+		readLastSeenVersion,
+		shouldShowChangelogNotice
+	} from '$lib/changelog';
+	import { toast } from 'svelte-sonner';
 	import { t } from 'svelte-i18n';
 	// export let data: LayoutData;
 	import SettingsIcon from '~icons/material-symbols/settings';
@@ -16,24 +25,57 @@
 	import Book2Outline from '~icons/material-symbols/book-2-outline';
 	import HomeIcon from '~icons/material-symbols/home';
 	import HomeOutline from '~icons/material-symbols/home-outline';
-	import { fade, fly } from 'svelte/transition';
 
 	let { children } = $props();
 
 	let subscribtion: Unsubscribe | undefined = $state();
 	let isBible = $derived(page.url.pathname.startsWith(`${base}/bible`));
+
+	onMount(() => {
+		if (!changelogEntries.length) return;
+
+		const lastSeenVersion = readLastSeenVersion();
+		if (!lastSeenVersion) {
+			markLastSeenVersion(currentVersion);
+			return;
+		}
+		if (!shouldShowChangelogNotice(lastSeenVersion)) return;
+
+		let seen = false;
+		const markSeen = () => {
+			if (!seen) {
+				seen = true;
+				markLastSeenVersion(currentVersion);
+			}
+		};
+
+		toast.info($t('whats_new_available'), {
+			duration: 12000,
+			position: 'top-center',
+			closeButton: true,
+			action: {
+				label: $t('whats_new_view'),
+				onClick: () => {
+					void goto(resolve('/changelog'))
+						.then(markSeen)
+						.catch(() => undefined);
+				}
+			},
+			onDismiss: markSeen
+		});
+	});
 	$effect.pre(() => {
 		try {
 			if (session.loggedIn) {
 				if (!subscribtion) {
 					subScribeUpdates().then((sub) => {
-							if (sub) subscribtion = sub;
+						if (sub) subscribtion = sub;
 					});
 				}
 			} else {
 				if (subscribtion) subscribtion();
 			}
-		} catch (error) {
+		} catch {
 			console.info("Verifying user's session");
 		}
 	});

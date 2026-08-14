@@ -66,5 +66,13 @@
 	"navbar_alert_confirm": "Leave",
 	"navbar_alert_cancel": "Stay",
 	"verse_of_the_day": "Verse of the Day",
-	"verse_of_the_day_loading": "Loading verse of the day..."
+	"verse_of_the_day_loading": "Loading verse of the day...",
+	"whats_new": "What's New",
+	"whats_new_current": "Current release",
+	"whats_new_previous": "Previous updates",
+	"whats_new_back": "Back to Settings",
+	"whats_new_version": "Version",
+	"whats_new_updated": "Updated",
+	"whats_new_available": "What's new in this update",
+	"whats_new_view": "View changes"
 }

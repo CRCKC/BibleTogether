@@ -1,6 +1,6 @@
 {
 	"name": "crckc-bible-together",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"private": true,
 	"scripts": {
 		"dev": "CHOKIDAR_USEPOLLING=true vite dev --port=4000",

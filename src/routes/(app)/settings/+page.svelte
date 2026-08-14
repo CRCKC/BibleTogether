@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { base } from '$app/paths';
+	import { base, resolve } from '$app/paths';
 	import { t } from 'svelte-i18n';
 	import type { PageData } from './$types';
 	import ZoomPopup from './zoomPopup.svelte';
 	// import DeleteProgress from './deleteProgress.svelte';
 	// import MigrateProgress from './migrateProgress.svelte';
 	import LogoutButton from './logoutButton.svelte';
-	import * as Tabs from '$lib/components/ui/tabs';
 	import { session } from '$lib/session.svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Label } from '$lib/components/ui/label';
@@ -41,6 +40,13 @@
 				{$t('profile_settings')}
 			</Button>
 			<ZoomPopup />
+			<Button
+				class="flex items-center justify-center h-12 mt-4 rounded-md w-80"
+				variant="secondary"
+				href={`${base}/changelog`}
+			>
+				{$t('whats_new')}
+			</Button>
 			<!-- <MigrateProgress /> -->
 			<!-- Change Language -->
 			<!-- <button
@@ -56,7 +62,7 @@
 				class="flex items-center justify-center h-12 mt-4 rounded-md w-80"
 				variant="secondary"
 				onclick={() => {
-					goto(`${base}/feedback`);
+					void goto(resolve('/feedback'));
 				}}
 			>
 				{$t('feedback_submit')}
