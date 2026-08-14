@@ -9,8 +9,10 @@
 	import ChevronLeft from '~icons/material-symbols/chevron-left';
 	import PlayArrow from '~icons/material-symbols/play-arrow';
 	import Pause from '~icons/material-symbols/pause';
+	import Share from '~icons/material-symbols/share';
 	import { bibleProgressStore, isChapterCompleted, updateProgress } from '$lib/bible/progress';
 	import { t } from 'svelte-i18n';
+	import { toast } from 'svelte-sonner';
 	import { settingsStore } from '$lib/userSettings';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 
@@ -27,6 +29,25 @@
 
 	// svelte-ignore non_reactive_update
 	let confirmFunction: () => void;
+
+	async function shareChapter() {
+		const title = `${bibleChinese[$currentChapterStore.scroll]} ${
+			$currentChapterStore.chapter == 0 ? $t('intro') : $currentChapterStore.chapter
+		}`;
+
+		try {
+			if (navigator.share) {
+				await navigator.share({ title, url: window.location.href });
+				return;
+			}
+
+			await navigator.clipboard.writeText(window.location.href);
+			toast.success($t('shareCopied'));
+		} catch (error) {
+			if (error instanceof DOMException && error.name === 'AbortError') return;
+			toast.error($t('shareError'));
+		}
+	}
 
 	function onClickPlay() {
 		if (chapterChanged) {
@@ -125,8 +146,16 @@
 		</div>
 	{/if}
 
-	<div class="flex items-center justify-center w-full">
-		<div class="flex flex-row items-center w-full h-10 m-2 bg-gray-600 rounded-full max-w-80">
+	<div class="flex items-center justify-center w-full gap-1 px-2">
+		<button
+			class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10"
+			onclick={shareChapter}
+			aria-label={$t('shareChapter')}
+			title={$t('shareChapter')}
+		>
+			<Share class="text-xl" />
+		</button>
+		<div class="flex flex-row items-center flex-1 min-w-0 h-10 bg-gray-600 rounded-full max-w-80">
 			<button class="flex items-center h-10" onclick={gotoPrevChapter}
 				><ChevronLeft class="ml-2 mr-1 text-xl" />
 			</button>
