@@ -147,6 +147,7 @@
 	{/if}
 
 	<div class="flex items-center justify-center w-full gap-1 px-2">
+		<!-- Share Button -->
 		<button
 			class="flex items-center justify-center bg-gray-600 rounded-full size-10 min-w-10"
 			onclick={shareChapter}
@@ -155,7 +156,9 @@
 		>
 			<Share class="text-xl" />
 		</button>
-		<div class="flex flex-row items-center flex-1 min-w-0 h-10 bg-gray-600 rounded-full max-w-80">
+		<div
+			class="flex flex-row items-center flex-1 min-w-0 h-10 my-2 bg-gray-600 rounded-full max-w-80"
+		>
 			<button class="flex items-center h-10" onclick={gotoPrevChapter}
 				><ChevronLeft class="ml-2 mr-1 text-xl" />
 			</button>
