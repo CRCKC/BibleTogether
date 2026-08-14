@@ -13,6 +13,7 @@
 	import { promptInstall } from '$lib/pwa/pwa';
 	import Pwa from '$lib/pwa/pwa.svelte';
 	import { browser } from '$app/environment';
+	import { subscribeAuthState } from '$lib/firebase/authState';
 
 	interface Props {
 		data: LayoutData;
@@ -25,30 +26,35 @@
 
 	let firstVisit = localStore('firstVisit', true);
 
-	onMount(async () => {
-		setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
-		setTimeout(promptInstall, 0);
+	onMount(() => {
+		const unsubscribeAuth = subscribeAuthState(({ user, loading }) => {
+			session.user = user;
+			session.loggedIn = !!user?.emailVerified;
+			session.loading = loading;
+		});
+		void (async () => {
+			setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
+			setTimeout(promptInstall, 0);
 
-		if (firstVisit.value) {
-			firstVisit.value = false;
-			console.log('First Visit');
-			await goto(base + '/signup');
-		} else {
-			console.log('Logging In');
-			await autoLogin();
-		}
+			if (firstVisit.value) {
+				firstVisit.value = false;
+				console.log('First Visit');
+				await goto(base + '/signup');
+			} else {
+				console.log('Logging In');
+				await autoLogin();
+			}
 
-		loadingResult = false;
+			loadingResult = false;
+		})();
+		return unsubscribeAuth;
 	});
 
 	async function autoLogin() {
 		const user: any = await data.getAuthUser?.();
 
 		const loggedIn = !!user && user?.emailVerified;
-		session.user = user;
-		session.loggedIn = loggedIn;
-		session.loading = false;
-		// console.log('Session', $session);
+		// Session is projected by the shared auth observer above.
 		if (loggedIn) {
 			if (!data.requireLogin) await goto(base + '/home');
 		} else {

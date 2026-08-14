@@ -1,13 +1,10 @@
 import {
-	getRedirectResult,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
-	type UserCredential,
 	GoogleAuthProvider,
 	signInWithCredential
 } from 'firebase/auth';
 import { firebaseAuth } from './firebase';
-import { session } from '$lib/session.svelte';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 
 const auth = firebaseAuth;
@@ -33,17 +30,7 @@ export async function createUserWithEmail(email: string, password: string) {
 
 export async function login(username: string, password: string): Promise<boolean> {
 	try {
-		const result = await signInWithEmailAndPassword(firebaseAuth, username, password);
-
-		const { user }: UserCredential = result;
-		session.loggedIn = true;
-		session.user = {
-			displayName: user?.displayName,
-			email: user?.email,
-			photoURL: user?.photoURL,
-			uid: user?.uid
-		};
-
+		await signInWithEmailAndPassword(firebaseAuth, username, password);
 		return true;
 	} catch (error) {
 		console.error('Error signing in:', error);
@@ -63,5 +50,5 @@ export async function signup(username: string, password: string): Promise<boolea
 }
 
 export async function logout() {
-	firebaseAuth.signOut();
+	await firebaseAuth.signOut();
 }

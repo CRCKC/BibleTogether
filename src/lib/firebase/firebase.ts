@@ -10,8 +10,8 @@ import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { base } from '$app/paths';
 import { dev } from '$app/environment';
 
+import { env as publicEnv } from '$env/dynamic/public';
 import {
-	PUBLIC_DISABLE_EMULATOR,
 	PUBLIC_FIREBASE_API_KEY,
 	PUBLIC_FIREBASE_APP_ID,
 	PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -55,11 +55,15 @@ const firebaseAuth =
 // const firebaseDatabase = getDatabase(firebaseApp);
 const firebaseFirestore = getFirestore(firebaseApp);
 
-if (process.env.NODE_ENV != 'production' && PUBLIC_DISABLE_EMULATOR !== 'true') {
-	connectAuthEmulator(firebaseAuth, 'http://127.0.0.1:9099');
-	// connectDatabaseEmulator(firebaseDatabase, "127.0.0.1", 9000);
-	connectFirestoreEmulator(firebaseFirestore, '127.0.0.1', 9000);
-	console.log('Connecting to firebase emulator');
+// Emulator routing is opt-in. Never fall back to the production project when enabled.
+export const firebaseEmulatorEnabled = publicEnv.PUBLIC_USE_FIREBASE_EMULATOR === 'true';
+if (firebaseEmulatorEnabled) {
+	try {
+		connectAuthEmulator(firebaseAuth, 'http://127.0.0.1:9099');
+		connectFirestoreEmulator(firebaseFirestore, '127.0.0.1', 8080);
+	} catch {
+		throw new Error('Firebase emulator initialization failed');
+	}
 }
 
 // export the firebase app

@@ -1,6 +1,5 @@
 import type { LayoutLoad } from './$types';
-import { firebaseAuth } from '$lib/firebase/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { getAuthState } from '$lib/firebase/authState';
 
 export const load = (async ({ route, url }) => {
 	let requireLogin = false;
@@ -13,9 +12,7 @@ export const load = (async ({ route, url }) => {
 	// requireLogin = false; // Uncomment this line to disable login
 
 	function getAuthUser() {
-		return new Promise((resolve) => {
-			onAuthStateChanged(firebaseAuth, (user) => resolve(user ? user : false));
-		});
+		return getAuthState();
 	}
 
 	return {

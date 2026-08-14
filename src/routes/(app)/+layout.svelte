@@ -4,10 +4,15 @@
 	import { base } from '$app/paths';
 	import Item from './navbarItem.svelte';
 	import BibleNavBar from './bible/navbarBible.svelte';
-	import { onDestroy } from 'svelte';
-	import { subScribeUpdates } from '$lib/firebase/firestore';
+	import { onDestroy, onMount, setContext } from 'svelte';
+	import {
+		createHighlightSyncSession,
+		subScribeUpdates,
+		type HighlightSyncSession
+	} from '$lib/firebase/firestore';
+	import { createHighlightSession, type HighlightSession } from '$lib/bible/highlights';
+	import { subscribeAuthState } from '$lib/firebase/authState';
 	import type { Unsubscribe } from 'firebase/firestore';
-	import { session } from '$lib/session.svelte';
 	import { t } from 'svelte-i18n';
 	// export let data: LayoutData;
 	import SettingsIcon from '~icons/material-symbols/settings';
@@ -16,30 +21,46 @@
 	import Book2Outline from '~icons/material-symbols/book-2-outline';
 	import HomeIcon from '~icons/material-symbols/home';
 	import HomeOutline from '~icons/material-symbols/home-outline';
-	import { fade, fly } from 'svelte/transition';
 
 	let { children } = $props();
 
 	let subscribtion: Unsubscribe | undefined = $state();
+	let highlightSession = $state<HighlightSession | null>(null);
+	let highlightSync = $state<HighlightSyncSession | null>(null);
 	let isBible = $derived(page.url.pathname.startsWith(`${base}/bible`));
-	$effect.pre(() => {
-		try {
-			if (session.loggedIn) {
-				if (!subscribtion) {
-					subScribeUpdates().then((sub) => {
-							if (sub) subscribtion = sub;
-					});
-				}
-			} else {
-				if (subscribtion) subscribtion();
-			}
-		} catch (error) {
-			console.info("Verifying user's session");
+
+	setContext('highlightSession', {
+		get session() {
+			return highlightSession;
+		},
+		get sync() {
+			return highlightSync;
 		}
 	});
 
+	onMount(() =>
+		subscribeAuthState(({ user, generation }) => {
+			if (subscribtion) {
+				subscribtion();
+				subscribtion = undefined;
+			}
+			highlightSync?.teardown();
+			highlightSession?.teardown();
+			highlightSync = null;
+			highlightSession = null;
+			if (user?.uid && user.emailVerified) {
+				subscribtion = subScribeUpdates(user.uid, generation);
+				highlightSession = createHighlightSession(user.uid);
+				highlightSync = createHighlightSyncSession(user.uid, generation, highlightSession);
+			}
+		})
+	);
+
 	onDestroy(() => {
 		if (subscribtion) subscribtion();
+		subscribtion = undefined;
+		highlightSync?.teardown();
+		highlightSession?.teardown();
 	});
 </script>
 

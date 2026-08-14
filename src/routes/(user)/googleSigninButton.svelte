@@ -2,17 +2,12 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { loginWithGoogle } from '$lib/firebase/auth';
-	import { session } from '$lib/session.svelte';
-
-	let { text }: { text: string } = $props();
+		let { text }: { text: string } = $props();
 
 	const onClick = async () => {
 		const user = await loginWithGoogle();
 		console.log('User', user);
 		const loggedIn = user.emailVerified;
-		session.user = user;
-		session.loggedIn = loggedIn;
-		session.loading = false;
 		if (loggedIn) {
 			await goto(base + '/home');
 		} else {

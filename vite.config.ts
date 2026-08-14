@@ -5,6 +5,9 @@ import Icons from 'unplugin-icons/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 import tailwindcss from '@tailwindcss/vite';
 
+const useHttps =
+	process.env.NODE_ENV !== 'production' && process.env.npm_lifecycle_event !== 'preview';
+
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
@@ -87,10 +90,12 @@ export default defineConfig({
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	},
 	server: {
-		https: {
-			key: process.env.NODE_ENV === 'production' ? undefined : readFileSync('.cert/key.pem'),
-			cert: process.env.NODE_ENV === 'production' ? undefined : readFileSync('.cert/cert.pem')
-		},
+		https: useHttps
+			? {
+					key: readFileSync('.cert/key.pem'),
+					cert: readFileSync('.cert/cert.pem')
+				}
+			: undefined,
 		proxy: {}
 	},
 	preview: {

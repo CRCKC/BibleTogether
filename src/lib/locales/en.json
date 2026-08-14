@@ -66,5 +66,12 @@
 	"navbar_alert_confirm": "Leave",
 	"navbar_alert_cancel": "Stay",
 	"verse_of_the_day": "Verse of the Day",
-	"verse_of_the_day_loading": "Loading verse of the day..."
+	"verse_of_the_day_loading": "Loading verse of the day...",
+	"highlightVerse": "Highlight verse {number}",
+	"highlightReady": "Highlights ready.",
+	"highlightPending": "Highlight pending.",
+	"highlightSavedLocally": "Saved locally; will sync when online.",
+	"highlightSessionOnly": "Saved for this session only; it may be lost on reload.",
+	"highlightSyncError": "Highlight saved locally. Sync failed.",
+	"retryHighlightSync": "Retry sync"
 }
