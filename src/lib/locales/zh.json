@@ -67,5 +67,13 @@
 	"navbar_alert_confirm": "離開",
 	"navbar_alert_cancel": "留下",
 	"verse_of_the_day": "每日經文",
-	"verse_of_the_day_loading": "正在加載每日經文..."
+	"verse_of_the_day_loading": "正在加載每日經文...",
+	"whats_new": "更新內容",
+	"whats_new_current": "本次更新",
+	"whats_new_previous": "過往更新",
+	"whats_new_back": "返回設定",
+	"whats_new_version": "版本",
+	"whats_new_updated": "更新日期",
+	"whats_new_available": "本次更新內容",
+	"whats_new_view": "查看更新"
 }
