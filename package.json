@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev --port=4000",
+		"dev": "CHOKIDAR_USEPOLLING=true vite dev --port=4000",
 		"build": "bun run getFirestoreHelpers && vite build",
 		"vbuild": "vite build",
 		"preview": "vite preview",
