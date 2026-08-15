@@ -76,10 +76,5 @@
 	"whats_new_updated": "更新日期",
 	"whats_new_available": "本次更新內容",
 	"whats_new_view": "查看更新",
-	"highlightVerse": "標記第 {number} 節",
-	"highlightPending": "標記同步中。",
-	"highlightSavedLocally": "已儲存於本機，連線後同步。",
-	"highlightSessionOnly": "僅儲存於本次工作階段，重新載入後可能遺失。",
-	"highlightSyncError": "標記已儲存於本機，但同步失敗。",
-	"retryHighlightSync": "重試同步"
+	"highlightVerse": "標記第 {number} 節"
 }

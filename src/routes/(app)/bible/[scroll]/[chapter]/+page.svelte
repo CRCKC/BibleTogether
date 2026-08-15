@@ -175,25 +175,6 @@
 		highlightSync?.flush();
 	}
 
-	function retryHighlightSync() {
-		highlightSync?.retry();
-	}
-
-	let highlightStatus = $derived(highlightProjection?.status ?? 'pending');
-	let highlightStatusMessage = $derived.by(() => {
-		switch (highlightStatus) {
-			case 'saved locally':
-				return $t('highlightSavedLocally');
-			case 'degraded durability':
-				return $t('highlightSessionOnly');
-			case 'sync error':
-				return $t('highlightSyncError');
-			case 'pending':
-				return $t('highlightPending');
-			case 'ready':
-				return '';
-		}
-	});
 	let highlightBusy = $derived(authLoading || !highlightProjection?.ready || !enhancerReady);
 
 	// Chapter completed state controls
@@ -303,26 +284,6 @@
 		>
 			{data.bible.chapter == 0 ? $t('intro') : data.bible.chapter}
 		</div>
-		{#if highlightStatus !== 'ready'}
-			<div
-				class="flex items-center justify-center gap-2 text-xs text-gray-500"
-				data-highlight-status
-				role="status"
-				aria-live="polite"
-				aria-atomic="true"
-			>
-				<span>{highlightStatusMessage}</span>
-				{#if highlightStatus === 'sync error'}
-					<button
-						type="button"
-						class="underline underline-offset-2 hover:text-gray-300 focus-visible:outline-2"
-						onclick={retryHighlightSync}
-					>
-						{$t('retryHighlightSync')}
-					</button>
-				{/if}
-			</div>
-		{/if}
 
 		<!-- Await for bibleContent -->
 		{#await bibleContentPromise(data.bible)}

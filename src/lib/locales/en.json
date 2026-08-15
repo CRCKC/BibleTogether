@@ -75,10 +75,5 @@
 	"whats_new_updated": "Updated",
 	"whats_new_available": "What's new in this update",
 	"whats_new_view": "View changes",
-	"highlightVerse": "Highlight verse {number}",
-	"highlightPending": "Highlight pending.",
-	"highlightSavedLocally": "Saved locally; will sync when online.",
-	"highlightSessionOnly": "Saved for this session only; it may be lost on reload.",
-	"highlightSyncError": "Highlight saved locally. Sync failed.",
-	"retryHighlightSync": "Retry sync"
+	"highlightVerse": "Highlight verse {number}"
 }
