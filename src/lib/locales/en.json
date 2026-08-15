@@ -76,7 +76,6 @@
 	"whats_new_available": "What's new in this update",
 	"whats_new_view": "View changes",
 	"highlightVerse": "Highlight verse {number}",
-	"highlightReady": "Highlights ready.",
 	"highlightPending": "Highlight pending.",
 	"highlightSavedLocally": "Saved locally; will sync when online.",
 	"highlightSessionOnly": "Saved for this session only; it may be lost on reload.",
