@@ -35,6 +35,7 @@
 	let { anchor, initialColor, labels, onApply, onRemove, onClose }: Props = $props();
 	let panel = $state<HTMLDivElement>();
 	let custom = $state(false);
+	let activeDrag = $state<{ picker: 'hue' | 'square'; pointerId: number } | null>(null);
 	let hsv = $state<HSV>(hexToHsv(DEFAULT_HIGHLIGHT_COLOR));
 	let draftColor = $state(DEFAULT_HIGHLIGHT_COLOR);
 	let hexInput = $state(DEFAULT_HIGHLIGHT_COLOR);
@@ -77,6 +78,31 @@
 			s: (event.clientX - rect.left) / rect.width,
 			v: 1 - (event.clientY - rect.top) / rect.height
 		});
+	}
+
+	function startDrag(event: PointerEvent, picker: 'hue' | 'square') {
+		if (activeDrag) return;
+		event.stopPropagation();
+		activeDrag = { picker, pointerId: event.pointerId };
+		(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+		if (picker === 'hue') updateHue(event);
+		else updateSquare(event);
+	}
+
+	function moveDrag(event: PointerEvent, picker: 'hue' | 'square') {
+		event.stopPropagation();
+		if (!activeDrag || activeDrag.picker !== picker || activeDrag.pointerId !== event.pointerId)
+			return;
+		if (picker === 'hue') updateHue(event);
+		else updateSquare(event);
+	}
+
+	function endDrag(event: PointerEvent, picker: 'hue' | 'square') {
+		if (!activeDrag || activeDrag.picker !== picker || activeDrag.pointerId !== event.pointerId)
+			return;
+		activeDrag = null;
+		const target = event.currentTarget as HTMLElement;
+		if (target.hasPointerCapture(event.pointerId)) target.releasePointerCapture(event.pointerId);
 	}
 
 	function onHexInput(event: Event) {
@@ -181,8 +207,10 @@
 			aria-valuemin="0"
 			aria-valuemax="360"
 			aria-valuenow={Math.round(hsv.h)}
-			onpointerdown={updateHue}
-			onpointermove={(event) => event.buttons && updateHue(event)}
+			onpointerdown={(event) => startDrag(event, 'hue')}
+			onpointermove={(event) => moveDrag(event, 'hue')}
+			onpointerup={(event) => endDrag(event, 'hue')}
+			onpointercancel={(event) => endDrag(event, 'hue')}
 			onkeydown={onHueKeydown}
 		>
 			<span class="hue-thumb" style={hueThumbPosition(hsv.h)} aria-hidden="true"></span>
@@ -195,14 +223,10 @@
 				aria-valuemax="100"
 				aria-valuenow={Math.round(hsv.s * 100)}
 				style={`--hue-color: hsl(${hsv.h} 100% 50%)`}
-				onpointerdown={(event) => {
-					event.stopPropagation();
-					updateSquare(event);
-				}}
-				onpointermove={(event) => {
-					event.stopPropagation();
-					if (event.buttons) updateSquare(event);
-				}}
+				onpointerdown={(event) => startDrag(event, 'square')}
+				onpointermove={(event) => moveDrag(event, 'square')}
+				onpointerup={(event) => endDrag(event, 'square')}
+				onpointercancel={(event) => endDrag(event, 'square')}
 				onkeydown={onSquareKeydown}
 			>
 				<span
@@ -369,6 +393,7 @@
 
 	.hue-ring {
 		box-sizing: border-box;
+		touch-action: none;
 		position: relative;
 		display: flex;
 		align-items: center;
