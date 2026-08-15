@@ -132,7 +132,7 @@
 								class={cn('relative overflow-hidden transition-all !py-0', {
 									'bg-primary-foreground border-yellow-300 font-bold text-yellow-300 ':
 										index === todayIndex,
-									'ring-2 ring-yellow-400': itemProgress == 100
+									'border-2 border-yellow-400': itemProgress == 100
 								})}
 								role="button"
 								tabindex={0}
