@@ -1,7 +1,6 @@
 import { bibleProgressStore, getProgressIndex, migrateProgress } from '$lib/bible/progress';
 import {
 	collection,
-	collectionGroup,
 	deleteDoc,
 	doc,
 	getCountFromServer,
@@ -19,7 +18,7 @@ import { normalizeVerseId } from '$lib/bible/highlights';
 import { getAuthGeneration } from './authState';
 
 function bibleProgressRef(uid: string) {
-	return doc(firebaseFirestore, 'userData', uid, 'public', 'bibleProgress');
+	return doc(firebaseFirestore, 'bibleProgress', uid);
 }
 
 export async function uploadBibleProgress() {
@@ -96,7 +95,7 @@ export async function queryChapterCount(scroll: string, chapter: number) {
 		return;
 	}
 	const chapNum = getProgressIndex(scroll, chapter);
-	const coll = collectionGroup(firebaseFirestore, 'bibleProgress');
+	const coll = collection(firebaseFirestore, 'bibleProgress');
 	const q = query(coll, where(chapNum.toString(), '==', true));
 	const snapshot = await getCountFromServer(q);
 

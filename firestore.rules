@@ -89,6 +89,11 @@ service cloud.firestore {
   }
 
   match /databases/{database}/documents {
+    match /bibleProgress/{userId} {
+      allow read: if request.auth != null;
+      allow create, update: if isUser(userId) && validateBibleProgress(request.resource.data);
+    }
+
     match /userData/{userId} {
       match /private/settings {
         allow read, write: if isUser(userId);
