@@ -90,5 +90,14 @@
 	"highlightColorBrightness": "Brightness",
 	"highlightColorInvalid": "Enter a six-digit hex color.",
 	"removeHighlight": "Remove highlight",
-	"apply": "Apply"
+	"apply": "Apply",
+	"highlightPreferences": "Highlight colors",
+	"highlightPreferencesDesc": "Choose the color used for new highlights.",
+	"highlightDefaultSelected": "Default",
+	"highlightSetDefault": "Use as default",
+	"highlightSavedColors": "Saved custom colors",
+	"highlightDeleteCustom": "Delete saved color",
+	"highlightSaveCustom": "Save and apply",
+	"highlightChooseReplacement": "Choose a saved color to replace",
+	"highlightReplaceColor": "Replace {color}"
 }

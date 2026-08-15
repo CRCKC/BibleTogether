@@ -13,10 +13,15 @@ import {
 } from 'firebase/firestore';
 import { firebaseAuth, firebaseFirestore } from './firebase';
 import { get } from 'svelte/store';
-import type { HighlightSession, PendingHighlightOperation } from '$lib/bible/highlights';
+import type {
+	HighlightPreferences,
+	HighlightSession,
+	PendingHighlightOperation
+} from '$lib/bible/highlights';
 import {
 	DEFAULT_HIGHLIGHT_COLOR,
 	normalizeHighlightColor,
+	normalizeHighlightPreferences,
 	normalizeVerseId
 } from '$lib/bible/highlights';
 import { getAuthGeneration } from './authState';
@@ -173,8 +178,17 @@ export interface HighlightTransport {
 	read(id: string): Promise<boolean>;
 }
 
+export interface HighlightPreferencesTransport {
+	set(preferences: HighlightPreferences): Promise<void>;
+	subscribe(
+		onChange: (preferences: HighlightPreferences | null) => void,
+		onError: (error: unknown) => void
+	): () => void;
+}
+
 export interface HighlightSyncOptions {
 	transport?: HighlightTransport;
+	preferences?: HighlightPreferencesTransport;
 	isOnline?: () => boolean;
 	/** Test seam; production uses the shared observer's generation. */
 	generationMatches?: () => boolean;
@@ -198,6 +212,11 @@ function onlineByDefault(): boolean {
 	return typeof navigator === 'undefined' || navigator.onLine;
 }
 
+export function decodeHighlightPreferences(value: unknown): HighlightPreferences | null {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+	return normalizeHighlightPreferences((value as Record<string, unknown>).highlightPreferences);
+}
+
 export function decodeHighlightData(value: unknown): { highlighted: true; color: string } | null {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
 	const data = value as Record<string, unknown>;
@@ -211,6 +230,28 @@ export function decodeHighlightData(value: unknown): { highlighted: true; color:
 		return null;
 	const color = normalizeHighlightColor(data.color ?? DEFAULT_HIGHLIGHT_COLOR);
 	return color ? { highlighted: true, color } : null;
+}
+
+function firestoreHighlightPreferencesRef(uid: string) {
+	return doc(firebaseFirestore, 'userData', uid, 'private', 'settings');
+}
+
+export function createHighlightPreferencesTransport(uid: string): HighlightPreferencesTransport {
+	const settings = firestoreHighlightPreferencesRef(uid);
+	return {
+		set: async (preferences) => {
+			const normalized = normalizeHighlightPreferences(preferences);
+			if (!normalized) throw new TypeError('Invalid highlight preferences');
+			await setDoc(settings, { highlightPreferences: normalized }, { merge: true });
+		},
+		subscribe: (onChange, onError) =>
+			onSnapshot(
+				settings,
+				(snapshot) =>
+					onChange(snapshot.exists() ? decodeHighlightPreferences(snapshot.data()) : null),
+				onError
+			)
+	};
 }
 
 function firestoreHighlightTransport(uid: string): HighlightTransport {
@@ -262,11 +303,13 @@ export function createHighlightSyncSession(
 ): HighlightSyncSession {
 	if (!uid || local.uid !== uid) throw new TypeError('Highlight UID mismatch');
 	const transport = options.transport ?? firestoreHighlightTransport(uid);
+	const preferences = options.preferences;
 	const isOnline = options.isOnline ?? onlineByDefault;
 	let disposed = false;
 	let flushing = false;
 	let flushRequested = false;
 	let unsubscribe: (() => void) | undefined;
+	let unsubscribePreferences: (() => void) | undefined;
 
 	const current = () =>
 		!disposed &&
@@ -282,27 +325,42 @@ export function createHighlightSyncSession(
 		const started = new Map(
 			[...local.getState().pending.entries()].map(([id, operation]) => [id, operation.operationId])
 		);
+		const startedPreferences = local.getState().pendingPreferences?.operationId;
 		try {
-			await Promise.all(
-				[...local.getState().pending.entries()].map(
-					async ([id, operation]: [string, PendingHighlightOperation]) => {
+			const jobs = [...local.getState().pending.entries()].map(
+				async ([id, operation]: [string, PendingHighlightOperation]) => {
+					if (!current() || !isOnline()) return;
+					try {
+						if (operation.desired === 'set')
+							await transport.set(id, operation.color ?? DEFAULT_HIGHLIGHT_COLOR);
+						else await transport.delete(id);
+						if (current()) local.acknowledge(id, operation.operationId);
+					} catch {
+						if (current()) local.markSyncError();
+					}
+				}
+			);
+			const preferenceOperation = local.getState().pendingPreferences;
+			if (preferenceOperation && preferences) {
+				jobs.push(
+					(async () => {
 						if (!current() || !isOnline()) return;
 						try {
-							if (operation.desired === 'set')
-								await transport.set(id, operation.color ?? DEFAULT_HIGHLIGHT_COLOR);
-							else await transport.delete(id);
-							if (current()) local.acknowledge(id, operation.operationId);
+							await preferences.set(preferenceOperation.preferences);
+							if (current()) local.acknowledgePreferences(preferenceOperation.operationId);
 						} catch {
 							if (current()) local.markSyncError();
 						}
-					}
-				)
-			);
+					})()
+				);
+			}
+			await Promise.all(jobs);
 		} finally {
 			flushing = false;
-			const changed = [...local.getState().pending.entries()].some(
-				([id, operation]) => started.get(id) !== operation.operationId
-			);
+			const changed =
+				[...local.getState().pending.entries()].some(
+					([id, operation]) => started.get(id) !== operation.operationId
+				) || local.getState().pendingPreferences?.operationId !== startedPreferences;
 			if (flushRequested && changed && current() && isOnline()) {
 				flushRequested = false;
 				queueMicrotask(() => void flush());
@@ -342,6 +400,20 @@ export function createHighlightSyncSession(
 		}
 	);
 
+	if (preferences) {
+		unsubscribePreferences = preferences.subscribe(
+			(next) => {
+				if (current() && next && !local.getState().pendingPreferences) {
+					if (!local.applyRemotePreferences(next)) local.markSyncError();
+				}
+				void flush();
+			},
+			() => {
+				if (current()) local.markSyncError();
+			}
+		);
+	}
+
 	const onOnline = () => void flush();
 	if (typeof window !== 'undefined') window.addEventListener('online', onOnline);
 	void flush();
@@ -361,6 +433,8 @@ export function createHighlightSyncSession(
 			disposed = true;
 			unsubscribe?.();
 			unsubscribe = undefined;
+			unsubscribePreferences?.();
+			unsubscribePreferences = undefined;
 			if (typeof window !== 'undefined') window.removeEventListener('online', onOnline);
 		}
 	};

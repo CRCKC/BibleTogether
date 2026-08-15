@@ -3,6 +3,7 @@
 	import {
 		DEFAULT_HIGHLIGHT_COLOR,
 		HIGHLIGHT_PRESETS,
+		MAX_SAVED_HIGHLIGHT_COLORS,
 		hexToHsv,
 		hsvToHex,
 		normalizeHighlightColor,
@@ -20,6 +21,12 @@
 		saturation: string;
 		brightness: string;
 		invalidHex: string;
+		setDefault: string;
+		savedColors: string;
+		deleteCustom: string;
+		saveCustom: string;
+		chooseReplacement: string;
+		replaceColor: (color: string) => string;
 		preset: (id: string) => string;
 	}
 
@@ -27,14 +34,32 @@
 		anchor: HTMLElement;
 		initialColor: string;
 		labels: HighlightPaletteLabels;
+		defaultColor: string;
+		savedColors: readonly string[];
 		onApply: (color: string) => void;
+		onSetDefault: (color: string) => void;
+		onSaveCustom: (color: string, replaceIndex?: number) => void;
+		onDeleteCustom: (color: string) => void;
 		onRemove: () => void;
 		onClose: () => void;
 	}
 
-	let { anchor, initialColor, labels, onApply, onRemove, onClose }: Props = $props();
+	let {
+		anchor,
+		initialColor,
+		labels,
+		defaultColor,
+		savedColors,
+		onApply,
+		onSetDefault,
+		onSaveCustom,
+		onDeleteCustom,
+		onRemove,
+		onClose
+	}: Props = $props();
 	let panel = $state<HTMLDivElement>();
 	let custom = $state(false);
+	let replaceMode = $state(false);
 	let activeDrag = $state<{ picker: 'hue' | 'square'; pointerId: number } | null>(null);
 	let hsv = $state<HSV>(hexToHsv(DEFAULT_HIGHLIGHT_COLOR));
 	let draftColor = $state(DEFAULT_HIGHLIGHT_COLOR);
@@ -181,21 +206,69 @@
 	{#if !custom}
 		<div class="swatches" aria-label={labels.title}>
 			{#each HIGHLIGHT_PRESETS as preset}
-				<button
-					type="button"
-					class="color-swatch"
-					class:selected={draftColor === preset.color}
-					style={`--swatch-color: ${preset.color}`}
-					aria-label={labels.preset(preset.id)}
-					aria-pressed={draftColor === preset.color}
-					onclick={() => onApply(preset.color)}
-				>
-					<span aria-hidden="true">{draftColor === preset.color ? '✓' : ''}</span>
-				</button>
+				<div class="color-option">
+					<button
+						type="button"
+						class="color-swatch"
+						class:selected={draftColor === preset.color}
+						style={`--swatch-color: ${preset.color}`}
+						aria-label={labels.preset(preset.id)}
+						aria-pressed={draftColor === preset.color}
+						onclick={() => onApply(preset.color)}
+					>
+						<span aria-hidden="true">{draftColor === preset.color ? '✓' : ''}</span>
+					</button>
+					<button
+						type="button"
+						class="default-toggle"
+						class:selected={defaultColor === preset.color}
+						aria-label={`${labels.setDefault}: ${labels.preset(preset.id)}`}
+						aria-pressed={defaultColor === preset.color}
+						onclick={() => onSetDefault(preset.color)}
+						>{defaultColor === preset.color ? '✓' : '☆'}</button
+					>
+				</div>
 			{/each}
 		</div>
-		<button type="button" class="palette-action" onclick={() => (custom = true)}
-			>{labels.custom}</button
+		{#if savedColors.length}
+			<strong class="saved-heading">{labels.savedColors}</strong>
+			<div class="saved-colors">
+				{#each savedColors as color}
+					<div class="saved-color-row">
+						<button
+							type="button"
+							class="color-swatch"
+							class:selected={draftColor === color}
+							style={`--swatch-color: ${color}`}
+							aria-label={color}
+							aria-pressed={draftColor === color}
+							onclick={() => onApply(color)}>{draftColor === color ? '✓' : ''}</button
+						>
+						<button
+							type="button"
+							class="default-toggle"
+							class:selected={defaultColor === color}
+							aria-label={`${labels.setDefault}: ${color}`}
+							aria-pressed={defaultColor === color}
+							onclick={() => onSetDefault(color)}>{defaultColor === color ? '✓' : '☆'}</button
+						>
+						<button
+							type="button"
+							class="delete-custom"
+							aria-label={`${labels.deleteCustom}: ${color}`}
+							onclick={() => onDeleteCustom(color)}>×</button
+						>
+					</div>
+				{/each}
+			</div>
+		{/if}
+		<button
+			type="button"
+			class="palette-action"
+			onclick={() => {
+				custom = true;
+				replaceMode = false;
+			}}>{labels.custom}</button
 		>
 		<button type="button" class="palette-action remove" onclick={onRemove}>{labels.remove}</button>
 	{:else}
@@ -286,15 +359,47 @@
 			/>
 		</label>
 		{#if !hexValid}<p class="invalid-message">{labels.invalidHex}</p>{/if}
-		<div class="palette-footer">
-			<button type="button" class="palette-action" onclick={onClose}>{labels.cancel}</button>
-			<button
-				type="button"
-				class="palette-action apply"
-				disabled={!hexValid}
-				onclick={() => onApply(normalizeHighlightColor(hexInput)!)}>{labels.apply}</button
+		{#if replaceMode}
+			<p class="replace-heading">{labels.chooseReplacement}</p>
+			<div class="replacement-list">
+				{#each savedColors as color, index}
+					<button
+						type="button"
+						class="palette-action"
+						onclick={() => {
+							onSaveCustom(normalizeHighlightColor(hexInput)!, index);
+							replaceMode = false;
+						}}
+					>
+						{labels.replaceColor(color)}
+					</button>
+				{/each}
+			</div>
+			<button type="button" class="palette-action" onclick={() => (replaceMode = false)}
+				>{labels.cancel}</button
 			>
-		</div>
+		{:else}
+			<div class="palette-footer">
+				<button type="button" class="palette-action" onclick={onClose}>{labels.cancel}</button>
+				<button
+					type="button"
+					class="palette-action apply"
+					disabled={!hexValid}
+					onclick={() => onApply(normalizeHighlightColor(hexInput)!)}>{labels.apply}</button
+				>
+				<button
+					type="button"
+					class="palette-action save"
+					disabled={!hexValid}
+					onclick={() => {
+						const color = normalizeHighlightColor(hexInput)!;
+						if (savedColors.length >= MAX_SAVED_HIGHLIGHT_COLORS && !savedColors.includes(color))
+							replaceMode = true;
+						else onSaveCustom(color);
+					}}>{labels.saveCustom}</button
+				>
+			</div>
+		{/if}
 	{/if}
 </div>
 
@@ -338,10 +443,31 @@
 	}
 
 	.swatches {
-		display: grid;
-		grid-template-columns: repeat(5, 1fr);
+		display: flex;
+		flex-wrap: wrap;
 		gap: 8px;
 		margin-bottom: 10px;
+	}
+
+	.color-option,
+	.saved-color-row {
+		display: inline-flex;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.saved-heading,
+	.replace-heading {
+		display: block;
+		margin: 8px 0 4px;
+	}
+
+	.saved-colors,
+	.replacement-list {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		margin-bottom: 8px;
 	}
 
 	.color-swatch {
@@ -359,6 +485,29 @@
 		border-color: #f5f7fa;
 		outline: 2px solid #8896a6;
 		outline-offset: 2px;
+	}
+
+	.default-toggle,
+	.delete-custom {
+		width: 24px;
+		height: 24px;
+		border: 0;
+		border-radius: 4px;
+		background: transparent;
+		color: #8896a6;
+		cursor: pointer;
+	}
+
+	.default-toggle.selected {
+		color: #facc15;
+	}
+
+	.default-toggle:hover,
+	.default-toggle:focus-visible,
+	.delete-custom:hover,
+	.delete-custom:focus-visible {
+		background: #2a313c;
+		color: #f5f7fa;
 	}
 
 	.palette-action {
@@ -482,7 +631,11 @@
 	}
 
 	.palette-footer .palette-action {
+		width: auto;
+		min-width: 0;
+		flex: 1;
 		margin-top: 0;
+		padding: 0 6px;
 	}
 
 	button:focus-visible,

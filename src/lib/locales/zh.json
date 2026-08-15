@@ -91,5 +91,14 @@
 	"highlightColorBrightness": "亮度",
 	"highlightColorInvalid": "請輸入六位數十六進位顏色。",
 	"removeHighlight": "移除標記",
-	"apply": "套用"
+	"apply": "套用",
+	"highlightPreferences": "標記顏色",
+	"highlightPreferencesDesc": "選擇新標記使用的顏色。",
+	"highlightDefaultSelected": "預設",
+	"highlightSetDefault": "設為預設",
+	"highlightSavedColors": "已儲存的自訂顏色",
+	"highlightDeleteCustom": "刪除已儲存顏色",
+	"highlightSaveCustom": "儲存並套用",
+	"highlightChooseReplacement": "選擇要取代的已儲存顏色",
+	"highlightReplaceColor": "取代 {color}"
 }

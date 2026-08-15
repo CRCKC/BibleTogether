@@ -16,6 +16,7 @@ import {
 	DEFAULT_HIGHLIGHT_COLOR,
 	getHighlightsStorageKey,
 	HIGHLIGHT_PRESETS,
+	MAX_SAVED_HIGHLIGHT_COLORS,
 	hexToHsv,
 	hsvToHex,
 	isValidVerseId,
@@ -65,6 +66,41 @@ describe('highlight colors', () => {
 		const color = '#12abc0';
 		const hsv = hexToHsv(color);
 		expect(hsvToHex(hsv)).toBe(color);
+	});
+});
+
+describe('highlight preferences', () => {
+	it('uses the selected default for new highlights and preserves existing colors', () => {
+		const session = createHighlightSession('preference-default-user');
+		sessions.push(session);
+		session.setDefaultColor(HIGHLIGHT_PRESETS[1].color);
+		session.set('GEN:1:1', session.getState().preferences.defaultColor);
+		session.recolor('GEN:1:1', HIGHLIGHT_PRESETS[2].color);
+		session.set('GEN:1:2', session.getState().preferences.defaultColor);
+		expect(session.getColor('GEN:1:1')).toBe(HIGHLIGHT_PRESETS[2].color);
+		expect(session.getColor('GEN:1:2')).toBe(HIGHLIGHT_PRESETS[1].color);
+	});
+
+	it('saves five custom colors, requires replacement, and falls back to gold on delete', () => {
+		const session = createHighlightSession('preference-custom-user');
+		sessions.push(session);
+		const colors = ['#111111', '#222222', '#333333', '#444444', '#555555'];
+		for (const color of colors) session.saveCustomColor(color);
+		expect(session.getState().preferences.savedColors).toEqual(colors);
+		expect(session.saveCustomColor('#666666')).toBeUndefined();
+		session.setDefaultColor('#333333');
+		session.saveCustomColor('#666666', 2);
+		expect(session.getState().preferences.savedColors).toEqual([
+			'#111111',
+			'#222222',
+			'#666666',
+			'#444444',
+			'#555555'
+		]);
+		session.deleteCustomColor('#666666');
+		expect(session.getState().preferences.savedColors).toHaveLength(MAX_SAVED_HIGHLIGHT_COLORS - 1);
+		session.deleteCustomColor('#333333');
+		expect(session.getState().preferences.defaultColor).toBe(DEFAULT_HIGHLIGHT_COLOR);
 	});
 });
 

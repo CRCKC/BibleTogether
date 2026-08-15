@@ -6,6 +6,7 @@ import { bibleshort } from './constants';
 export const HIGHLIGHTS_VERSION = 2 as const;
 export const HIGHLIGHTS_STORAGE_KEY = 'bibleHighlights';
 export const DEFAULT_HIGHLIGHT_COLOR = '#facc15';
+export const MAX_SAVED_HIGHLIGHT_COLORS = 5;
 const MAX_IDS = 10_000;
 
 export const HIGHLIGHT_PRESETS = [
@@ -24,6 +25,17 @@ export interface HSV {
 	h: number;
 	s: number;
 	v: number;
+}
+
+export interface HighlightPreferences {
+	defaultColor: string;
+	savedColors: string[];
+}
+
+export interface PendingHighlightPreferencesOperation {
+	operationId: string;
+	sequence: number;
+	preferences: HighlightPreferences;
 }
 
 export function normalizeHighlightColor(value: unknown): string | null {
@@ -117,6 +129,8 @@ export interface HighlightRecord {
 	uid: string;
 	highlightedIds: string[];
 	colors: Record<string, string>;
+	preferences: HighlightPreferences;
+	pendingPreferences?: PendingHighlightPreferencesOperation;
 	pending: Record<string, PendingHighlightOperation>;
 }
 
@@ -127,6 +141,8 @@ export interface HighlightProjection {
 	durability: 'persistent' | 'memory';
 	highlightedIds: ReadonlySet<string>;
 	colors: ReadonlyMap<string, string>;
+	preferences: HighlightPreferences;
+	pendingPreferences: PendingHighlightPreferencesOperation | null;
 	pendingIds: ReadonlySet<string>;
 	pending: ReadonlyMap<string, PendingHighlightOperation>;
 	quarantined: boolean;
@@ -143,6 +159,14 @@ export interface HighlightSession extends Readable<HighlightProjection> {
 	toggle(id: string): PendingHighlightOperation | undefined;
 	isHighlighted(id: string): boolean;
 	getColor(id: string): string;
+	setDefaultColor(color: string): PendingHighlightPreferencesOperation | undefined;
+	saveCustomColor(
+		color: string,
+		replaceIndex?: number
+	): PendingHighlightPreferencesOperation | undefined;
+	deleteCustomColor(color: string): PendingHighlightPreferencesOperation | undefined;
+	acknowledgePreferences(operationId: string): boolean;
+	applyRemotePreferences(preferences: HighlightPreferences): boolean;
 	acknowledge(id: string, operationId: string): boolean;
 	applyRemote(id: string, highlighted: boolean, color?: string): boolean;
 	markSyncError(): void;
@@ -223,8 +247,36 @@ export function getHighlightsStorageKey(uid: string): string {
 	return `${HIGHLIGHTS_STORAGE_KEY}:${encodeURIComponent(uid)}`;
 }
 
+export function defaultHighlightPreferences(): HighlightPreferences {
+	return { defaultColor: DEFAULT_HIGHLIGHT_COLOR, savedColors: [] };
+}
+
+export function normalizeHighlightPreferences(value: unknown): HighlightPreferences | null {
+	if (!isObject(value)) return null;
+	const defaultColor = normalizeHighlightColor(value.defaultColor) ?? null;
+	if (!defaultColor || !Array.isArray(value.savedColors)) return null;
+	if (value.savedColors.length > MAX_SAVED_HIGHLIGHT_COLORS) return null;
+	const savedColors: string[] = [];
+	for (const rawColor of value.savedColors) {
+		const color = normalizeHighlightColor(rawColor);
+		if (!color || savedColors.includes(color)) continue;
+		savedColors.push(color);
+		if (savedColors.length === MAX_SAVED_HIGHLIGHT_COLORS) break;
+	}
+	const isPreset = HIGHLIGHT_PRESETS.some((preset) => preset.color === defaultColor);
+	if (!isPreset && !savedColors.includes(defaultColor)) return null;
+	return { defaultColor, savedColors };
+}
+
 function emptyRecord(uid: string): HighlightRecord {
-	return { version: HIGHLIGHTS_VERSION, uid, highlightedIds: [], colors: {}, pending: {} };
+	return {
+		version: HIGHLIGHTS_VERSION,
+		uid,
+		highlightedIds: [],
+		colors: {},
+		preferences: defaultHighlightPreferences(),
+		pending: {}
+	};
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -277,6 +329,39 @@ function sanitizeRecord(
 		quarantined = true;
 	}
 
+	const rawPreferences = value.preferences;
+	const preferences =
+		normalizeHighlightPreferences(rawPreferences) ?? defaultHighlightPreferences();
+	if (rawPreferences !== undefined && !normalizeHighlightPreferences(rawPreferences))
+		quarantined = true;
+
+	let pendingPreferences: PendingHighlightPreferencesOperation | undefined;
+	if (value.pendingPreferences !== undefined) {
+		if (isObject(value.pendingPreferences)) {
+			const operationId =
+				typeof value.pendingPreferences.operationId === 'string'
+					? value.pendingPreferences.operationId
+					: '';
+			const sequence = value.pendingPreferences.sequence;
+			const pendingPreferencesValue = normalizeHighlightPreferences(
+				value.pendingPreferences.preferences
+			);
+			if (
+				operationId &&
+				typeof sequence === 'number' &&
+				Number.isSafeInteger(sequence) &&
+				sequence > 0 &&
+				pendingPreferencesValue
+			) {
+				pendingPreferences = {
+					operationId,
+					sequence,
+					preferences: pendingPreferencesValue
+				};
+			} else quarantined = true;
+		} else quarantined = true;
+	}
+
 	const pending: Record<string, PendingHighlightOperation> = {};
 	if (isObject(value.pending)) {
 		for (const [candidate, raw] of Object.entries(value.pending).slice(0, MAX_IDS)) {
@@ -316,7 +401,15 @@ function sanitizeRecord(
 	}
 
 	return {
-		record: { version: HIGHLIGHTS_VERSION, uid, highlightedIds, colors, pending },
+		record: {
+			version: HIGHLIGHTS_VERSION,
+			uid,
+			highlightedIds,
+			colors,
+			preferences,
+			...(pendingPreferences ? { pendingPreferences } : {}),
+			pending
+		},
 		quarantined
 	};
 }
@@ -334,6 +427,21 @@ function cloneRecord(record: HighlightRecord): HighlightRecord {
 		uid: record.uid,
 		highlightedIds: [...record.highlightedIds],
 		colors: { ...record.colors },
+		preferences: {
+			defaultColor: record.preferences.defaultColor,
+			savedColors: [...record.preferences.savedColors]
+		},
+		...(record.pendingPreferences
+			? {
+					pendingPreferences: {
+						...record.pendingPreferences,
+						preferences: {
+							defaultColor: record.pendingPreferences.preferences.defaultColor,
+							savedColors: [...record.pendingPreferences.preferences.savedColors]
+						}
+					}
+				}
+			: {}),
 		pending: Object.fromEntries(
 			Object.entries(record.pending).map(([id, operation]) => [id, { ...operation }])
 		)
@@ -355,6 +463,11 @@ function projection(
 		durability,
 		highlightedIds: new Set(record.highlightedIds),
 		colors: new Map(Object.entries(record.colors)),
+		preferences: {
+			defaultColor: record.preferences.defaultColor,
+			savedColors: [...record.preferences.savedColors]
+		},
+		pendingPreferences: record.pendingPreferences ? { ...record.pendingPreferences } : null,
 		pendingIds: new Set(Object.keys(record.pending)),
 		pending: new Map(Object.entries(record.pending).map(([id, op]) => [id, { ...op }])),
 		quarantined
@@ -412,7 +525,8 @@ export function createHighlightSession(uid: string): HighlightSession {
 		current = sanitized.record;
 		quarantined ||= sanitized.quarantined;
 		ready = true;
-		if (status === 'ready' && Object.keys(current.pending).length) status = 'pending';
+		if (status === 'ready' && (Object.keys(current.pending).length || current.pendingPreferences))
+			status = 'pending';
 		emit();
 	});
 
@@ -464,6 +578,42 @@ export function createHighlightSession(uid: string): HighlightSession {
 		return { ...operation };
 	}
 
+	function updatePreferences(
+		preferencesInput: HighlightPreferences
+	): PendingHighlightPreferencesOperation | undefined {
+		if (disposed) return undefined;
+		const preferences = normalizeHighlightPreferences(preferencesInput);
+		if (!preferences) return undefined;
+		if (
+			!current.pendingPreferences &&
+			JSON.stringify(current.preferences) === JSON.stringify(preferences)
+		)
+			return undefined;
+		const next = cloneRecord(current);
+		const sequence =
+			Math.max(
+				0,
+				...Object.values(next.pending).map((operation) => operation.sequence),
+				next.pendingPreferences?.sequence ?? 0
+			) + 1;
+		const operation: PendingHighlightPreferencesOperation = {
+			operationId: operationIdentity(),
+			sequence,
+			preferences
+		};
+		next.preferences = preferences;
+		next.pendingPreferences = operation;
+		durableWriteFailed = false;
+		status = memoryOnly ? 'degraded durability' : 'saved locally';
+		recordStore.set(next);
+		if (!durableWriteFailed && !memoryOnly) durability = 'persistent';
+		emit();
+		return {
+			...operation,
+			preferences: { ...preferences, savedColors: [...preferences.savedColors] }
+		};
+	}
+
 	const session: HighlightSession = {
 		uid,
 		subscribe: projectionStore.subscribe,
@@ -479,7 +629,8 @@ export function createHighlightSession(uid: string): HighlightSession {
 		set: (id, color = DEFAULT_HIGHLIGHT_COLOR) => update(id, 'set', color),
 		delete: (id) => update(id, 'delete'),
 		recolor: (id, color) => (session.isHighlighted(id) ? update(id, 'set', color) : undefined),
-		toggle: (id) => update(id, session.isHighlighted(id) ? 'delete' : 'set'),
+		toggle: (id) =>
+			update(id, session.isHighlighted(id) ? 'delete' : 'set', current.preferences.defaultColor),
 		isHighlighted: (id) => {
 			const normalized = normalizeVerseId(id);
 			return normalized !== null && current.highlightedIds.includes(normalized);
@@ -488,13 +639,65 @@ export function createHighlightSession(uid: string): HighlightSession {
 			const normalized = normalizeVerseId(id);
 			return (normalized && current.colors[normalized]) || DEFAULT_HIGHLIGHT_COLOR;
 		},
+		setDefaultColor: (colorInput) => {
+			const color = normalizeHighlightColor(colorInput);
+			if (!color) return undefined;
+			const isPreset = HIGHLIGHT_PRESETS.some((preset) => preset.color === color);
+			if (!isPreset && !current.preferences.savedColors.includes(color)) return undefined;
+			return updatePreferences({ ...current.preferences, defaultColor: color });
+		},
+		saveCustomColor: (colorInput, replaceIndex) => {
+			const color = normalizeHighlightColor(colorInput);
+			if (!color) return undefined;
+			const savedColors = [...current.preferences.savedColors];
+			const existingIndex = savedColors.indexOf(color);
+			if (existingIndex >= 0) return updatePreferences(current.preferences);
+			let defaultColor = current.preferences.defaultColor;
+			if (savedColors.length >= MAX_SAVED_HIGHLIGHT_COLORS) {
+				if (replaceIndex === undefined || replaceIndex < 0 || replaceIndex >= savedColors.length)
+					return undefined;
+				if (defaultColor === savedColors[replaceIndex]) defaultColor = DEFAULT_HIGHLIGHT_COLOR;
+				savedColors[replaceIndex] = color;
+			} else savedColors.push(color);
+			return updatePreferences({ defaultColor, savedColors });
+		},
+		deleteCustomColor: (colorInput) => {
+			const color = normalizeHighlightColor(colorInput);
+			if (!color || !current.preferences.savedColors.includes(color)) return undefined;
+			return updatePreferences({
+				defaultColor:
+					current.preferences.defaultColor === color
+						? DEFAULT_HIGHLIGHT_COLOR
+						: current.preferences.defaultColor,
+				savedColors: current.preferences.savedColors.filter((saved) => saved !== color)
+			});
+		},
+		acknowledgePreferences: (operationId) => {
+			if (disposed || current.pendingPreferences?.operationId !== operationId) return false;
+			const next = cloneRecord(current);
+			delete next.pendingPreferences;
+			status = Object.keys(next.pending).length || next.pendingPreferences ? 'pending' : 'ready';
+			recordStore.set(next);
+			emit();
+			return true;
+		},
+		applyRemotePreferences: (preferencesInput) => {
+			if (disposed || current.pendingPreferences) return false;
+			const preferences = normalizeHighlightPreferences(preferencesInput);
+			if (!preferences) return false;
+			const next = cloneRecord(current);
+			next.preferences = preferences;
+			recordStore.set(next);
+			emit();
+			return true;
+		},
 		acknowledge: (idInput, operationId) => {
 			if (disposed) return false;
 			const id = normalizeVerseId(idInput);
 			if (!id || current.pending[id]?.operationId !== operationId) return false;
 			const next = cloneRecord(current);
 			delete next.pending[id];
-			status = Object.keys(next.pending).length ? 'pending' : 'ready';
+			status = Object.keys(next.pending).length || next.pendingPreferences ? 'pending' : 'ready';
 			recordStore.set(next);
 			emit();
 			return true;
@@ -531,7 +734,8 @@ export function createHighlightSession(uid: string): HighlightSession {
 		},
 		retry: () => {
 			if (!disposed) {
-				status = Object.keys(current.pending).length ? 'pending' : 'ready';
+				status =
+					Object.keys(current.pending).length || current.pendingPreferences ? 'pending' : 'ready';
 				emit();
 			}
 		},

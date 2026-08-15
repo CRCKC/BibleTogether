@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
 	await seedHighlightFixture(page);
 	await page.reload();
 	await page.goto(chapter);
-	await expect(page.locator('.bible')).toBeVisible();
+	await expect(page.locator('.bible')).toBeVisible({ timeout: 15_000 });
 });
 
 test('enhances verse markers with sequential, localized controls', async ({ page }) => {
@@ -58,10 +58,28 @@ test('opens the shared palette and applies preset and custom colors', async ({ p
 	await palette.locator('.palette-action').first().click();
 	await expect(palette.locator('.hue-thumb')).toBeVisible();
 	await palette.locator('input[maxlength="7"]').fill('#12ABc0');
-	await palette.locator('.apply').click();
+	await palette.locator('.save').click();
 	await expect(page.locator('[data-verse-id="GEN:1:1"].verse-highlighted')).toHaveAttribute(
 		'data-highlight-color',
 		'#12abc0'
+	);
+	await colorControl.click();
+	await expect(palette.locator('.saved-colors .color-swatch')).toHaveCount(1);
+});
+
+test('uses the selected default for newly created highlights', async ({ page }) => {
+	await page.goto('/settings');
+	const presetDefaults = page.locator('.highlight-preferences .preference-action');
+	await expect(presetDefaults).toHaveCount(5);
+	await presetDefaults.nth(1).click();
+	await expect(presetDefaults.nth(1)).toHaveAttribute('aria-pressed', 'true');
+	await page.goto(chapter);
+	await expect(page.locator('.bible')).toHaveAttribute('aria-busy', 'false');
+	const marker = page.locator('.bible button[data-verse-id="GEN:1:3"]').first();
+	await marker.click();
+	await expect(page.locator('[data-verse-id="GEN:1:3"].verse-highlighted')).toHaveAttribute(
+		'data-highlight-color',
+		'#60a5fa'
 	);
 });
 

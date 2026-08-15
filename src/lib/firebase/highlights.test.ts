@@ -8,11 +8,12 @@ vi.mock('firebase/auth', () => ({
 		return () => undefined;
 	})
 }));
-import { createHighlightSession } from '$lib/bible/highlights';
+import { createHighlightSession, type HighlightPreferences } from '$lib/bible/highlights';
 import { onAuthStateChanged } from 'firebase/auth';
 import {
 	createHighlightSyncSession,
 	decodeHighlightData,
+	decodeHighlightPreferences,
 	privateHighlightPath,
 	type HighlightChange,
 	type HighlightTransport
@@ -64,7 +65,42 @@ describe('private highlight sync adapter', () => {
 		expect(decodeHighlightData({ highlighted: true, color: '#12aBc0' })?.color).toBe('#12abc0');
 		expect(decodeHighlightData({ highlighted: true, color: '#fff' })).toBeNull();
 		expect(decodeHighlightData({ highlighted: true, extra: true })).toBeNull();
+		expect(
+			decodeHighlightPreferences({
+				highlightPreferences: { defaultColor: '#60a5fa', savedColors: ['#123456'] }
+			})?.savedColors
+		).toEqual(['#123456']);
 	});
+	it('syncs account highlight preferences through the captured UID session', async () => {
+		const local = createHighlightSession('preference-sync-user');
+		sessions.push(local);
+		let listener: ((preferences: HighlightPreferences | null) => void) | undefined;
+		const writes: HighlightPreferences[] = [];
+		const sync = createHighlightSyncSession('preference-sync-user', 1, local, {
+			transport: transport().fake,
+			preferences: {
+				set: async (preferences) => {
+					writes.push(preferences);
+				},
+				subscribe: (onChange) => {
+					listener = onChange;
+					return () => (listener = undefined);
+				}
+			},
+			isOnline: () => true,
+			generationMatches: () => true
+		});
+		local.setDefaultColor('#60a5fa');
+		sync.flush();
+		await Promise.resolve();
+		await Promise.resolve();
+		expect(writes.at(-1)?.defaultColor).toBe('#60a5fa');
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		listener?.({ defaultColor: '#4ade80', savedColors: [] });
+		expect(local.getState().preferences.defaultColor).toBe('#4ade80');
+		sync.teardown();
+	});
+
 	it('uses the owner-scoped private highlight path', () => {
 		expect(privateHighlightPath('user-a', 'gen:1:1')).toBe(
 			'userData/user-a/privateHighlights/GEN:1:1'

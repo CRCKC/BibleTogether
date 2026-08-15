@@ -141,6 +141,12 @@
 			saturation: $t('highlightColorSaturation'),
 			brightness: $t('highlightColorBrightness'),
 			invalidHex: $t('highlightColorInvalid'),
+			setDefault: $t('highlightSetDefault'),
+			savedColors: $t('highlightSavedColors'),
+			deleteCustom: $t('highlightDeleteCustom'),
+			saveCustom: $t('highlightSaveCustom'),
+			chooseReplacement: $t('highlightChooseReplacement'),
+			replaceColor: (color) => $t('highlightReplaceColor', { values: { color } }),
 			preset: (id) => $t(`highlightColor${id[0].toUpperCase()}${id.slice(1)}`)
 		};
 	}
@@ -179,6 +185,30 @@
 			?.focus();
 	}
 
+	function setDefaultHighlightColor(color: string) {
+		if (!highlightSession) return;
+		highlightSession.setDefaultColor(color);
+		highlightSync?.flush();
+		closePalette();
+	}
+
+	function saveCustomHighlightColor(id: string, color: string, replaceIndex?: number) {
+		if (!highlightSession) return;
+		highlightSession.saveCustomColor(color, replaceIndex);
+		highlightSession.recolor(id, color);
+		const state = highlightSession.getState();
+		activeEnhancer?.update(state.highlightedIds, state.colors);
+		highlightSync?.flush();
+		closePalette();
+	}
+
+	function deleteCustomHighlightColor(color: string) {
+		if (!highlightSession) return;
+		highlightSession.deleteCustomColor(color);
+		highlightSync?.flush();
+		closePalette();
+	}
+
 	function openPalette(control: HTMLButtonElement) {
 		const id = control.dataset.verseColorId;
 		if (!id || !highlightSession?.isHighlighted(id)) return;
@@ -195,7 +225,13 @@
 					highlightSession.getColor(id) ??
 					DEFAULT_HIGHLIGHT_COLOR,
 				labels: paletteLabels(),
+				defaultColor: highlightProjection?.preferences.defaultColor ?? DEFAULT_HIGHLIGHT_COLOR,
+				savedColors: highlightProjection?.preferences.savedColors ?? [],
 				onApply: (color: string) => applyPaletteColor(id, color),
+				onSetDefault: setDefaultHighlightColor,
+				onSaveCustom: (color: string, replaceIndex?: number) =>
+					saveCustomHighlightColor(id, color, replaceIndex),
+				onDeleteCustom: deleteCustomHighlightColor,
 				onRemove: () => removePaletteHighlight(id),
 				onClose: () => closePalette()
 			}
@@ -275,7 +311,7 @@
 		const id = marker.dataset.verseId;
 		if (!id) return;
 		if (marker.getAttribute('aria-pressed') === 'true') highlightSession.delete(id);
-		else highlightSession.set(id);
+		else highlightSession.set(id, highlightSession.getState().preferences.defaultColor);
 		const state = highlightSession.getState();
 		activeEnhancer?.update(state.highlightedIds, state.colors);
 		highlightSync?.flush();

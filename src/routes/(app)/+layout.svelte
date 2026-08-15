@@ -7,6 +7,7 @@
 	import BibleNavBar from './bible/navbarBible.svelte';
 	import { onDestroy, onMount, setContext } from 'svelte';
 	import {
+		createHighlightPreferencesTransport,
 		createHighlightSyncSession,
 		subScribeUpdates,
 		type HighlightSyncSession
@@ -94,7 +95,9 @@
 			if (user?.uid && user.emailVerified) {
 				subscribtion = subScribeUpdates(user.uid, generation);
 				highlightSession = createHighlightSession(user.uid);
-				highlightSync = createHighlightSyncSession(user.uid, generation, highlightSession);
+				highlightSync = createHighlightSyncSession(user.uid, generation, highlightSession, {
+					preferences: createHighlightPreferencesTransport(user.uid)
+				});
 			}
 		})
 	);

@@ -4,6 +4,7 @@
 	import { t } from 'svelte-i18n';
 	import type { PageData } from './$types';
 	import ZoomPopup from './zoomPopup.svelte';
+	import HighlightPreferences from './highlightPreferences.svelte';
 	// import DeleteProgress from './deleteProgress.svelte';
 	// import MigrateProgress from './migrateProgress.svelte';
 	import LogoutButton from './logoutButton.svelte';
@@ -40,6 +41,7 @@
 				{$t('profile_settings')}
 			</Button>
 			<ZoomPopup />
+			<HighlightPreferences />
 			<Button
 				class="flex items-center justify-center h-12 mt-4 rounded-md w-80"
 				variant="secondary"
