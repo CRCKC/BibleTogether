@@ -2,6 +2,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import {
 		HIGHLIGHT_PRESETS,
 		type HighlightProjection,
@@ -19,6 +20,7 @@
 	let session = $state<HighlightSession | null>(null);
 	let projection = $state<HighlightProjection | null>(null);
 	let stop: (() => void) | undefined;
+	let dialogOpen = $state(false);
 
 	onMount(() => {
 		const sync = () => {
@@ -54,54 +56,72 @@
 </script>
 
 {#if projection}
-	<section class="highlight-preferences" aria-labelledby="highlight-preferences-title">
-		<h2 id="highlight-preferences-title">{$t('highlightPreferences')}</h2>
-		<p>{$t('highlightPreferencesDesc')}</p>
-		<div class="preference-list">
-			{#each HIGHLIGHT_PRESETS as preset}
-				<div class="preference-row">
-					<span class="color-dot" style={`--swatch-color: ${preset.color}`} aria-hidden="true"
-					></span>
-					<span class="color-name"
-						>{$t(`highlightColor${preset.id[0].toUpperCase()}${preset.id.slice(1)}`)}</span
-					>
-					<Button
-						class="preference-action"
-						variant={projection.preferences.defaultColor === preset.color ? 'default' : 'outline'}
-						aria-pressed={projection.preferences.defaultColor === preset.color}
-						onclick={() => setDefault(preset.color)}
-					>
-						{projection.preferences.defaultColor === preset.color
-							? $t('highlightDefaultSelected')
-							: $t('highlightSetDefault')}
-					</Button>
+	<Dialog.Root bind:open={dialogOpen}>
+		<Dialog.Trigger>
+			<Button
+				class="h-12 mt-4 rounded-md w-80"
+				variant="secondary"
+				data-highlight-preferences-trigger
+			>
+				{$t('highlightPreferences')}
+			</Button>
+		</Dialog.Trigger>
+		<Dialog.Content class="max-h-[calc(100dvh-2rem)] overflow-y-auto">
+			<Dialog.Header>
+				<Dialog.Title>{$t('highlightPreferences')}</Dialog.Title>
+				<Dialog.Description>{$t('highlightPreferencesDesc')}</Dialog.Description>
+			</Dialog.Header>
+			<section class="highlight-preferences">
+				<div class="preference-list">
+					{#each HIGHLIGHT_PRESETS as preset}
+						<div class="preference-row">
+							<span class="color-dot" style={`--swatch-color: ${preset.color}`} aria-hidden="true"
+							></span>
+							<span class="color-name"
+								>{$t(`highlightColor${preset.id[0].toUpperCase()}${preset.id.slice(1)}`)}</span
+							>
+							<Button
+								class="preference-action"
+								variant={projection.preferences.defaultColor === preset.color
+									? 'default'
+									: 'outline'}
+								aria-pressed={projection.preferences.defaultColor === preset.color}
+								onclick={() => setDefault(preset.color)}
+							>
+								{projection.preferences.defaultColor === preset.color
+									? $t('highlightDefaultSelected')
+									: $t('highlightSetDefault')}
+							</Button>
+						</div>
+					{/each}
+					{#each projection.preferences.savedColors as color}
+						<div class="preference-row">
+							<span class="color-dot" style={`--swatch-color: ${color}`} aria-hidden="true"></span>
+							<span class="color-name">{color}</span>
+							<Button
+								class="preference-action"
+								variant={projection.preferences.defaultColor === color ? 'default' : 'outline'}
+								aria-pressed={projection.preferences.defaultColor === color}
+								onclick={() => setDefault(color)}
+							>
+								{projection.preferences.defaultColor === color
+									? $t('highlightDefaultSelected')
+									: $t('highlightSetDefault')}
+							</Button>
+							<Button
+								variant="ghost"
+								aria-label={`${$t('highlightDeleteCustom')}: ${color}`}
+								onclick={() => deleteCustom(color)}
+							>
+								×
+							</Button>
+						</div>
+					{/each}
 				</div>
-			{/each}
-			{#each projection.preferences.savedColors as color}
-				<div class="preference-row">
-					<span class="color-dot" style={`--swatch-color: ${color}`} aria-hidden="true"></span>
-					<span class="color-name">{color}</span>
-					<Button
-						class="preference-action"
-						variant={projection.preferences.defaultColor === color ? 'default' : 'outline'}
-						aria-pressed={projection.preferences.defaultColor === color}
-						onclick={() => setDefault(color)}
-					>
-						{projection.preferences.defaultColor === color
-							? $t('highlightDefaultSelected')
-							: $t('highlightSetDefault')}
-					</Button>
-					<Button
-						variant="ghost"
-						aria-label={`${$t('highlightDeleteCustom')}: ${color}`}
-						onclick={() => deleteCustom(color)}
-					>
-						×
-					</Button>
-				</div>
-			{/each}
-		</div>
-	</section>
+			</section>
+		</Dialog.Content>
+		<Dialog.Close />
+	</Dialog.Root>
 {/if}
 
 <style>
@@ -109,17 +129,6 @@
 		width: min(100%, 20rem);
 		margin-top: 1.5rem;
 		color: #f5f7fa;
-	}
-
-	h2 {
-		font-size: 1.125rem;
-		font-weight: 600;
-	}
-
-	p {
-		margin: 0.25rem 0 0.75rem;
-		color: #8896a6;
-		font-size: 0.875rem;
 	}
 
 	.preference-list {

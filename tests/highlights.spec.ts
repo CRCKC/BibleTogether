@@ -54,16 +54,25 @@ test('opens the shared palette and applies preset and custom colors', async ({ p
 		'data-highlight-color',
 		'#60a5fa'
 	);
-	await colorControl.click();
+	await colorControl.evaluate((element) => {
+		element.style.position = 'fixed';
+		element.style.top = 'calc(100vh - 24px)';
+	});
+	await colorControl.dispatchEvent('click');
 	await palette.locator('.palette-action').first().click();
 	await expect(palette.locator('.hue-thumb')).toBeVisible();
+	const paletteBox = await palette.boundingBox();
+	const viewport = page.viewportSize();
+	expect(paletteBox).not.toBeNull();
+	expect(viewport).not.toBeNull();
+	expect(paletteBox!.y + paletteBox!.height).toBeLessThanOrEqual(viewport!.height);
 	await palette.locator('input[maxlength="7"]').fill('#12ABc0');
 	await palette.locator('.save').click();
 	await expect(page.locator('[data-verse-id="GEN:1:1"].verse-highlighted')).toHaveAttribute(
 		'data-highlight-color',
 		'#12abc0'
 	);
-	await colorControl.click();
+	await colorControl.dispatchEvent('click');
 	await expect(palette.locator('.saved-colors .color-swatch')).toHaveCount(1);
 });
 
@@ -81,6 +90,26 @@ test('uses the selected default for newly created highlights', async ({ page }) 
 		'data-highlight-color',
 		'#60a5fa'
 	);
+});
+
+test('keeps app pages above the bottom navigation', async ({ page }) => {
+	for (const path of ['/settings', '/home']) {
+		await page.goto(path);
+		const content = page.locator('[data-app-content]');
+		const navigation = page.locator('[data-bottom-navigation]');
+		await expect(content).toBeVisible();
+		await expect(navigation).toBeVisible();
+		if (path === '/settings') {
+			await page.locator('[data-highlight-preferences-trigger]').click();
+			await expect(page.locator('.highlight-preferences')).toBeVisible();
+		}
+		await content.evaluate((element) => element.scrollTo(0, element.scrollHeight));
+		const contentBox = await content.boundingBox();
+		const navigationBox = await navigation.boundingBox();
+		expect(contentBox).not.toBeNull();
+		expect(navigationBox).not.toBeNull();
+		expect(contentBox!.y + contentBox!.height).toBeLessThanOrEqual(navigationBox!.y);
+	}
 });
 
 test('keeps the reading surface usable at mobile zoom', async ({ page }) => {

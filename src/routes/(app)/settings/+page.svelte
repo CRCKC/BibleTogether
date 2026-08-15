@@ -22,7 +22,7 @@
 </script>
 
 <!-- Change font size, logout -->
-<div class="flex flex-col items-center h-full p-8">
+<div class="flex flex-col items-center h-full p-8 pb-16">
 	<Avatar.Root class="size-24">
 		<Avatar.Image src={imageUrl} />
 		<Avatar.Fallback>CN</Avatar.Fallback>

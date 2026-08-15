@@ -161,8 +161,10 @@
 		const rect = anchor.getBoundingClientRect();
 		const width = panel.offsetWidth || 280;
 		const height = panel.offsetHeight || 360;
-		panel.style.left = `${Math.max(8, Math.min(window.innerWidth - width - 8, rect.left))}px`;
-		panel.style.top = `${Math.max(8, Math.min(window.innerHeight - height - 8, rect.bottom + 8))}px`;
+		const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+		const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+		panel.style.left = `${Math.max(8, Math.min(viewportWidth - width - 8, rect.left))}px`;
+		panel.style.top = `${Math.max(8, Math.min(viewportHeight - height - 8, rect.bottom + 8))}px`;
 	}
 
 	onMount(() => {
@@ -183,6 +185,10 @@
 		window.addEventListener('keydown', onEscape);
 		window.addEventListener('resize', position);
 		window.addEventListener('scroll', position, true);
+		window.visualViewport?.addEventListener('resize', position);
+		window.visualViewport?.addEventListener('scroll', position);
+		const resizeObserver = new ResizeObserver(position);
+		if (panel) resizeObserver.observe(panel);
 		requestAnimationFrame(() => {
 			position();
 			panel?.querySelector<HTMLElement>('button, input, [tabindex="0"]')?.focus();
@@ -192,6 +198,9 @@
 			window.removeEventListener('keydown', onEscape);
 			window.removeEventListener('resize', position);
 			window.removeEventListener('scroll', position, true);
+			window.visualViewport?.removeEventListener('resize', position);
+			window.visualViewport?.removeEventListener('scroll', position);
+			resizeObserver.disconnect();
 		};
 	});
 </script>
@@ -407,7 +416,11 @@
 	:global(.highlight-palette) {
 		position: fixed;
 		z-index: 50;
+		box-sizing: border-box;
 		width: min(280px, calc(100vw - 16px));
+		max-height: calc(100vh - 16px);
+		max-height: calc(100dvh - 16px);
+		overflow-y: auto;
 		padding: 12px;
 		border: 1px solid rgb(205 213 224 / 35%);
 		border-radius: 8px;
