@@ -38,6 +38,33 @@ test('toggles by keyboard and preserves focus and text selection surface', async
 	await expect(marker).toHaveAttribute('aria-pressed', 'false');
 });
 
+test('opens the shared palette and applies preset and custom colors', async ({ page }) => {
+	const marker = page.locator('.bible button[data-verse-id="GEN:1:1"]').first();
+	await marker.click();
+	const colorControl = page.locator(
+		'.bible button[data-verse-color-control="true"][data-verse-color-id="GEN:1:1"]'
+	);
+	await expect(colorControl).toBeVisible();
+	await colorControl.click();
+	const palette = page.locator('.highlight-palette');
+	await expect(palette).toBeVisible();
+	await expect(palette.locator('.color-swatch')).toHaveCount(5);
+	await palette.locator('.color-swatch').nth(1).click();
+	await expect(page.locator('[data-verse-id="GEN:1:1"].verse-highlighted')).toHaveAttribute(
+		'data-highlight-color',
+		'#60a5fa'
+	);
+	await colorControl.click();
+	await palette.locator('.palette-action').first().click();
+	await expect(palette.locator('.hue-thumb')).toBeVisible();
+	await palette.locator('input[maxlength="7"]').fill('#12ABc0');
+	await palette.locator('.apply').click();
+	await expect(page.locator('[data-verse-id="GEN:1:1"].verse-highlighted')).toHaveAttribute(
+		'data-highlight-color',
+		'#12abc0'
+	);
+});
+
 test('keeps the reading surface usable at mobile zoom', async ({ page }) => {
 	await page.setViewportSize({ width: 375, height: 667 });
 	for (const zoom of ['0.5', '1', '2']) {

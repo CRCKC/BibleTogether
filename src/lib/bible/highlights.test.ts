@@ -13,8 +13,13 @@ vi.hoisted(() => {
 import {
 	canonicalVerseId,
 	createHighlightSession,
+	DEFAULT_HIGHLIGHT_COLOR,
 	getHighlightsStorageKey,
+	HIGHLIGHT_PRESETS,
+	hexToHsv,
+	hsvToHex,
 	isValidVerseId,
+	normalizeHighlightColor,
 	normalizeVerseId,
 	tryCanonicalVerseId
 } from './highlights';
@@ -48,12 +53,31 @@ describe('canonical verse identity', () => {
 	});
 });
 
+describe('highlight colors', () => {
+	it('normalizes presets and six-digit hex values', () => {
+		expect(normalizeHighlightColor('BLUE')).toBe(HIGHLIGHT_PRESETS[1].color);
+		expect(normalizeHighlightColor('#12aBc0')).toBe('#12abc0');
+		expect(normalizeHighlightColor('#fff')).toBeNull();
+		expect(normalizeHighlightColor('#12aBc000')).toBeNull();
+	});
+
+	it('round-trips HSV picker values through hex', () => {
+		const color = '#12abc0';
+		const hsv = hexToHsv(color);
+		expect(hsvToHex(hsv)).toBe(color);
+	});
+});
+
 describe('UID-scoped local highlight state', () => {
-	it('sets, deletes, and retains pending delete intent', () => {
+	it('sets, recolors, deletes, and retains pending delete intent', () => {
 		const session = createHighlightSession('happy-user');
 		sessions.push(session);
 		const id = 'GEN:1:1';
-		const set = session.set(id);
+		const set = session.set(id, '#12aBc0');
+		expect(set?.color).toBe('#12abc0');
+		expect(session.getColor(id)).toBe('#12abc0');
+		expect(session.recolor(id, '#12abc0')).toBeUndefined();
+		expect(session.recolor(id, DEFAULT_HIGHLIGHT_COLOR)?.color).toBe(DEFAULT_HIGHLIGHT_COLOR);
 		expect(set?.desired).toBe('set');
 		expect(session.getState().highlightedIds.has(id)).toBe(true);
 		const deletion = session.delete(id);
@@ -74,6 +98,22 @@ describe('UID-scoped local highlight state', () => {
 		expect(session.acknowledge('GEN:1:1', second!.operationId)).toBe(false);
 		expect(session.acknowledge('GEN:1:1', third!.operationId)).toBe(true);
 		expect(session.isHighlighted('GEN:1:1')).toBe(true);
+	});
+
+	it('hydrates legacy colors as gold and maps named presets', () => {
+		localStorage.setItem(
+			getHighlightsStorageKey('legacy-color-user'),
+			JSON.stringify({
+				version: 1,
+				uid: 'legacy-color-user',
+				highlightedIds: ['GEN:1:1'],
+				colors: { 'GEN:1:1': 'blue' },
+				pending: {}
+			})
+		);
+		const session = createHighlightSession('legacy-color-user');
+		sessions.push(session);
+		expect(session.getColor('GEN:1:1')).toBe(HIGHLIGHT_PRESETS[1].color);
 	});
 
 	it('quarantines malformed records and fences users from one another', () => {

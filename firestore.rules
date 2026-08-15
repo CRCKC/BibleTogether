@@ -10,11 +10,22 @@ service cloud.firestore {
     return verseId.matches('^(GEN|EXO|LEV|NUM|DEU|JOS|JDG|RUT|1SA|2SA|1KI|2KI|1CH|2CH|EZR|NEH|EST|JOB|PSA|PRO|ECC|SNG|ISA|JER|LAM|EZK|DAN|HOS|JOL|AMO|OBA|JON|MIC|NAM|HAB|ZEP|HAG|ZEC|MAL|MAT|MRK|LUK|JHN|ACT|ROM|1CO|2CO|GAL|EPH|PHP|COL|1TH|2TH|1TI|2TI|TIT|PHM|HEB|JAS|1PE|2PE|1JN|2JN|3JN|JUD|REV):([1-9]|[1-9][0-9]|1[0-4][0-9]|150|151):([1-9]|[1-9][0-9]|1[0-9][0-9]|200)$');
   }
 
+  function isHighlightColor(color) {
+    return color is string &&
+      (color.matches('^#[0-9a-f]{6}$') ||
+       color in ['gold', 'blue', 'green', 'rose', 'violet']);
+  }
+
   function validateHighlight(highlightData) {
-    return highlightData.keys().size() == 1 &&
+    return (highlightData.keys().size() == 1 &&
       highlightData.keys().hasOnly(['highlighted']) &&
       highlightData.highlighted is bool &&
-      highlightData.highlighted == true;
+      highlightData.highlighted == true) ||
+      (highlightData.keys().size() == 2 &&
+       highlightData.keys().hasOnly(['highlighted', 'color']) &&
+       highlightData.highlighted is bool &&
+       highlightData.highlighted == true &&
+       isHighlightColor(highlightData.color));
   }
 
   function validateBibleProgress(bibleData) {

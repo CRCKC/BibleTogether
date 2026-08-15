@@ -56,6 +56,22 @@ describe('enhanceHighlights', () => {
 		enhancer.destroy();
 	});
 
+	it('projects selected colors onto verse text and its color control', () => {
+		const root = chapter('<p><b>1</b><span>colored</span><b>2</b><span>plain</span></p>');
+		const enhancer = enhanceHighlights(root, { scroll: 'GEN', chapter: 1 }, ['GEN:1:1']);
+		const control = root.querySelector<HTMLButtonElement>('[data-verse-color-control="true"]');
+		expect(control?.hidden).toBe(false);
+		enhancer.update(['GEN:1:1'], new Map([['GEN:1:1', '#12aBc0']]));
+		expect(control?.dataset.highlightColor).toBe('#12abc0');
+		expect(
+			root.querySelector<HTMLSpanElement>('span[data-verse-id="GEN:1:1"]')?.dataset.highlightColor
+		).toBe('#12abc0');
+		expect(
+			root.querySelector<HTMLSpanElement>('span[data-verse-id="GEN:1:2"]')?.dataset.highlighted
+		).toBe('false');
+		enhancer.destroy();
+	});
+
 	it('updates state without replacing verse text', () => {
 		const root = chapter(
 			'<p><b>1</b><span>alpha <sup title="note"></sup></span><b>2</b><span>beta</span></p>'

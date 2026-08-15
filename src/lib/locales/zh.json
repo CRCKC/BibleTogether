@@ -76,5 +76,20 @@
 	"whats_new_updated": "更新日期",
 	"whats_new_available": "本次更新內容",
 	"whats_new_view": "查看更新",
-	"highlightVerse": "標記第 {number} 節"
+	"highlightVerse": "標記第 {number} 節",
+	"changeHighlightColor": "更改第 {number} 節標記顏色",
+	"highlightColor": "標記顏色",
+	"highlightColorGold": "金色",
+	"highlightColorBlue": "藍色",
+	"highlightColorGreen": "綠色",
+	"highlightColorRose": "玫瑰色",
+	"highlightColorViolet": "紫羅蘭色",
+	"highlightColorCustom": "自訂顏色",
+	"highlightColorHex": "十六進位顏色",
+	"highlightColorHue": "色相",
+	"highlightColorSaturation": "飽和度",
+	"highlightColorBrightness": "亮度",
+	"highlightColorInvalid": "請輸入六位數十六進位顏色。",
+	"removeHighlight": "移除標記",
+	"apply": "套用"
 }

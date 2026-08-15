@@ -14,7 +14,11 @@ import {
 import { firebaseAuth, firebaseFirestore } from './firebase';
 import { get } from 'svelte/store';
 import type { HighlightSession, PendingHighlightOperation } from '$lib/bible/highlights';
-import { normalizeVerseId } from '$lib/bible/highlights';
+import {
+	DEFAULT_HIGHLIGHT_COLOR,
+	normalizeHighlightColor,
+	normalizeVerseId
+} from '$lib/bible/highlights';
 import { getAuthGeneration } from './authState';
 
 function bibleProgressRef(uid: string) {
@@ -156,10 +160,11 @@ export interface HighlightChange {
 	type: 'added' | 'modified' | 'removed';
 	id: string;
 	highlighted?: boolean;
+	color?: string;
 }
 
 export interface HighlightTransport {
-	set(id: string): Promise<void>;
+	set(id: string, color: string): Promise<void>;
 	delete(id: string): Promise<void>;
 	subscribe(
 		onChange: (changes: HighlightChange[]) => void,
@@ -193,6 +198,21 @@ function onlineByDefault(): boolean {
 	return typeof navigator === 'undefined' || navigator.onLine;
 }
 
+export function decodeHighlightData(value: unknown): { highlighted: true; color: string } | null {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+	const data = value as Record<string, unknown>;
+	const keys = Object.keys(data);
+	if (
+		data.highlighted !== true ||
+		(keys.length !== 1 && keys.length !== 2) ||
+		(keys.length === 1 && keys[0] !== 'highlighted') ||
+		(keys.length === 2 && (!keys.includes('highlighted') || !keys.includes('color')))
+	)
+		return null;
+	const color = normalizeHighlightColor(data.color ?? DEFAULT_HIGHLIGHT_COLOR);
+	return color ? { highlighted: true, color } : null;
+}
+
 function firestoreHighlightTransport(uid: string): HighlightTransport {
 	const highlights = collection(firebaseFirestore, 'userData', uid, 'privateHighlights');
 	const refFor = (id: string) => {
@@ -201,8 +221,10 @@ function firestoreHighlightTransport(uid: string): HighlightTransport {
 		return doc(highlights, normalized);
 	};
 	return {
-		set: async (id) => {
-			await setDoc(refFor(id), { highlighted: true });
+		set: async (id, color) => {
+			const normalizedColor = normalizeHighlightColor(color);
+			if (!normalizedColor) throw new TypeError('Invalid highlight color');
+			await setDoc(refFor(id), { highlighted: true, color: normalizedColor });
 		},
 		delete: async (id) => {
 			await deleteDoc(refFor(id));
@@ -212,11 +234,15 @@ function firestoreHighlightTransport(uid: string): HighlightTransport {
 				highlights,
 				(snapshot) =>
 					onChange(
-						snapshot.docChanges().map((change) => ({
-							type: change.type,
-							id: change.doc.id,
-							highlighted: change.doc.data().highlighted
-						}))
+						snapshot.docChanges().map((change) => {
+							const decoded = decodeHighlightData(change.doc.data());
+							return {
+								type: change.type,
+								id: change.doc.id,
+								highlighted: decoded?.highlighted,
+								color: decoded?.color
+							};
+						})
 					),
 				onError
 			),
@@ -262,7 +288,8 @@ export function createHighlightSyncSession(
 					async ([id, operation]: [string, PendingHighlightOperation]) => {
 						if (!current() || !isOnline()) return;
 						try {
-							if (operation.desired === 'set') await transport.set(id);
+							if (operation.desired === 'set')
+								await transport.set(id, operation.color ?? DEFAULT_HIGHLIGHT_COLOR);
 							else await transport.delete(id);
 							if (current()) local.acknowledge(id, operation.operationId);
 						} catch {
@@ -302,8 +329,10 @@ export function createHighlightSyncSession(
 						.catch(() => {
 							if (current()) local.markSyncError();
 						});
-				} else if (change.highlighted === true) {
-					local.applyRemote(id, true);
+				} else if (change.highlighted === true && change.color) {
+					if (!local.applyRemote(id, true, change.color)) local.markSyncError();
+				} else if (change.highlighted === undefined) {
+					local.markSyncError();
 				}
 			}
 			void flush();

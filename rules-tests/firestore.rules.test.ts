@@ -45,15 +45,24 @@ describe('private highlight Firestore rules', () => {
 		await testEnv?.cleanup();
 	});
 
-	it('allows the owner to read, create, update, and delete a valid highlight', async () => {
+	it('allows the owner to read, create, update, and delete valid highlights', async () => {
 		const owner = testEnv.authenticatedContext('owner');
 		const reference = highlightRef(owner, 'GEN:1:1');
 
 		await assertSucceeds(setDoc(reference, { highlighted: true }));
 		await assertSucceeds(getDoc(reference));
-		await assertSucceeds(updateDoc(reference, { highlighted: true }));
+		await assertSucceeds(updateDoc(reference, { highlighted: true, color: '#12abc0' }));
 		await assertSucceeds(deleteDoc(reference));
 		expect((await assertSucceeds(getDoc(reference))).exists()).toBe(false);
+	});
+
+	it('accepts legacy named colors and canonical hex colors', async () => {
+		const owner = testEnv.authenticatedContext('owner');
+		for (const [index, color] of ['gold', 'blue', 'green', 'rose', 'violet', '#facc15'].entries()) {
+			await assertSucceeds(
+				setDoc(highlightRef(owner, `GEN:1:${index + 1}`), { highlighted: true, color })
+			);
+		}
 	});
 
 	it('allows the owner to list their highlight collection', async () => {
@@ -118,7 +127,12 @@ describe('private highlight Firestore rules', () => {
 			{ highlighted: false },
 			{ highlighted: 'true' },
 			{ highlighted: 1 },
+			{ highlighted: true, color: '#fff' },
+			{ highlighted: true, color: '#12ABCD' },
+			{ highlighted: true, color: '#12345678' },
+			{ highlighted: true, color: 'orange' },
 			{ highlighted: true, extra: 'nope' },
+			{ highlighted: true, color: '#123456', extra: 'nope' },
 			{ extra: true },
 			{}
 		];

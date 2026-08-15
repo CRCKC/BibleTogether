@@ -10,10 +10,16 @@
 	import { setupTooltip } from './tooltip';
 	import BibleCheckbox from './bibleCheckbox.svelte';
 	import { t } from 'svelte-i18n';
-	import { getContext, onMount, tick, untrack } from 'svelte';
+	import { getContext, mount, onMount, tick, unmount, untrack } from 'svelte';
 	import type { HighlightEnhancer } from './highlight';
 	import { enhanceHighlights } from './highlight';
-	import type { HighlightProjection, HighlightSession } from '$lib/bible/highlights';
+	import HighlightPalette, { type HighlightPaletteLabels } from './highlightPalette.svelte';
+	import {
+		DEFAULT_HIGHLIGHT_COLOR,
+		normalizeHighlightColor,
+		type HighlightProjection,
+		type HighlightSession
+	} from '$lib/bible/highlights';
 	import type { HighlightSyncSession } from '$lib/firebase/firestore';
 	import { subscribeAuthState } from '$lib/firebase/authState';
 	import { bibleChinese } from '$lib/bible/constants';
@@ -39,6 +45,13 @@
 	let authLoading = $state(true);
 	let activeEnhancer: HighlightEnhancer | undefined;
 	let activeTooltip: ReturnType<typeof setupTooltip> | undefined;
+	let activePalette:
+		| {
+				component: ReturnType<typeof mount>;
+				target: HTMLElement;
+				anchor: HTMLButtonElement;
+		  }
+		| undefined;
 	let renderGeneration = 0;
 	let focusVerseId: string | null = null;
 	let focusToHeading = false;
@@ -64,6 +77,7 @@
 		void tick().then(syncHighlightContext);
 		return () => {
 			contextSyncAlive = false;
+			closePalette(false);
 			stopAuth();
 			stopHighlightSession?.();
 			if (autoCheckTimer) clearTimeout(autoCheckTimer);
@@ -107,6 +121,86 @@
 			marker.tabIndex = 0;
 			marker.setAttribute('aria-label', $t('highlightVerse', { values: { number } }));
 		}
+		for (const control of root.querySelectorAll<HTMLButtonElement>(
+			'button[data-verse-color-control="true"]'
+		)) {
+			const number = control.dataset.verseNumber ?? '';
+			control.setAttribute('aria-label', $t('changeHighlightColor', { values: { number } }));
+		}
+	}
+
+	function paletteLabels(): HighlightPaletteLabels {
+		return {
+			title: $t('highlightColor'),
+			custom: $t('highlightColorCustom'),
+			remove: $t('removeHighlight'),
+			apply: $t('apply'),
+			cancel: $t('cancel'),
+			hex: $t('highlightColorHex'),
+			hue: $t('highlightColorHue'),
+			saturation: $t('highlightColorSaturation'),
+			brightness: $t('highlightColorBrightness'),
+			invalidHex: $t('highlightColorInvalid'),
+			preset: (id) => $t(`highlightColor${id[0].toUpperCase()}${id.slice(1)}`)
+		};
+	}
+
+	function closePalette(restoreFocus = true) {
+		if (!activePalette) return;
+		const { component, target, anchor } = activePalette;
+		activePalette = undefined;
+		anchor.setAttribute('aria-expanded', 'false');
+		unmount(component);
+		target.remove();
+		if (restoreFocus && anchor.isConnected) anchor.focus();
+	}
+
+	function applyPaletteColor(id: string, colorInput: string) {
+		const color = normalizeHighlightColor(colorInput);
+		if (!color || !highlightSession?.isHighlighted(id)) return;
+		highlightSession.recolor(id, color);
+		const state = highlightSession.getState();
+		activeEnhancer?.update(state.highlightedIds, state.colors);
+		highlightSync?.flush();
+		closePalette();
+	}
+
+	function removePaletteHighlight(id: string) {
+		if (!highlightSession) return;
+		highlightSession.delete(id);
+		const state = highlightSession.getState();
+		activeEnhancer?.update(state.highlightedIds, state.colors);
+		highlightSync?.flush();
+		closePalette(false);
+		bibleRoot
+			?.querySelector<HTMLButtonElement>(
+				`button[data-verse-marker="true"][data-verse-id="${CSS.escape(id)}"]`
+			)
+			?.focus();
+	}
+
+	function openPalette(control: HTMLButtonElement) {
+		const id = control.dataset.verseColorId;
+		if (!id || !highlightSession?.isHighlighted(id)) return;
+		closePalette(false);
+		control.setAttribute('aria-expanded', 'true');
+		const target = document.createElement('div');
+		document.body.append(target);
+		const component = mount(HighlightPalette, {
+			target,
+			props: {
+				anchor: control,
+				initialColor:
+					highlightProjection?.colors.get(id) ??
+					highlightSession.getColor(id) ??
+					DEFAULT_HIGHLIGHT_COLOR,
+				labels: paletteLabels(),
+				onApply: (color: string) => applyPaletteColor(id, color),
+				onRemove: () => removePaletteHighlight(id),
+				onClose: () => closePalette()
+			}
+		});
+		activePalette = { component, target, anchor: control };
 	}
 
 	// One lifecycle owner follows the keyed chapter root. Async enhancement is generation-fenced.
@@ -124,11 +218,9 @@
 			if (cancelled || generation !== renderGeneration || root !== bibleRoot) return;
 			activeEnhancer?.destroy();
 			activeTooltip?.destroy();
-			activeEnhancer = enhanceHighlights(
-				root,
-				data.bible,
-				untrack(() => highlightProjection?.highlightedIds ?? [])
-			);
+			const projection = untrack(() => highlightProjection);
+			activeEnhancer = enhanceHighlights(root, data.bible, projection?.highlightedIds ?? []);
+			activeEnhancer.update(projection?.highlightedIds ?? [], projection?.colors ?? {});
 			labelMarkers(root);
 			activeTooltip = setupTooltip(root);
 			enhancerReady = true;
@@ -143,6 +235,7 @@
 		return () => {
 			cancelled = true;
 			++renderGeneration;
+			closePalette(false);
 			rememberFocus(root);
 			activeEnhancer?.destroy();
 			activeEnhancer = undefined;
@@ -158,11 +251,23 @@
 
 	$effect(() => {
 		const ids = highlightProjection?.highlightedIds;
-		activeEnhancer?.update(ids ?? []);
+		activeEnhancer?.update(ids ?? [], highlightProjection?.colors ?? {});
 		if (bibleRoot) labelMarkers(bibleRoot);
 	});
 	function handleBibleClick(event: MouseEvent) {
 		if (!(event.target instanceof Element) || !bibleRoot || !highlightSession) return;
+		const colorControl = event.target.closest<HTMLButtonElement>(
+			'button[data-verse-color-control="true"][data-verse-color-id]'
+		);
+		if (
+			colorControl &&
+			bibleRoot.contains(colorControl) &&
+			activeEnhancer?.isManagedColorControl(colorControl)
+		) {
+			event.preventDefault();
+			openPalette(colorControl);
+			return;
+		}
 		const marker = event.target.closest<HTMLButtonElement>(
 			'button[data-verse-marker="true"][data-verse-id]'
 		);
@@ -171,7 +276,8 @@
 		if (!id) return;
 		if (marker.getAttribute('aria-pressed') === 'true') highlightSession.delete(id);
 		else highlightSession.set(id);
-		activeEnhancer?.update(highlightSession.getState().highlightedIds);
+		const state = highlightSession.getState();
+		activeEnhancer?.update(state.highlightedIds, state.colors);
 		highlightSync?.flush();
 	}
 
@@ -408,21 +514,54 @@
 		color: #f0d58b;
 	}
 
-	.bible :global(.verse-highlight-marker:focus-visible) {
+	.bible :global(.verse-highlight-marker:focus-visible),
+	.bible :global(.verse-color-control:focus-visible) {
 		outline: 2px solid #f0d58b;
 		outline-offset: 2px;
 	}
 
+	.bible :global(.verse-color-control) {
+		box-sizing: border-box;
+		display: inline-flex;
+		width: 24px;
+		height: 24px;
+		align-items: center;
+		justify-content: center;
+		margin: 0 0.1em;
+		border: 0;
+		border-radius: 50%;
+		padding: 4px;
+		background: transparent;
+		vertical-align: text-top;
+		cursor: pointer;
+	}
+
+	.bible :global(.verse-color-control)::before {
+		content: '';
+		display: block;
+		width: 12px;
+		height: 12px;
+		border: 1px solid #f5f7fa;
+		border-radius: 50%;
+		background: rgb(var(--highlight-rgb, 250 204 21) / 82%);
+	}
+
+	.bible :global(.verse-color-control:hover),
+	.bible :global(.verse-color-control:active) {
+		background: rgb(var(--highlight-rgb, 250 204 21) / 24%);
+	}
+
 	.bible :global(.verse-highlight-text.verse-highlighted) {
 		border-radius: 0.15em;
-		background: rgb(250 204 21 / 34%);
-		color: #fff3b0;
+		background: rgb(var(--highlight-rgb, 250 204 21) / 34%);
+		color: inherit;
 		box-decoration-break: clone;
 		-webkit-box-decoration-break: clone;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.bible :global(.verse-highlight-marker) {
+		.bible :global(.verse-highlight-marker),
+		.bible :global(.verse-color-control) {
 			transition: none;
 		}
 	}

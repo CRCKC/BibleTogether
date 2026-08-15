@@ -1,4 +1,9 @@
-import { tryCanonicalVerseId } from '$lib/bible/highlights';
+import {
+	DEFAULT_HIGHLIGHT_COLOR,
+	hexToRgb,
+	normalizeHighlightColor,
+	tryCanonicalVerseId
+} from '$lib/bible/highlights';
 
 export interface HighlightRoute {
 	scroll?: string;
@@ -7,15 +12,21 @@ export interface HighlightRoute {
 }
 
 export interface HighlightEnhancer {
-	update(highlightedIds?: Iterable<string> | ReadonlySet<string>): void;
+	update(
+		highlightedIds?: Iterable<string> | ReadonlySet<string>,
+		colors?: ReadonlyMap<string, string> | Record<string, string>
+	): void;
 	isManagedMarker(marker: Element | null): marker is HTMLButtonElement;
+	isManagedColorControl(control: Element | null): control is HTMLButtonElement;
 	destroy(): void;
 }
 
 const INTERACTIVE_SELECTOR =
 	'a, button, input, select, textarea, summary, [contenteditable="true"], [contenteditable=""]';
 const GENERATED_MARKER = 'button[data-verse-marker="true"]';
+const GENERATED_COLOR_CONTROL = 'button[data-verse-color-control="true"]';
 const generatedMarkers = new WeakSet<HTMLButtonElement>();
+const generatedColorControls = new WeakSet<HTMLButtonElement>();
 function routeBook(route: HighlightRoute): string | null {
 	return route.scroll ?? route.bookCode ?? null;
 }
@@ -41,12 +52,37 @@ function hasInteractiveDescendant(element: Element): boolean {
 	return element.querySelector(INTERACTIVE_SELECTOR) !== null;
 }
 
-function setState(button: HTMLButtonElement, text: HTMLSpanElement, highlighted: boolean) {
+function setState(
+	button: HTMLButtonElement,
+	text: HTMLSpanElement,
+	colorControl: HTMLButtonElement,
+	highlighted: boolean,
+	colorInput: string
+) {
 	const value = String(highlighted);
+	const color = normalizeHighlightColor(colorInput) ?? DEFAULT_HIGHLIGHT_COLOR;
+	const rgb = hexToRgb(color)!;
 	button.setAttribute('aria-pressed', value);
 	button.dataset.highlighted = value;
+	if (highlighted) button.dataset.highlightColor = color;
+	else delete button.dataset.highlightColor;
 	text.dataset.highlighted = value;
 	text.classList.toggle('verse-highlighted', highlighted);
+	colorControl.hidden = !highlighted;
+	colorControl.tabIndex = highlighted ? 0 : -1;
+	colorControl.dataset.highlighted = value;
+	if (highlighted) {
+		colorControl.dataset.highlightColor = color;
+		colorControl.style.setProperty('--highlight-color', color);
+		colorControl.style.setProperty('--highlight-rgb', `${rgb.r} ${rgb.g} ${rgb.b}`);
+	} else {
+		delete colorControl.dataset.highlightColor;
+		colorControl.style.removeProperty('--highlight-color');
+		colorControl.style.removeProperty('--highlight-rgb');
+	}
+	if (highlighted) text.dataset.highlightColor = color;
+	else delete text.dataset.highlightColor;
+	text.style.setProperty('--highlight-rgb', `${rgb.r} ${rgb.g} ${rgb.b}`);
 }
 
 /**
@@ -59,10 +95,15 @@ export function enhanceHighlights(
 	route: HighlightRoute,
 	initialHighlightedIds: Iterable<string> | ReadonlySet<string> = []
 ): HighlightEnhancer {
-	const entries = new Map<string, { button: HTMLButtonElement; text: HTMLSpanElement }>();
+	const entries = new Map<
+		string,
+		{ button: HTMLButtonElement; text: HTMLSpanElement; colorControl: HTMLButtonElement }
+	>();
 	const managedMarkers = new WeakSet<HTMLButtonElement>();
+	const managedColorControls = new WeakSet<HTMLButtonElement>();
 	const seen = new Set<string>();
 	const highlighted = new Set(initialHighlightedIds);
+	const colors = new Map<string, string>();
 	let destroyed = false;
 
 	if (route.chapter !== 0 && route.chapter !== '0') {
@@ -82,7 +123,8 @@ export function enhanceHighlights(
 
 			const number = marker.textContent?.trim() ?? '';
 			if (!/^[1-9]\d*$/.test(number)) continue;
-			const text = marker.nextElementSibling;
+			let text = marker.nextElementSibling;
+			if (text?.matches(GENERATED_COLOR_CONTROL)) text = text.nextElementSibling;
 			if (!(text instanceof HTMLSpanElement) || hasInteractiveAncestor(text, root)) continue;
 
 			const id = verseId(route, number);
@@ -105,15 +147,44 @@ export function enhanceHighlights(
 			button.dataset.verseNumber = number;
 			button.setAttribute('aria-label', `Highlight verse ${number}`);
 			button.classList.add('verse-highlight-marker');
+			let colorControl: HTMLButtonElement;
+			const existingColorControl = marker.nextElementSibling;
+			if (
+				existingColorControl instanceof HTMLButtonElement &&
+				existingColorControl.matches(GENERATED_COLOR_CONTROL) &&
+				generatedColorControls.has(existingColorControl)
+			) {
+				colorControl = existingColorControl;
+			} else {
+				colorControl = root.ownerDocument.createElement('button');
+				colorControl.type = 'button';
+				colorControl.dataset.verseColorControl = 'true';
+				colorControl.dataset.verseColorId = id;
+				colorControl.dataset.verseNumber = number;
+				colorControl.setAttribute('aria-label', `Change highlight color for verse ${number}`);
+				colorControl.setAttribute('aria-haspopup', 'dialog');
+				colorControl.setAttribute('aria-expanded', 'false');
+				colorControl.classList.add('verse-color-control');
+				button.after(colorControl);
+				generatedColorControls.add(colorControl);
+			}
 			text.dataset.verseId = id;
 			text.classList.add('verse-highlight-text');
-			entries.set(id, { button, text });
+			entries.set(id, { button, text, colorControl });
 			managedMarkers.add(button);
+			managedColorControls.add(colorControl);
 		}
 	}
 
 	const apply = () => {
-		for (const [id, { button, text }] of entries) setState(button, text, highlighted.has(id));
+		for (const [id, { button, text, colorControl }] of entries)
+			setState(
+				button,
+				text,
+				colorControl,
+				highlighted.has(id),
+				colors.get(id) ?? DEFAULT_HIGHLIGHT_COLOR
+			);
 	};
 	apply();
 
@@ -121,20 +192,40 @@ export function enhanceHighlights(
 		isManagedMarker(marker): marker is HTMLButtonElement {
 			return !destroyed && marker instanceof HTMLButtonElement && managedMarkers.has(marker);
 		},
-		update(ids = []) {
+		isManagedColorControl(control): control is HTMLButtonElement {
+			return (
+				!destroyed && control instanceof HTMLButtonElement && managedColorControls.has(control)
+			);
+		},
+		update(ids = [], nextColors = {}) {
 			highlighted.clear();
 			for (const id of ids) highlighted.add(id);
+			colors.clear();
+			if (nextColors instanceof Map) {
+				for (const [id, color] of nextColors) {
+					const normalized = normalizeHighlightColor(color);
+					if (normalized) colors.set(id, normalized);
+				}
+			} else {
+				for (const [id, color] of Object.entries(nextColors)) {
+					const normalized = normalizeHighlightColor(color);
+					if (normalized) colors.set(id, normalized);
+				}
+			}
 			apply();
 		},
 		destroy() {
 			if (destroyed) return;
 			destroyed = true;
-			for (const { button, text } of entries.values()) {
+			for (const { button, text, colorControl } of entries.values()) {
+				colorControl.remove();
 				button.replaceWith(
 					Object.assign(root.ownerDocument.createElement('b'), { textContent: button.textContent })
 				);
 				text.removeAttribute('data-verse-id');
 				text.removeAttribute('data-highlighted');
+				text.removeAttribute('data-highlight-color');
+				text.style.removeProperty('--highlight-rgb');
 				text.classList.remove('verse-highlight-text', 'verse-highlighted');
 			}
 			entries.clear();

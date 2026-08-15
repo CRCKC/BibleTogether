@@ -75,5 +75,20 @@
 	"whats_new_updated": "Updated",
 	"whats_new_available": "What's new in this update",
 	"whats_new_view": "View changes",
-	"highlightVerse": "Highlight verse {number}"
+	"highlightVerse": "Highlight verse {number}",
+	"changeHighlightColor": "Change highlight color for verse {number}",
+	"highlightColor": "Highlight color",
+	"highlightColorGold": "Gold",
+	"highlightColorBlue": "Blue",
+	"highlightColorGreen": "Green",
+	"highlightColorRose": "Rose",
+	"highlightColorViolet": "Violet",
+	"highlightColorCustom": "Custom color",
+	"highlightColorHex": "Hex color",
+	"highlightColorHue": "Hue",
+	"highlightColorSaturation": "Saturation",
+	"highlightColorBrightness": "Brightness",
+	"highlightColorInvalid": "Enter a six-digit hex color.",
+	"removeHighlight": "Remove highlight",
+	"apply": "Apply"
 }

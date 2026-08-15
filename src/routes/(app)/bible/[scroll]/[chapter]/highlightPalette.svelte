@@ -1,0 +1,475 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import {
+		DEFAULT_HIGHLIGHT_COLOR,
+		HIGHLIGHT_PRESETS,
+		hexToHsv,
+		hsvToHex,
+		normalizeHighlightColor,
+		type HSV
+	} from '$lib/bible/highlights';
+
+	export interface HighlightPaletteLabels {
+		title: string;
+		custom: string;
+		remove: string;
+		apply: string;
+		cancel: string;
+		hex: string;
+		hue: string;
+		saturation: string;
+		brightness: string;
+		invalidHex: string;
+		preset: (id: string) => string;
+	}
+
+	interface Props {
+		anchor: HTMLElement;
+		initialColor: string;
+		labels: HighlightPaletteLabels;
+		onApply: (color: string) => void;
+		onRemove: () => void;
+		onClose: () => void;
+	}
+
+	let { anchor, initialColor, labels, onApply, onRemove, onClose }: Props = $props();
+	let panel = $state<HTMLDivElement>();
+	let custom = $state(false);
+	let hsv = $state<HSV>(hexToHsv(DEFAULT_HIGHLIGHT_COLOR));
+	let draftColor = $state(DEFAULT_HIGHLIGHT_COLOR);
+	let hexInput = $state(DEFAULT_HIGHLIGHT_COLOR);
+	let hexValid = $derived(/^#[0-9a-f]{6}$/i.test(hexInput));
+
+	function setHsv(next: HSV) {
+		hsv = {
+			h: Math.max(0, Math.min(360, next.h)),
+			s: Math.max(0, Math.min(1, next.s)),
+			v: Math.max(0, Math.min(1, next.v))
+		};
+		draftColor = hsvToHex(hsv);
+		hexInput = draftColor;
+	}
+
+	function hueThumbPosition(hue: number) {
+		const radians = (hue * Math.PI) / 180;
+		return `left: calc(50% + ${Math.sin(radians) * 102}px); top: calc(50% - ${Math.cos(radians) * 102}px)`;
+	}
+
+	function updateHue(event: PointerEvent) {
+		const target = event.currentTarget as HTMLElement;
+		const rect = target.getBoundingClientRect();
+		const angle =
+			(Math.atan2(
+				event.clientY - (rect.top + rect.height / 2),
+				event.clientX - (rect.left + rect.width / 2)
+			) *
+				180) /
+				Math.PI +
+			90;
+		setHsv({ ...hsv, h: (angle + 360) % 360 });
+	}
+
+	function updateSquare(event: PointerEvent) {
+		const target = event.currentTarget as HTMLElement;
+		const rect = target.getBoundingClientRect();
+		setHsv({
+			...hsv,
+			s: (event.clientX - rect.left) / rect.width,
+			v: 1 - (event.clientY - rect.top) / rect.height
+		});
+	}
+
+	function onHexInput(event: Event) {
+		hexInput = (event.currentTarget as HTMLInputElement).value;
+		const normalized = /^#[0-9a-f]{6}$/i.test(hexInput) ? normalizeHighlightColor(hexInput) : null;
+		if (normalized) {
+			draftColor = normalized;
+			hsv = hexToHsv(normalized);
+		}
+	}
+
+	function onHueKeydown(event: KeyboardEvent) {
+		if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+		event.preventDefault();
+		setHsv({ ...hsv, h: hsv.h + (event.key === 'ArrowRight' ? 1 : -1) });
+	}
+
+	function onSquareKeydown(event: KeyboardEvent) {
+		if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+		event.preventDefault();
+		const step = 0.02;
+		setHsv({
+			...hsv,
+			s: hsv.s + (event.key === 'ArrowRight' ? step : event.key === 'ArrowLeft' ? -step : 0),
+			v: hsv.v + (event.key === 'ArrowUp' ? step : event.key === 'ArrowDown' ? -step : 0)
+		});
+	}
+
+	function position() {
+		if (!panel || !anchor.isConnected) return;
+		const rect = anchor.getBoundingClientRect();
+		const width = panel.offsetWidth || 280;
+		const height = panel.offsetHeight || 360;
+		panel.style.left = `${Math.max(8, Math.min(window.innerWidth - width - 8, rect.left))}px`;
+		panel.style.top = `${Math.max(8, Math.min(window.innerHeight - height - 8, rect.bottom + 8))}px`;
+	}
+
+	onMount(() => {
+		const startingColor = normalizeHighlightColor(initialColor) ?? DEFAULT_HIGHLIGHT_COLOR;
+		hsv = hexToHsv(startingColor);
+		draftColor = startingColor;
+		hexInput = startingColor;
+		const onOutside = (event: PointerEvent) => {
+			if (panel && (!(event.target instanceof Node) || !panel.contains(event.target))) onClose();
+		};
+		const onEscape = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				onClose();
+			}
+		};
+		window.addEventListener('pointerdown', onOutside);
+		window.addEventListener('keydown', onEscape);
+		window.addEventListener('resize', position);
+		window.addEventListener('scroll', position, true);
+		requestAnimationFrame(() => {
+			position();
+			panel?.querySelector<HTMLElement>('button, input, [tabindex="0"]')?.focus();
+		});
+		return () => {
+			window.removeEventListener('pointerdown', onOutside);
+			window.removeEventListener('keydown', onEscape);
+			window.removeEventListener('resize', position);
+			window.removeEventListener('scroll', position, true);
+		};
+	});
+</script>
+
+<div bind:this={panel} class="highlight-palette" role="dialog" aria-label={labels.title}>
+	<div class="palette-header">
+		<strong>{labels.title}</strong>
+		<span class="palette-preview" style={`--preview-color: ${draftColor}`} aria-hidden="true"
+		></span>
+	</div>
+
+	{#if !custom}
+		<div class="swatches" aria-label={labels.title}>
+			{#each HIGHLIGHT_PRESETS as preset}
+				<button
+					type="button"
+					class="color-swatch"
+					class:selected={draftColor === preset.color}
+					style={`--swatch-color: ${preset.color}`}
+					aria-label={labels.preset(preset.id)}
+					aria-pressed={draftColor === preset.color}
+					onclick={() => onApply(preset.color)}
+				>
+					<span aria-hidden="true">{draftColor === preset.color ? '✓' : ''}</span>
+				</button>
+			{/each}
+		</div>
+		<button type="button" class="palette-action" onclick={() => (custom = true)}
+			>{labels.custom}</button
+		>
+		<button type="button" class="palette-action remove" onclick={onRemove}>{labels.remove}</button>
+	{:else}
+		<div
+			class="hue-ring"
+			role="slider"
+			tabindex="0"
+			aria-label={labels.hue}
+			aria-valuemin="0"
+			aria-valuemax="360"
+			aria-valuenow={Math.round(hsv.h)}
+			onpointerdown={updateHue}
+			onpointermove={(event) => event.buttons && updateHue(event)}
+			onkeydown={onHueKeydown}
+		>
+			<span class="hue-thumb" style={hueThumbPosition(hsv.h)} aria-hidden="true"></span>
+			<div
+				class="sv-square"
+				role="slider"
+				tabindex="0"
+				aria-label={labels.saturation}
+				aria-valuemin="0"
+				aria-valuemax="100"
+				aria-valuenow={Math.round(hsv.s * 100)}
+				style={`--hue-color: hsl(${hsv.h} 100% 50%)`}
+				onpointerdown={(event) => {
+					event.stopPropagation();
+					updateSquare(event);
+				}}
+				onpointermove={(event) => {
+					event.stopPropagation();
+					if (event.buttons) updateSquare(event);
+				}}
+				onkeydown={onSquareKeydown}
+			>
+				<span
+					class="picker-thumb"
+					style={`left: ${hsv.s * 100}%; top: ${(1 - hsv.v) * 100}%`}
+					aria-hidden="true"
+				></span>
+			</div>
+		</div>
+		<label class="range-label">
+			<span>{labels.hue}</span>
+			<input
+				type="range"
+				min="0"
+				max="360"
+				step="1"
+				value={hsv.h}
+				aria-label={labels.hue}
+				oninput={(event) =>
+					setHsv({ ...hsv, h: Number((event.currentTarget as HTMLInputElement).value) })}
+			/>
+		</label>
+		<label class="range-label">
+			<span>{labels.saturation}</span>
+			<input
+				type="range"
+				min="0"
+				max="100"
+				step="1"
+				value={hsv.s * 100}
+				aria-label={labels.saturation}
+				oninput={(event) =>
+					setHsv({ ...hsv, s: Number((event.currentTarget as HTMLInputElement).value) / 100 })}
+			/>
+		</label>
+		<label class="range-label">
+			<span>{labels.brightness}</span>
+			<input
+				type="range"
+				min="0"
+				max="100"
+				step="1"
+				value={hsv.v * 100}
+				aria-label={labels.brightness}
+				oninput={(event) =>
+					setHsv({ ...hsv, v: Number((event.currentTarget as HTMLInputElement).value) / 100 })}
+			/>
+		</label>
+		<label class="hex-label">
+			<span>{labels.hex}</span>
+			<input
+				value={hexInput}
+				maxlength="7"
+				spellcheck="false"
+				aria-invalid={!hexValid}
+				oninput={onHexInput}
+			/>
+		</label>
+		{#if !hexValid}<p class="invalid-message">{labels.invalidHex}</p>{/if}
+		<div class="palette-footer">
+			<button type="button" class="palette-action" onclick={onClose}>{labels.cancel}</button>
+			<button
+				type="button"
+				class="palette-action apply"
+				disabled={!hexValid}
+				onclick={() => onApply(normalizeHighlightColor(hexInput)!)}>{labels.apply}</button
+			>
+		</div>
+	{/if}
+</div>
+
+<style>
+	:global(.highlight-palette) {
+		position: fixed;
+		z-index: 50;
+		width: min(280px, calc(100vw - 16px));
+		padding: 12px;
+		border: 1px solid rgb(205 213 224 / 35%);
+		border-radius: 8px;
+		background: #1e232b;
+		color: #f5f7fa;
+		font:
+			14px/1.4 system-ui,
+			sans-serif;
+	}
+
+	.palette-header,
+	.palette-footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	.palette-header {
+		margin-bottom: 10px;
+	}
+
+	.palette-preview,
+	.color-swatch {
+		background: var(--preview-color, var(--swatch-color));
+	}
+
+	.palette-preview {
+		width: 20px;
+		height: 20px;
+		border: 2px solid #f5f7fa;
+		border-radius: 50%;
+	}
+
+	.swatches {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		gap: 8px;
+		margin-bottom: 10px;
+	}
+
+	.color-swatch {
+		position: relative;
+		min-width: 40px;
+		height: 40px;
+		border: 2px solid transparent;
+		border-radius: 50%;
+		color: #0a0d14;
+		font-size: 18px;
+		cursor: pointer;
+	}
+
+	.color-swatch.selected {
+		border-color: #f5f7fa;
+		outline: 2px solid #8896a6;
+		outline-offset: 2px;
+	}
+
+	.palette-action {
+		width: 100%;
+		min-height: 36px;
+		margin-top: 6px;
+		border: 1px solid rgb(205 213 224 / 45%);
+		border-radius: 6px;
+		background: transparent;
+		color: inherit;
+		cursor: pointer;
+	}
+
+	.palette-action:hover,
+	.palette-action:focus-visible {
+		background: #2a313c;
+	}
+
+	.palette-action.remove {
+		color: #fca5a5;
+	}
+
+	.palette-action.apply {
+		background: #f5f7fa;
+		color: #0a0d14;
+	}
+
+	.palette-action:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	.hue-ring {
+		box-sizing: border-box;
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 220px;
+		height: 220px;
+		margin: 4px auto 12px;
+		padding: 15px;
+		border-radius: 50%;
+	}
+
+	.hue-ring::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 50%;
+		background: conic-gradient(#ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+		mask: radial-gradient(farthest-side, transparent calc(100% - 15px), #000 calc(100% - 14px));
+		-webkit-mask: radial-gradient(
+			farthest-side,
+			transparent calc(100% - 15px),
+			#000 calc(100% - 14px)
+		);
+		pointer-events: none;
+	}
+
+	.hue-thumb {
+		position: absolute;
+		z-index: 2;
+		width: 14px;
+		height: 14px;
+		border: 2px solid #f5f7fa;
+		border-radius: 50%;
+		transform: translate(-50%, -50%);
+		box-shadow: 0 0 0 1px #0a0d14;
+		pointer-events: none;
+	}
+
+	.sv-square {
+		position: relative;
+		z-index: 1;
+		width: 60%;
+		margin: auto;
+		height: 60%;
+		background:
+			linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, var(--hue-color));
+		cursor: crosshair;
+	}
+
+	.picker-thumb {
+		position: absolute;
+		width: 14px;
+		height: 14px;
+		border: 2px solid #f5f7fa;
+		border-radius: 50%;
+		transform: translate(-50%, -50%);
+		box-shadow: 0 0 0 1px #0a0d14;
+	}
+
+	.range-label,
+	.hex-label {
+		display: grid;
+		grid-template-columns: 82px 1fr;
+		align-items: center;
+		gap: 8px;
+		margin-top: 8px;
+	}
+
+	.hex-label input {
+		min-width: 0;
+		padding: 6px 8px;
+		border: 1px solid rgb(205 213 224 / 45%);
+		border-radius: 6px;
+		background: #0a0d14;
+		color: #f5f7fa;
+		font: inherit;
+	}
+
+	.invalid-message {
+		margin: 6px 0 0;
+		color: #fca5a5;
+	}
+
+	.palette-footer {
+		margin-top: 10px;
+	}
+
+	.palette-footer .palette-action {
+		margin-top: 0;
+	}
+
+	button:focus-visible,
+	input:focus-visible,
+	[role='slider']:focus-visible {
+		outline: 2px solid #cdd5e0;
+		outline-offset: 2px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:global(.highlight-palette) * {
+			transition: none !important;
+		}
+	}
+</style>

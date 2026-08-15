@@ -12,6 +12,7 @@ import { createHighlightSession } from '$lib/bible/highlights';
 import { onAuthStateChanged } from 'firebase/auth';
 import {
 	createHighlightSyncSession,
+	decodeHighlightData,
 	privateHighlightPath,
 	type HighlightChange,
 	type HighlightTransport
@@ -29,8 +30,12 @@ afterEach(() => {
 function transport() {
 	let listener: ((changes: HighlightChange[]) => void) | undefined;
 	const writes: string[] = [];
+	const colors: string[] = [];
 	const fake: HighlightTransport = {
-		set: async (id) => void writes.push(`set:${id}`),
+		set: async (id, color) => {
+			colors.push(`${id}:${color}`);
+			writes.push(`set:${id}`);
+		},
 		delete: async (id) => void writes.push(`delete:${id}`),
 		subscribe: (onChange) => {
 			listener = onChange;
@@ -38,7 +43,7 @@ function transport() {
 		},
 		read: async () => false
 	};
-	return { fake, writes, emit: (changes: HighlightChange[]) => listener?.(changes) };
+	return { fake, writes, colors, emit: (changes: HighlightChange[]) => listener?.(changes) };
 }
 
 describe('shared auth observer', () => {
@@ -54,6 +59,12 @@ describe('shared auth observer', () => {
 });
 
 describe('private highlight sync adapter', () => {
+	it('decodes legacy, canonical, and rejects malformed documents', () => {
+		expect(decodeHighlightData({ highlighted: true })?.color).toBe('#facc15');
+		expect(decodeHighlightData({ highlighted: true, color: '#12aBc0' })?.color).toBe('#12abc0');
+		expect(decodeHighlightData({ highlighted: true, color: '#fff' })).toBeNull();
+		expect(decodeHighlightData({ highlighted: true, extra: true })).toBeNull();
+	});
 	it('uses the owner-scoped private highlight path', () => {
 		expect(privateHighlightPath('user-a', 'gen:1:1')).toBe(
 			'userData/user-a/privateHighlights/GEN:1:1'
@@ -71,7 +82,7 @@ describe('private highlight sync adapter', () => {
 			isOnline: () => online,
 			generationMatches: () => true
 		});
-		local.set('GEN:1:1');
+		local.set('GEN:1:1', '#12aBc0');
 		sync.retry();
 		expect(io.writes).toEqual([]);
 		online = true;
@@ -79,6 +90,7 @@ describe('private highlight sync adapter', () => {
 		await Promise.resolve();
 		await Promise.resolve();
 		expect(io.writes).toEqual(['set:GEN:1:1']);
+		expect(io.colors).toEqual(['GEN:1:1:#12abc0']);
 		expect(local.getState().pendingIds.size).toBe(0);
 		sync.teardown();
 	});
