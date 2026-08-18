@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>每日經文靈修</title>
+	<style>
+		:root { --primary:#4a6984; --primary-hover:#354f66; --canvas:#f5f7fa; --border:#e1e8ed; --notice:#e8f0fe; }
+		* { box-sizing:border-box; }
+		body { margin:0; padding:20px; background:var(--canvas); color:#333; font:16px/1.6 system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif; }
+		.container { max-width:800px; margin:0 auto; padding:30px; background:#fff; border-radius:8px; }
+		h1 { margin:0 0 24px; padding-bottom:10px; border-bottom:2px solid var(--primary); color:var(--primary); text-align:center; }
+		.info-panel,.template-notice { margin-bottom:24px; padding:16px; border-radius:6px; }
+		.info-panel { background:var(--notice); text-align:center; font-weight:600; }
+		.template-notice { border:1px solid #c7d7e7; background:#f7fbff; }
+		.template-notice h2 { margin:0 0 8px; color:var(--primary); font-size:1rem; }
+		.template-notice ul { margin:8px 0 0; padding-left:1.25rem; font-size:.9rem; font-weight:400; }
+		.template-notice code { overflow-wrap:anywhere; }
+		#reading-summary { white-space:pre-line; }
+		.reading-actions { display:grid; gap:10px; margin-top:12px; }
+		#open-reader-new { color:#1a73e8; font-size:.9rem; font-weight:400; }
+		.question-block { margin-bottom:25px; }
+		.question-title { display:block; margin-bottom:10px; color:var(--primary); font-size:1.1em; font-weight:700; }
+		.question-text { margin-bottom:15px; padding:12px; border-inline-start:4px solid var(--primary); background:#fafafa; }
+		input,textarea,button { width:100%; font:inherit; }
+		input,textarea { padding:10px; border:1px solid var(--border); border-radius:4px; }
+		textarea { height:100px; resize:vertical; }
+		button { padding:12px 25px; border:0; border-radius:4px; background:var(--primary); color:#fff; cursor:pointer; transition:background-color 180ms ease; }
+		button:hover { background:var(--primary-hover); }
+		button:disabled { background:#a0b2c1; cursor:not-allowed; }
+		button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible { outline:3px solid #1a73e8; outline-offset:2px; }
+		#message-area { margin-top:15px; text-align:center; font-weight:700; }
+		.success { color:#2e7d32; } .error { color:#c62828; }
+		#loading-screen { padding:50px; color:#666; text-align:center; }
+		#main-content { display:none; }
+		#bible-dialog { width:min(900px,100vw); height:min(900px,100dvh); max-width:100vw; max-height:100dvh; margin:auto; padding:0; border:0; border-radius:8px; overflow:hidden; background:#0a0d14; color:#f5f7fa; }
+		#bible-dialog[open] { display:flex; flex-direction:column; }
+		#bible-dialog::backdrop { background:rgb(10 13 20 / 82%); }
+		.reader-header { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:56px; padding:10px 14px; border-bottom:1px solid #1e232b; }
+		#reader-title { overflow:hidden; font-weight:600; text-overflow:ellipsis; white-space:nowrap; }
+		#close-reader { width:auto; flex:none; padding:8px 14px; background:#f5f7fa; color:#0a0d14; }
+		#close-reader:hover { background:#cdd5e0; }
+		#bible-frame { width:100%; min-height:0; flex:1; border:0; background:#0a0d14; }
+		@media (max-width:600px) { body { padding:0; } .container { min-height:100dvh; padding:20px; border-radius:0; } #bible-dialog { width:100vw; height:100dvh; border-radius:0; } .reader-header { padding-top:max(10px,env(safe-area-inset-top)); } }
+		@media (prefers-reduced-motion:reduce) { button { transition:none; } }
+	</style>
+</head>
+<body>
+	<main class="container">
+		<h1>每日靈修紀錄</h1>
+		<aside class="template-notice">
+			<h2>Template deployment notes</h2>
+			<ul>
+				<li>Host this page over HTTPS on a <strong>same-site</strong> subdomain, e.g. <code>202608.crckc.org.hk</code>. It must share the <code>crckc.org.hk</code> site with <code>bible.crckc.org.hk</code> so the embedded BibleTogether page can reuse its Firebase login.</li>
+				<li>Keep the iframe URL’s <code>?embed=1</code>; BibleTogether uses it to remove its navigation and install prompt. Do not add an iframe <code>sandbox</code> attribute.</li>
+				<li>Deploy only with your church’s existing HTTPS/DNS setup. An unrelated domain, Google Sites, or localhost creates a separate browser-storage partition and users may need to log in again.</li>
+				<li>This repository intentionally contains no submission endpoint. Set <code>FORM_ACTION</code> in the private deployed copy, or replace <code>submitReflection()</code> with your own approved form integration.</li>
+				<li>This template always displays the first day of <code>REFERENCE_CAMPAIGN</code>; replace that object with your campaign when deploying. Add date-selection logic only if the campaign needs it.</li>
+			</ul>
+		</aside>
+		<section id="loading-screen">正在載入今日靈修資料，請稍候...</section>
+		<section id="main-content">
+			<div class="info-panel">
+				<div id="reading-summary"></div>
+				<div class="reading-actions">
+					<button type="button" id="open-reader">在此閱讀今日經文</button>
+					<a id="open-reader-new" target="_blank" rel="noopener">若閱讀器未能開啟，請在新頁閱讀</a>
+				</div>
+			</div>
+			<form id="devotional-form">
+				<input type="hidden" id="date-input" name="date" />
+				<input type="hidden" id="range-input" name="range" />
+				<div class="question-block"><label class="question-title" for="participant-name">參與者姓名</label><input type="text" name="participant_name" id="participant-name" placeholder="請輸入您的名字..." required /></div>
+				<div class="question-block"><div class="question-title">1. 觀察經文</div><div class="question-text" id="q1-text"></div><textarea name="ans1" id="ans1" placeholder="請在此輸入您的回答..." required></textarea></div>
+				<div class="question-block"><div class="question-title">2. 反省自己生命</div><div class="question-text" id="q2-text"></div><textarea name="ans2" id="ans2" placeholder="請在此輸入您的回答..." required></textarea></div>
+				<div class="question-block"><div class="question-title">3. 禱告回應</div><div class="question-text" id="q3-text"></div><textarea name="ans3" id="ans3" placeholder="請在此輸入您的回答..." required></textarea></div>
+				<button type="submit" id="submit-btn">提交靈修紀錄</button>
+				<div id="message-area" role="status"></div>
+			</form>
+		</section>
+	</main>
+	<dialog id="bible-dialog" aria-labelledby="reader-title">
+		<header class="reader-header"><span id="reader-title">今日經文</span><button type="button" id="close-reader">返回靈修問題</button></header>
+		<iframe id="bible-frame" title="今日經文閱讀器" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+	</dialog>
+	<script>
+		// Copy this file outside this repository, then configure the private endpoint there.
+		const FORM_ACTION = '';
+		// A complete, non-production reference campaign. Replace it in the private deployment copy.
+		const REFERENCE_CAMPAIGN = {
+			name: '新年靈修示例',
+			devotionals: {
+				'1/1/2027': {
+					url: 'https://bible.crckc.org.hk/bible/gen/1',
+					range: '創世記第一章',
+					q1: '這段經文最讓你留意的是甚麼？',
+					q2: '這如何幫助你重新看待今天的生活？',
+					q3: '用自己的說話向神作出回應。'
+				},
+				'2/1/2027': {
+					url: 'https://bible.crckc.org.hk/bible/gen/2',
+					range: '創世記第二章',
+					q1: '神如何預備人的生活與關係？',
+					q2: '你今天在哪一方面需要學習信靠神的預備？',
+					q3: '將一件需要交託的事寫成禱告。'
+				},
+				'3/1/2027': {
+					url: 'https://bible.crckc.org.hk/bible/gen/3',
+					range: '創世記第三章',
+					q1: '人選擇不順服後，經文描述了甚麼結果？',
+					q2: '你可以怎樣坦誠回應神的提醒？',
+					q3: '求神賜你勇氣，在今天順服祂。'
+				}
+			}
+		};
+		const $ = (id) => document.getElementById(id);
+		const dialog = $('bible-dialog');
+		const frame = $('bible-frame');
+		const openReader = $('open-reader');
+		function showDevotional(devotional, date) {
+			$('loading-screen').hidden = true;
+			$('main-content').style.display = 'block';
+			$('reading-summary').textContent = `今日日期：${date}\n今日經文：${devotional.range}`;
+			$('date-input').value = date; $('range-input').value = devotional.range;
+			$('q1-text').textContent = devotional.q1; $('q2-text').textContent = devotional.q2; $('q3-text').textContent = devotional.q3;
+			$('reader-title').textContent = devotional.range;
+			openReader.dataset.url = `${devotional.url}?embed=1`;
+			$('open-reader-new').href = devotional.url;
+		}
+		openReader.addEventListener('click', () => {
+			if (!frame.getAttribute('src') && openReader.dataset.url) frame.src = openReader.dataset.url;
+			dialog.showModal();
+		});
+		$('close-reader').addEventListener('click', () => dialog.close());
+		dialog.addEventListener('close', () => openReader.focus());
+		async function submitReflection(form) {
+			if (!FORM_ACTION) throw new Error('此範本尚未設定提交位置。');
+			const response = await fetch(FORM_ACTION, { method: 'POST', body: new FormData(form) });
+			if (!response.ok) throw new Error('提交失敗，請稍後再試。');
+		}
+		$('devotional-form').addEventListener('submit', async (event) => {
+			event.preventDefault();
+			const form = event.currentTarget; const button = $('submit-btn'); const message = $('message-area');
+			button.disabled = true; message.className = '';
+			try { await submitReflection(form); message.textContent = '提交成功！願神祝福您今日的靈修。'; message.className = 'success'; form.reset(); }
+			catch (error) { message.textContent = error instanceof Error ? error.message : '提交失敗，請稍後再試。'; message.className = 'error'; }
+			finally { button.disabled = false; }
+		});
+		// Intentionally no date check: this reference template always renders its first devotional.
+		const date = Object.keys(REFERENCE_CAMPAIGN.devotionals)[0];
+		showDevotional(REFERENCE_CAMPAIGN.devotionals[date], date);
+	</script>
+</body>
+</html>

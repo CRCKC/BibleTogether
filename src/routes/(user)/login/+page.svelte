@@ -7,6 +7,7 @@
 	import GoogleSigninButton from '../googleSigninButton.svelte';
 	import OrWithSeperator from '../orWithSeperator.svelte';
 	import { t } from 'svelte-i18n';
+	import { page } from '$app/state';
 	import { Input } from '$lib/components/ui/input/index.js';
 	// export let data: PageData;
 
@@ -86,6 +87,6 @@
 				<GoogleSigninButton text={$t('googleLogin')} />
 			</div>
 		</div>
-		<a href="{base}/signup" class="mt-4 text-blue-500">{$t('gotoSignup')}</a>
+		<a href="{base}/signup{page.url.search}" class="mt-4 text-blue-500">{$t('gotoSignup')}</a>
 	</div>
 </div>

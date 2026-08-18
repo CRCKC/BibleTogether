@@ -6,18 +6,24 @@ import {
 } from 'firebase/auth';
 import { firebaseAuth } from './firebase';
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
+import { Capacitor } from '@capacitor/core';
 
 const auth = firebaseAuth;
 auth.useDeviceLanguage();
 
 export async function loginWithGoogle() {
-	const result = await FirebaseAuthentication.signInWithGoogle({
-		mode: 'redirect',
+	const options = {
 		customParameters: [{ key: 'prompt', value: 'select_account' }]
-	});
+	};
+	if (!Capacitor.isNativePlatform()) {
+		await FirebaseAuthentication.signInWithGoogle({ ...options, mode: 'popup' });
+		if (!firebaseAuth.currentUser) throw new Error('Google sign-in did not return a user');
+		return firebaseAuth.currentUser;
+	}
+
+	const result = await FirebaseAuthentication.signInWithGoogle(options);
 	const credential = GoogleAuthProvider.credential(result.credential?.idToken);
-	const result2 = await signInWithCredential(firebaseAuth, credential);
-	return result2.user;
+	return (await signInWithCredential(firebaseAuth, credential)).user;
 }
 
 export async function createUserWithEmail(email: string, password: string) {

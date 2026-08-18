@@ -7,6 +7,7 @@
 	// import type { PageData } from './$types';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { t } from 'svelte-i18n';
+	import { page } from '$app/state';
 
 	// export let data: PageData;
 
@@ -103,7 +104,7 @@
 				<GoogleSigninButton text={$t('googleSignup')} />
 			</div>
 		</form>
-		<a href="{base}/login" class="mt-4 text-blue-500">{$t('gotoLogin')}</a>
+		<a href="{base}/login{page.url.search}" class="mt-4 text-blue-500">{$t('gotoLogin')}</a>
 	</div>
 </div>
 

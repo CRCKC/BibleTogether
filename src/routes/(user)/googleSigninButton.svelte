@@ -2,14 +2,18 @@
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { loginWithGoogle } from '$lib/firebase/auth';
-		let { text }: { text: string } = $props();
+	import { page } from '$app/state';
+	let { text }: { text: string } = $props();
 
 	const onClick = async () => {
 		const user = await loginWithGoogle();
 		console.log('User', user);
 		const loggedIn = user.emailVerified;
 		if (loggedIn) {
-			await goto(base + '/home');
+			const returnTo = page.url.searchParams.get('returnTo');
+			const destination =
+				returnTo?.startsWith('/') && !returnTo.startsWith('//') ? returnTo : base + '/home';
+			await goto(destination);
 		} else {
 			await goto(base + '/login');
 		}

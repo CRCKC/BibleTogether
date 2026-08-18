@@ -409,7 +409,7 @@
 </script>
 
 <ScrollArea class="size-full">
-	<div id="bible-tooltip-boundary" class="h-full w-dvw">
+	<div id="bible-tooltip-boundary" class="h-full w-full">
 		<!-- Title Widget -->
 		<div
 			class="inline-block w-full mt-4 text-2xl text-center text-gray-400"

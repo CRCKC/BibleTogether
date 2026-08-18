@@ -38,6 +38,7 @@
 	let highlightSession = $state<HighlightSession | null>(null);
 	let highlightSync = $state<HighlightSyncSession | null>(null);
 	let isBible = $derived(page.url.pathname.startsWith(`${base}/bible`));
+	let embedded = $derived(page.url.searchParams.get('embed') === '1');
 
 	setContext('highlightSession', {
 		get session() {
@@ -49,7 +50,7 @@
 	});
 
 	onMount(() => {
-		if (!changelogEntries.length) return;
+		if (embedded || !changelogEntries.length) return;
 
 		const lastSeenVersion = readLastSeenVersion();
 		if (!lastSeenVersion) {
@@ -110,28 +111,30 @@
 	});
 </script>
 
-<div class="flex flex-col h-dvh w-dvw">
+<div class="flex flex-col h-dvh w-full">
 	{#key page.url.pathname}
 		<div class="relative flex-1 min-h-0 overflow-y-auto overflow-x-hidden" data-app-content>
 			{@render children?.()}
 		</div>
 	{/key}
-	<div class="z-40 w-full shrink-0 transition-all bg-background border-t-2 border-gray-600">
-		<!-- Bible nav bar -->
-		{#if isBible}
-			<BibleNavBar />
-		{/if}
+	{#if !embedded}
+		<div class="z-40 w-full shrink-0 transition-all bg-background border-t-2 border-gray-600">
+			<!-- Bible nav bar -->
+			{#if isBible}
+				<BibleNavBar />
+			{/if}
 
-		<div class="icon-ms-settings"></div>
-		<nav class="grid grid-flow-col" data-bottom-navigation>
-			<Item title={$t('home')} path="home" icon={HomeOutline} activeIcon={HomeIcon} />
-			<Item title={$t('bible')} path="bible" icon={Book2Outline} activeIcon={Book2Icon} />
-			<Item
-				title={$t('settings')}
-				path="settings"
-				icon={SettingsOutline}
-				activeIcon={SettingsIcon}
-			/>
-		</nav>
-	</div>
+			<div class="icon-ms-settings"></div>
+			<nav class="grid grid-flow-col" data-bottom-navigation>
+				<Item title={$t('home')} path="home" icon={HomeOutline} activeIcon={HomeIcon} />
+				<Item title={$t('bible')} path="bible" icon={Book2Outline} activeIcon={Book2Icon} />
+				<Item
+					title={$t('settings')}
+					path="settings"
+					icon={SettingsOutline}
+					activeIcon={SettingsIcon}
+				/>
+			</nav>
+		</div>
+	{/if}
 </div>

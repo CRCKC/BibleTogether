@@ -14,6 +14,7 @@
 	import Pwa from '$lib/pwa/pwa.svelte';
 	import { browser } from '$app/environment';
 	import { subscribeAuthState } from '$lib/firebase/authState';
+	import { page } from '$app/state';
 
 	interface Props {
 		data: LayoutData;
@@ -23,6 +24,7 @@
 	let { data, children }: Props = $props();
 
 	let loadingResult = $state(true);
+	let embedded = $derived(page.url.searchParams.get('embed') === '1');
 
 	let firstVisit = localStore('firstVisit', true);
 
@@ -34,13 +36,14 @@
 		});
 		void (async () => {
 			setMode('dark'); // TODO Default to dark mode first, maybe add light mode in the future
-			setTimeout(promptInstall, 0);
+			if (!embedded) setTimeout(promptInstall, 0);
 
-			if (firstVisit.value) {
+			if (firstVisit.value && !embedded) {
 				firstVisit.value = false;
 				console.log('First Visit');
 				await goto(base + '/signup');
 			} else {
+				firstVisit.value = false;
 				console.log('Logging In');
 				await autoLogin();
 			}
@@ -52,18 +55,24 @@
 
 	async function autoLogin() {
 		const user: any = await data.getAuthUser?.();
-
 		const loggedIn = !!user && user?.emailVerified;
+		const returnTo = page.url.searchParams.get('returnTo');
+
 		// Session is projected by the shared auth observer above.
-		if (loggedIn) {
-			if (!data.requireLogin) await goto(base + '/home');
-		} else {
-			await goto(base + '/login');
+		if (loggedIn && !data.requireLogin) {
+			const destination =
+				returnTo?.startsWith('/') && !returnTo.startsWith('//') ? returnTo : base + '/home';
+			await goto(destination);
+		} else if (!loggedIn && data.requireLogin) {
+			const currentPath = page.url.pathname + page.url.search;
+			await goto(
+				`${base}/login?returnTo=${encodeURIComponent(currentPath)}${embedded ? '&embed=1' : ''}`
+			);
 		}
 	}
 </script>
 
-{#if browser}
+{#if browser && !embedded}
 	<Pwa />
 {/if}
 
